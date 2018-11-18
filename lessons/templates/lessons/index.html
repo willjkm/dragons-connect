@@ -1,0 +1,10 @@
+{% extends 'lessons/layout.html' %}
+
+{% block content %}
+<h3>{{title}}</h3>
+<ul>
+    {% for lesson in lessons %}
+        <li>{{lesson.title}}</li>
+    {% endfor%}
+</ul>
+{% endblock %}
