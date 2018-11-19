@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3>{{title}}</h3>
-<ul>
-    {% for lesson in lessons %}
-        <li>{{lesson.title}}</li>
-    {% endfor%}
-</ul>
+<h1 class="display-3 text-center pt-5">{{title}}</h1>
+{% for lesson in lessons %}
+    <div class="row p-4">
+        <div class="col-sm-4">
+            {% if lesson.image %}
+                <img src="{{ lesson.image.url }}" alt="Image" class="img-thumbnail rounded">
+            {% endif %}
+        </div>
+        <div class="col-sm-8 my-4">
+            <h2>Lesson {{ lesson.lesson_order }}: {{ lesson.title }}</h2>
+            <p>{{ lesson.description }}</p>
+            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/1" role="button">Start class</a>
+        </div>
+    </div>
+
+{% endfor%}
 {% endblock %}

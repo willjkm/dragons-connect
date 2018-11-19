@@ -7,6 +7,7 @@ from adminsortable.fields import SortableForeignKey
 class Lesson(SortableMixin):
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='images/', null=True)
 
     class Meta:
         ordering = ['lesson_order']
