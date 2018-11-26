@@ -6,19 +6,46 @@
 
     <p>{{ slide.bodyText }}</p>
 
+    <button type="button" class="btn btn-primary" id="progressbutton">I'm ready</button>
+
     {% if current_slide > 1 %}
         <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
     {% else %}
         <button type="button" class="btn btn-primary" disabled>Previous slide</button>
     {% endif %}
 
-    {% if is_final_slide == False %}
-        <a class="btn btn-primary float-right" href="/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}" role="button">Next slide</a>
-    {% else %}
-        <button type="button" class="btn btn-primary float-right" disabled>Next slide</button>
+
+    {% if next_slide_is_available == False %}
+        <button type="button" class="btn btn-primary" onclick="goToNextSlide()" id="continuebutton" disabled>
+            Next slide
+        </button>
     {% endif %}
 
+    <form action="">
+        {% csrf_token %}
+    </form>
+    
     <hr>
 
     <a class="btn btn-primary" href="/lessons/" role="button">Back to index</a>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    function goToNextSlide() {
+        window.location.href='/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}';
+    }
+
+    document.getElementById("progressbutton").addEventListener("click", function() {
+        if(document.getElementById("continuebutton").disabled) {
+            document.getElementById("continuebutton").disabled = false;
+        
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+     
+            $.post('../../ajax/updateprogress/', {
+                csrfmiddlewaretoken: CSRFtoken
+            });
+        }
+    });
+</script>
 {% endblock %}

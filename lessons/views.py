@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Lesson, Slide, LearningEvent
+from django.http import HttpResponse
 
 def index(request):
     lessons = Lesson.objects.all()
@@ -39,15 +40,40 @@ def slide(request, lessonid, slideid):
     else:
         is_final_slide = False
 
+    # Determine if the next slide is available to learn when the page loads
+
+    if _lesson.lesson_order == request.user.profile.next_lesson and int(slideid) == request.user.profile.next_slide:
+        next_slide_is_available = False
+    else:
+        next_slide_is_available = True
+
     context = {
         'slide': _slide,
         'lesson': _lesson,
         'previous_slide': int(slideid) - 1,
         'current_slide': int(slideid),
         'next_slide': int(slideid) + 1,
-        'is_final_slide': is_final_slide
+        'is_final_slide': is_final_slide,
+        'next_slide_is_available': next_slide_is_available
     }
 
     return render(request, 'lessons/slide.html', context)
 
-    
+def updateProgress(request): # this responds to the AJAX request for enabling the next lesson
+
+    next_slide = request.user.profile.next_slide
+    current_lesson = request.user.profile.next_lesson
+
+    next_slide += 1
+
+    _lesson = Lesson.objects.get(lesson_order=current_lesson)
+
+    if next_slide > len(Slide.objects.filter(lesson=_lesson.pk)):
+        next_slide = 1
+        request.user.profile.next_lesson += 1
+
+    request.user.profile.next_slide = next_slide
+
+    request.user.profile.save()
+
+    return HttpResponse('')

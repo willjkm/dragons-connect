@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from adminsortable.models import SortableMixin
 from adminsortable.fields import SortableForeignKey
 
@@ -55,3 +57,14 @@ class Profile(models.Model):
     role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
     next_lesson = models.PositiveIntegerField(null=True, default=1)
     next_slide = models.PositiveIntegerField(null=True, default=1)
+
+# the following @receiver sections link the saving of the user profile with the user model
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
