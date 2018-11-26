@@ -1,8 +1,8 @@
 from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import User
 from adminsortable.models import SortableMixin
 from adminsortable.fields import SortableForeignKey
-
-# Create your models here.
 
 class Lesson(SortableMixin):
     title = models.CharField(max_length=200)
@@ -29,3 +29,29 @@ class Slide(SortableMixin):
 
     def __str__(self):
         return self.title
+
+class LearningEvent(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    action = models.CharField(max_length=25)
+    element_name = models.CharField(max_length=50, null=True)
+    slide = models.PositiveIntegerField(null=True)
+    lesson = models.PositiveIntegerField(null=True)
+    action_datetime = models.DateTimeField(auto_now_add=True)
+    score = models.PositiveIntegerField(null=True)
+    award = models.CharField(max_length=25, null=True)
+
+    def __str__(self):
+        _description = " ".join([str(self.user), self.action, self.element_name, "at", str(self.action_datetime)])
+        return _description
+
+class Role(models.Model):
+    title = models.CharField(max_length=25)
+
+    def __str__(self):
+        return self.title
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
+    next_lesson = models.PositiveIntegerField(null=True, default=1)
+    next_slide = models.PositiveIntegerField(null=True, default=1)

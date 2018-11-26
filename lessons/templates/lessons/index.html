@@ -2,6 +2,7 @@
 
 {% block content %}
 <h1 class="display-3 text-center pt-5">{{title}}</h1>
+
 {% for lesson in lessons %}
     <div class="row p-4">
         <div class="col-sm-4">
@@ -12,7 +13,11 @@
         <div class="col-sm-8 my-4">
             <h2>Lesson {{ lesson.lesson_order }}: {{ lesson.title }}</h2>
             <p>{{ lesson.description }}</p>
-            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/1" role="button">Start class</a>
+            {% if nextLesson >= lesson.lesson_order %}
+                <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/1" role="button">Start lesson</a>
+            {% else %}
+                <button type="button" class="btn btn-primary" disabled>Lesson locked</button>
+            {% endif %}
         </div>
     </div>
 

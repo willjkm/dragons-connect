@@ -1,26 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="display-3 text-center pt-5">{{ lesson.title }}</h1>
-<h2 class="text-center pt-5">{{ slide.title }}</h2>
+    <h1 class="display-3 text-center pt-5">{{ lesson.title }}</h1>
+    <h2 class="text-center pt-5">{{ slide.title }}</h2>
 
-<p>{{ slide.bodyText }}</p>
+    <p>{{ slide.bodyText }}</p>
 
+    {% if current_slide > 1 %}
+        <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+    {% else %}
+        <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+    {% endif %}
 
-{% if current_slide > 1 %}
-<a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
-{% else %}
-<button type="button" class="btn btn-primary" disabled>Previous slide</button>
-{% endif %}
+    {% if is_final_slide == False %}
+        <a class="btn btn-primary float-right" href="/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}" role="button">Next slide</a>
+    {% else %}
+        <button type="button" class="btn btn-primary float-right" disabled>Next slide</button>
+    {% endif %}
 
-{% if is_final_slide == False %}
-<a class="btn btn-primary float-right" href="/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}" role="button">Next slide</a>
-{% else %}
-<button type="button" class="btn btn-primary float-right" disabled>Next slide</button>
-{% endif %}
+    <hr>
 
-
-<hr>
-
-<a class="btn btn-primary" href="/lessons/" role="button">Back to index</a>
+    <a class="btn btn-primary" href="/lessons/" role="button">Back to index</a>
 {% endblock %}
