@@ -2,12 +2,11 @@ from django.contrib import admin
 from adminsortable.admin import SortableAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import Slide, Lesson, LearningEvent, Role, Profile
+from .models import Slide, Lesson, LearningEvent, Profile
 
 admin.site.register(Slide, SortableAdmin)
 admin.site.register(Lesson, SortableAdmin)
 admin.site.register(LearningEvent)
-admin.site.register(Role)
 
 # The following section allows the admin panel to show profile information
 

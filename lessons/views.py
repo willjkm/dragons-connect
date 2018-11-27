@@ -5,11 +5,21 @@ from django.http import HttpResponse
 def index(request):
     lessons = Lesson.objects.all()
 
+    current_slide = request.user.profile.next_slide
+    current_lesson = request.user.profile.next_lesson
+
+    _lesson = Lesson.objects.get(lesson_order=current_lesson)
+
+    fraction = (current_slide - 1) / len(Slide.objects.filter(lesson=_lesson.pk))
+
+    percentComplete = int(fraction * 100)
+
     context = {
-        'title': 'My Chinese Course',
+        'title': 'Introduction to Chinese',
         'lessons': lessons,
         'nextLesson': request.user.profile.next_lesson,
-        'nextSlide': request.user.profile.next_slide
+        'nextSlide': request.user.profile.next_slide,
+        'percentComplete': percentComplete
     }
 
     return render(request, 'lessons/index.html', context)
@@ -50,11 +60,13 @@ def slide(request, lessonid, slideid):
     context = {
         'slide': _slide,
         'lesson': _lesson,
+        'next_lesson': _lesson.lesson_order + 1,
         'previous_slide': int(slideid) - 1,
         'current_slide': int(slideid),
         'next_slide': int(slideid) + 1,
         'is_final_slide': is_final_slide,
-        'next_slide_is_available': next_slide_is_available
+        'next_slide_is_available': next_slide_is_available,
+        'role': str(request.user.profile.role)
     }
 
     return render(request, 'lessons/slide.html', context)

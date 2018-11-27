@@ -6,20 +6,56 @@
 
     <p>{{ slide.bodyText }}</p>
 
-    <button type="button" class="btn btn-primary" id="progressbutton">I'm ready</button>
+    {% if role == 'student' %}
+        <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
 
-    {% if current_slide > 1 %}
-        <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+        <hr>
+
+        {% if current_slide > 1 %}
+            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+        {% else %}
+            <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+        {% endif %}
+
+        {% if is_final_slide %}
+            {% if next_slide_is_available == False %}
+                <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton" disabled>
+                    Next lesson
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton">
+                    Next lesson
+                </button>
+            {% endif %}
+        {% else %}
+            {% if next_slide_is_available == False %}
+                <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton" disabled>
+                    Next slide
+                </button>
+            {% else %}
+                <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton">
+                    Next slide
+                </button>
+            {% endif %}
+        {% endif %}
     {% else %}
-        <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+        {% if current_slide > 1 %}
+            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+        {% else %}
+            <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+        {% endif %}
+
+        {% if is_final_slide %}
+            <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton">
+                Next lesson
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton">
+                Next slide
+            </button>
+        {% endif %}
     {% endif %}
 
-
-    {% if next_slide_is_available == False %}
-        <button type="button" class="btn btn-primary" onclick="goToNextSlide()" id="continuebutton" disabled>
-            Next slide
-        </button>
-    {% endif %}
 
     <form action="">
         {% csrf_token %}
@@ -34,6 +70,10 @@
 <script>
     function goToNextSlide() {
         window.location.href='/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}';
+    }
+
+    function startNextLesson() {
+        window.location.href='/lessons/{{ next_lesson }}/slide/1';
     }
 
     document.getElementById("progressbutton").addEventListener("click", function() {

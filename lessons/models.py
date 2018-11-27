@@ -46,15 +46,21 @@ class LearningEvent(models.Model):
         _description = " ".join([str(self.user), self.action, self.element_name, "at", str(self.action_datetime)])
         return _description
 
-class Role(models.Model):
-    title = models.CharField(max_length=25)
-
-    def __str__(self):
-        return self.title
-
 class Profile(models.Model):
+    ROLE_CHOICES = (
+        ('teacher', 'teacher'),
+        ('student', 'student'),
+        ('manager', 'school administrator'),
+        ('admin', 'website administrator'),
+    )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.ForeignKey(Role, on_delete=models.CASCADE, null=True)
+    role = models.CharField(
+        max_length=7,
+        choices=ROLE_CHOICES,
+        default='student',
+        null=True
+    )
     next_lesson = models.PositiveIntegerField(null=True, default=1)
     next_slide = models.PositiveIntegerField(null=True, default=1)
 
