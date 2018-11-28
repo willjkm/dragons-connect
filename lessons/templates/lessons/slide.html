@@ -1,6 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+<div class="sidenav">
+    <h3>Lesson {{ lesson.lesson_order }}</h3>
+    <p>{{ lesson.title }}</p>
+    {% for s in slides %}
+        {% if s == slide %}
+            <strong><a href="#">{{ s.position }}. {{ s.title }}</a></strong>
+        {% else %}
+            {% if activeLesson == lesson.lesson_order %}
+                {% if activeSlide < s.position %}
+                    <a href="#" style="color:rgb(167, 167, 167)">{{ s.position }}. {{ s.title }}</a>
+                {% else %}
+                    <a href="/lessons/{{ lesson.lesson_order }}/slide/{{ s.position }}" style="color:bisque;">{{ s.position }}. {{ s.title }}</a>
+                {% endif %}
+            {% else %}
+                <a href="/lessons/{{ lesson.lesson_order }}/slide/{{ s.position }}" style="color:bisque;">{{ s.position }}. {{ s.title }}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    <a class="btn btn-secondary mt-4" href="/lessons/" style="width: 80%; margin: auto; text-align: left;" role="button">Back to index</a>
+</div>
+
+<div class="main">
     <h1 class="display-3 text-center pt-5">{{ lesson.title }}</h1>
     <h2 class="text-center pt-5">{{ slide.title }}</h2>
 
@@ -61,9 +84,9 @@
         {% csrf_token %}
     </form>
     
-    <hr>
+</div>
 
-    <a class="btn btn-primary" href="/lessons/" role="button">Back to index</a>
+
 {% endblock %}
 
 {% block javascript %}

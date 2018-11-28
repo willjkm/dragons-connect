@@ -5,3 +5,48 @@ h3 {
 .progress {
     height: 20px;
 }
+
+.card {
+    background: #ecece7;
+    border-radius: 25px;
+}
+
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    left: 0;
+    background-color: #585858;
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav h3 {
+    padding: 6px 8px 6px 16px;
+    color: #ffffff;
+    display: block;
+}
+
+.sidenav p {
+    padding: 6px 8px 6px 16px;
+    font-size: 18px;
+    color: #ffffff;
+    display: block;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 26px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #ffffff;
+    display: block;
+}
+
+.sidenav a:hover {
+    color: #d1d1d1;
+}
+
+.main {
+    margin-left: 200px; /* Same as the width of the sidenav */
+    padding: 0px 10px;
+}

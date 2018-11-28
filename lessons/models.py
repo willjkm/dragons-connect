@@ -61,8 +61,8 @@ class Profile(models.Model):
         default='student',
         null=True
     )
-    next_lesson = models.PositiveIntegerField(null=True, default=1)
-    next_slide = models.PositiveIntegerField(null=True, default=1)
+    active_lesson = models.PositiveIntegerField(null=True, default=1)
+    active_slide = models.PositiveIntegerField(null=True, default=1)
 
 # the following @receiver sections link the saving of the user profile with the user model
 
