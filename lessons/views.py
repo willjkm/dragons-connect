@@ -1,6 +1,7 @@
 from django.shortcuts import render
-from .models import Lesson, Slide, LearningEvent
+from .models import Lesson, Slide, LearningEvent, Section, Class, School
 from django.http import HttpResponse
+from time import strftime
 
 def index(request):
 
@@ -92,14 +93,30 @@ def updateProgress(request): # this responds to the AJAX request for enabling th
 
 def dashboard(request):
    
-    context = {
-        'lesson': Lesson.objects.get(lesson_order=request.user.profile.active_lesson),
-        'activeSlide': request.user.profile.active_slide,
-        'percentComplete': getPercentComplete(request.user),
-        'courseProgress': getCourseProgress(request.user)
-    }
+    if request.user.profile.role == 'student':
+        context = {
+            'lesson': Lesson.objects.get(lesson_order=request.user.profile.active_lesson),
+            'activeSlide': request.user.profile.active_slide,
+            'percentComplete': getPercentComplete(request.user),
+            'courseProgress': getCourseProgress(request.user)
+        }
 
-    return render(request, 'lessons/dashboard.html', context)
+        return render(request, 'lessons/dashboard.html', context)
+    elif request.user.profile.role == 'teacher':
+
+        sections = Section.objects.filter(teacher=request.user)
+
+        for section in sections:
+            section.fullname = str(section)
+            weekday = section.section_class.get_class_weekday_display()
+            sectiontime = section.section_class.class_time.strftime("%H:%M")
+            section.scheduled_time = " ".join([weekday, str(sectiontime)])
+
+        context = {
+            'sections': sections
+        }
+        return render(request, 'lessons/teacher_dashboard.html', context)
+
 
 def getCourseProgress(user):
 

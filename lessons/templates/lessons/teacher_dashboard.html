@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center pt-5">Teacher Dashboard</h1>
+<div class="card mt-4">
+    <h2 class="card-title mt-4" style="text-align: center;">My Classes</h2>
+    {% for section in sections %}
+    <div class="row m-4">
+        <div class="col m-4">
+            {{ section.fullname }}
+        </div>
+        <div class="col m-4">
+            {{ section.scheduled_time }}
+        </div>
+        <div class="col m-3">
+            <a class="btn btn-primary" href="#" role="button">View Class</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="card mt-4">
+    <h2 class="card-title mt-4" style="text-align: center;">My Courses</h2>
+    <div class="row m-4">
+        <div class="col">
+            <p class="m-4" style="text-align: right;">Introduction to Chinese (6 week course)</p>
+        </div>
+        <div class="col">
+            <a class="btn btn-primary m-3" href="../lessons/" role="button">View Course Content</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

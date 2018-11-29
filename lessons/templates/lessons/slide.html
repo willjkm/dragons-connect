@@ -23,9 +23,13 @@
     <a class="btn btn-secondary mt-4" href="/lessons/" style="width: 80%; margin: auto; text-align: left;" role="button">Back to index</a>
 </div>
 
-<div class="main">
-    <h1 class="display-3 text-center pt-5">{{ lesson.title }}</h1>
-    <h2 class="text-center pt-5">{{ slide.title }}</h2>
+<div class="main" id="mainContent">
+
+    <!-- This is how to embed youtube videos
+        <iframe id="interactiveContent" class="my-3" width="700" height="400" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
+    -->
+
+    <iframe class="my-3" width="800" height="600" src="../../../games/demogame/" frameborder="0"></iframe>
 
     <p>{{ slide.bodyText }}</p>
 
@@ -99,7 +103,7 @@
         window.location.href='/lessons/{{ next_lesson }}/slide/1';
     }
 
-    document.getElementById("progressbutton").addEventListener("click", function() {
+    function enableNextSlide() {
         if(document.getElementById("continuebutton").disabled) {
             document.getElementById("continuebutton").disabled = false;
         
@@ -109,6 +113,10 @@
                 csrfmiddlewaretoken: CSRFtoken
             });
         }
-    });
+    }
+
+    document.getElementById("progressbutton").addEventListener("click", function() {
+        enableNextSlide();
+    })
 </script>
 {% endblock %}
