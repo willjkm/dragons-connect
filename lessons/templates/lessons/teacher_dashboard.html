@@ -10,7 +10,7 @@
             <strong>{{ section.fullname }}</strong> | {{ section.scheduled_time }} | Lesson {{ section.active_lesson }}
         </div>
         <div class="col m-3">
-            <a class="btn btn-primary" href="#" role="button">View Class</a>
+            <a class="btn btn-primary" href="overview/{{ section.classid }}" role="button">View Class</a>
         </div>
     </div>
     {% endfor %}

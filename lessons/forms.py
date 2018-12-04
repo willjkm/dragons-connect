@@ -35,7 +35,7 @@ MINUTES = (
     ('40', '40'),
     ('45', '45'),
     ('50', '50'),
-    ('55', '55'),        
+    ('55', '55'),
 )
 
 class CreateWeeklyScheduleForm(forms.Form):
@@ -49,3 +49,35 @@ class CreateWeeklyScheduleForm(forms.Form):
     lesson_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
     lesson_start_min = forms.ChoiceField(label='', choices=MINUTES)
     course_start_date = forms.DateField(widget=forms.SelectDateWidget)
+
+class UpdateKeForm(forms.Form):
+
+    """used to update an instance of a scheduled lesson"""
+
+    lesson_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_start_min = forms.ChoiceField(label='', choices=MINUTES)
+
+class CreateCustomScheduleForm(forms.Form):
+
+    """used to create a custom schedule. When updating to more courses we
+    will need to change this to using Django Formsets"""
+
+    lesson_1_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_1_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_1_start_min = forms.ChoiceField(label='', choices=MINUTES)
+    lesson_2_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_2_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_2_start_min = forms.ChoiceField(label='', choices=MINUTES)
+    lesson_3_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_3_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_3_start_min = forms.ChoiceField(label='', choices=MINUTES)
+    lesson_4_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_4_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_4_start_min = forms.ChoiceField(label='', choices=MINUTES)
+    lesson_5_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_5_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_5_start_min = forms.ChoiceField(label='', choices=MINUTES)
+    lesson_6_date = forms.DateField(widget=forms.SelectDateWidget)
+    lesson_6_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
+    lesson_6_start_min = forms.ChoiceField(label='', choices=MINUTES)

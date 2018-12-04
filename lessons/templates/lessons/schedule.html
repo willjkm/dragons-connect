@@ -2,37 +2,145 @@
 
 {% block content %}
 
-<h2>Manage lesson schedule for {{ class.title }}</h2>
-<h3>Current Schedule</h3>
+<div class="card m-4">
+    <h2 class="card-title m-4" style="text-align: center;">Current Schedule for {{ class.title }}</h2>
+    {% if scheduled_lessons %}
+        {% for lesson in scheduled_lessons %}
+            <div class="row m-3">
+                <div class="col-sm-8 mt-1">
+                    <p style="text-align: right;">{{ lesson.title }}</p>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#form{{ lesson.active_lesson }}" aria-expanded="false" aria-controls="form{{ lesson.active_lesson }}">
+                        Edit
+                    </button>
+                </div>
+            </div>
+            <div class="collapse" id="form{{ lesson.active_lesson }}">
+                <form class="mx-5" action="/dashboard/schedule/{{ classid }}/update/{{ lesson.active_lesson }}" method="post">
+                    {% csrf_token %}
+                    {{ update_form }}
+                    <input class="btn btn-primary" type="submit" value="Update Lesson">
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="mx-4">No lessons scheduled</p>
+    {% endif %}
+</div>
 
-{% for lesson in scheduled_lessons %}
-    <p>{{ lesson.title }}</p>
-{% endfor %}
+<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#weeklyschedule" aria-expanded="false" aria-controls="weeklyschedule">
+    Create new weekly schedule
+</button>
+<button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#customschedule" aria-expanded="false" aria-controls="customschedule">
+    Create new custom schedule
+</button>
 
-<hr>
-<h3>Create Weekly Schedule</h3>
-<form action="/dashboard/schedule/3" method="post">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div class="fieldWrapper">
-        {{ form.choose_weekdays.errors }}
-        <label for="{{ form.choose_weekdays.id_for_label }}">Lessons happen each week on:</label>
-        {{ form.choose_weekdays }}
+<div class="collapse" id="weeklyschedule">
+    <div class="card m-4">
+        <h2 class="card-title m-4" style="text-align: center;">Create Weekly Schedule</h2>
+        <div class="card-body mx-4">
+            <form class="mx-4 mb-4" action="/dashboard/schedule/{{ classid }}/new" method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="fieldWrapper">
+                    {{ form.choose_weekdays.errors }}
+                    <label for="{{ form.choose_weekdays.id_for_label }}">Lessons happen each week on:</label>
+                    {{ form.choose_weekdays }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.lesson_start_hour.errors }}
+                    <label for="{{ form.lesson_start_hour.id_for_label }}">Lessons start at:</label>
+                    {{ form.lesson_start_hour }}
+                    {{ form.lesson_start_min.errors }}
+                    {{ form.lesson_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ form.course_start_date.errors }}
+                    <label for="{{ form.course_start_date.id_for_label }}">Course starts on:</label>
+                    {{ form.course_start_date }}
+                </div>
+                <input class="btn btn-primary" type="submit" value="Create Schedule">
+            </form>
+        </div>
     </div>
-    <div class="fieldWrapper">
-        {{ form.lesson_start_hour.errors }}
-        <label for="{{ form.lesson_start_hour.id_for_label }}">Lessons start at:</label>
-        {{ form.lesson_start_hour }}
-        {{ form.lesson_start_min.errors }}
-        {{ form.lesson_start_min }}
-    </div>
-    <div class="fieldWrapper">
-        {{ form.course_start_date.errors }}
-        <label for="{{ form.course_start_date.id_for_label }}">Course starts on:</label>
-        {{ form.course_start_date }}
-    </div>
-    <input class="btn btn-primary" type="submit" value="Create Schedule">
-</form>
+</div>
 
+<div class="collapse" id="customschedule">
+    <div class="card m-4">
+        <h2 class="card-title m-4" style="text-align: center;">Create Custom Schedule</h2>
+            <form class="mx-5" action="/dashboard/schedule/{{ classid }}/custom" method="post">
+                {% csrf_token %}
+                {{ custom_form.non_field_errors }}
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_1_date.errors }}
+                    <label for="{{ custom_form.lesson_1_date.id_for_label }}">Lesson 1 date:</label>
+                    {{ custom_form.lesson_1_date }}
+                    {{ custom_form.lesson_1_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_1_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_1_start_hour }}
+                    {{ custom_form.lesson_1_start_min.errors }}
+                    <label for="{{ custom_form.lesson_1_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_1_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_2_date.errors }}
+                    <label for="{{ custom_form.lesson_2_date.id_for_label }}">Lesson 2 date:</label>
+                    {{ custom_form.lesson_2_date }}
+                    {{ custom_form.lesson_2_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_2_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_2_start_hour }}
+                    {{ custom_form.lesson_2_start_min.errors }}
+                    <label for="{{ custom_form.lesson_2_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_2_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_3_date.errors }}
+                    <label for="{{ custom_form.lesson_3_date.id_for_label }}">Lesson 3 date:</label>
+                    {{ custom_form.lesson_3_date }}
+                    {{ custom_form.lesson_3_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_3_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_3_start_hour }}
+                    {{ custom_form.lesson_3_start_min.errors }}
+                    <label for="{{ custom_form.lesson_3_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_3_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_4_date.errors }}
+                    <label for="{{ custom_form.lesson_4_date.id_for_label }}">Lesson 4 date:</label>
+                    {{ custom_form.lesson_4_date }}
+                    {{ custom_form.lesson_4_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_4_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_4_start_hour }}
+                    {{ custom_form.lesson_4_start_min.errors }}
+                    <label for="{{ custom_form.lesson_4_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_4_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_5_date.errors }}
+                    <label for="{{ custom_form.lesson_5_date.id_for_label }}">Lesson 5 date:</label>
+                    {{ custom_form.lesson_5_date }}
+                    {{ custom_form.lesson_5_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_5_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_5_start_hour }}
+                    {{ custom_form.lesson_5_start_min.errors }}
+                    <label for="{{ custom_form.lesson_5_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_5_start_min }}
+                </div>
+                <div class="fieldWrapper">
+                    {{ custom_form.lesson_6_date.errors }}
+                    <label for="{{ custom_form.lesson_6_date.id_for_label }}">Lesson 6 date:</label>
+                    {{ custom_form.lesson_6_date }}
+                    {{ custom_form.lesson_6_start_hour.errors }}
+                    <label for="{{ custom_form.lesson_6_start_hour.id_for_label }}">Time:</label>
+                    {{ custom_form.lesson_6_start_hour }}
+                    {{ custom_form.lesson_6_start_min.errors }}
+                    <label for="{{ custom_form.lesson_6_start_min.id_for_label }}"></label>
+                    {{ custom_form.lesson_6_start_min }}
+                </div>
+                <input class="btn btn-primary mx-2 my-3" type="submit" value="Create Schedule">
+            </form>
+    </div>
+</div>
 {% endblock %}
 

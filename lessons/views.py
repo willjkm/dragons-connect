@@ -1,12 +1,13 @@
 """Views organizes and provides data for HTTP requests"""
 
+from datetime import datetime, timedelta
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
-from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
-from .forms import CreateWeeklyScheduleForm
-from datetime import datetime, timedelta
+from django.contrib.auth.models import User
 import pytz
+from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
+from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm
 
 def index(request):
 
@@ -128,42 +129,173 @@ def dashboard(request):
             # to be changed when implementing scheduled classes
             section.scheduled_time = section.section_class.schedule_description
 
+            section.classid = section.section_class.pk
+
         context = {
             'sections': sections
         }
         return render(request, 'lessons/teacher_dashboard.html', context)
 
+def overview(request, classid):
+
+    """displays the overview of a class of students, including progress on the LMS"""
+
+    this_class = Class.objects.get(pk=classid)
+
+    sections = Section.objects.filter(section_class=this_class)
+
+    students = User.objects.filter(profile__section__in=sections)
+
+    context = {
+        'class': this_class,
+        'students': students
+        }
+    return render(request, 'lessons/overview.html', context)
+
 def schedule(request, classid):
 
-    """displays and updates the scheduled lessons for a class """
+    """displays the scheduled lessons for a class. GET only. """
 
     this_class = Class.objects.get(pk=classid)
     this_class.title = str(this_class)
     scheduled_lessons = Ke.objects.filter(ke_class=this_class)
-    
 
-    if request.method == 'POST':
-        form = CreateWeeklyScheduleForm(request.POST)
-        if form.is_valid():
-            weekday = form.cleaned_data['choose_weekdays']
-            lesson_start_hour = form.cleaned_data['lesson_start_hour']
-            lesson_start_min = form.cleaned_data['lesson_start_min']
-            course_start_date = form.cleaned_data['course_start_date']
-
-            Ke.objects.filter(ke_class=this_class).delete() # this deletes all this class's schedule
-
-            createWeeklySchedule(this_class, weekday, lesson_start_hour, lesson_start_min, course_start_date)
-            
-            return HttpResponseRedirect(reverse('schedule', kwargs={'classid': classid}))
-    else:
-        form = CreateWeeklyScheduleForm()
+    form = CreateWeeklyScheduleForm()
+    update_form = UpdateKeForm()
+    custom_form = CreateCustomScheduleForm()
 
     context = {
+        'classid': classid,
         'class': this_class,
         'scheduled_lessons': scheduled_lessons,
-        'form': form
+        'form': form,
+        'update_form': update_form,
+        'custom_form': custom_form
     }
     return render(request, 'lessons/schedule.html', context)
+
+def newSchedule(request, classid):
+
+    """creates a new weekly class schedule -- POST only"""
+
+    this_class = Class.objects.get(pk=classid)
+    form = CreateWeeklyScheduleForm(request.POST)
+
+    if form.is_valid():
+
+        Ke.objects.filter(ke_class=this_class).delete() # this deletes all this class's schedule
+
+        weekday = form.cleaned_data['choose_weekdays']
+        lesson_start_hour = form.cleaned_data['lesson_start_hour']
+        lesson_start_min = form.cleaned_data['lesson_start_min']
+        course_start_date = form.cleaned_data['course_start_date']
+
+        createWeeklySchedule(this_class, weekday, lesson_start_hour, lesson_start_min, course_start_date)
+
+    return HttpResponseRedirect(reverse('schedule', kwargs={'classid': classid}))
+
+def createWeeklySchedule(scheduled_class, weekday, lesson_start_hour, lesson_start_min, course_start_date):
+
+    """creates and saves a weekly schedule for a class"""
+
+    UTC = pytz.timezone('UTC')
+
+    startdate_weekday = course_start_date.weekday()
+    dayslater = (int(weekday) - startdate_weekday) % 7
+    class_date = course_start_date + timedelta(days=dayslater)
+
+    for lesson in range(1, 7):
+        event_title = " ".join([str(scheduled_class), "lesson on", str(class_date), "at", lesson_start_hour, lesson_start_min])
+        new_ke = Ke.objects.create(
+            title=event_title,
+            ke_class=scheduled_class,
+            active_lesson=lesson,
+            length=60,
+            datetime=datetime(class_date.year, class_date.month, class_date.day, int(lesson_start_hour), int(lesson_start_min), tzinfo=UTC)
+            )
+        new_ke.save()
+        class_date += timedelta(days=7)
+
+    return
+
+def createCustomSchedule(request, classid):
+
+    """creates a new custom class schedule -- POST only"""
+
+    this_class = Class.objects.get(pk=classid)
+    form = CreateCustomScheduleForm(request.POST)
+
+    if form.is_valid():
+
+        Ke.objects.filter(ke_class=this_class).delete() # this deletes all this class's schedule
+
+        lesson_dates = [
+            form.cleaned_data['lesson_1_date'],
+            form.cleaned_data['lesson_2_date'],
+            form.cleaned_data['lesson_3_date'],
+            form.cleaned_data['lesson_4_date'],
+            form.cleaned_data['lesson_5_date'],
+            form.cleaned_data['lesson_6_date']
+            ]
+
+        lesson_start_hours = [
+            form.cleaned_data['lesson_1_start_hour'],
+            form.cleaned_data['lesson_2_start_hour'],
+            form.cleaned_data['lesson_3_start_hour'],
+            form.cleaned_data['lesson_4_start_hour'],
+            form.cleaned_data['lesson_5_start_hour'],
+            form.cleaned_data['lesson_6_start_hour'],
+        ]
+
+        lesson_start_mins = [
+            form.cleaned_data['lesson_1_start_min'],
+            form.cleaned_data['lesson_2_start_min'],
+            form.cleaned_data['lesson_3_start_min'],
+            form.cleaned_data['lesson_4_start_min'],
+            form.cleaned_data['lesson_5_start_min'],
+            form.cleaned_data['lesson_6_start_min'],
+        ]
+
+        UTC = pytz.timezone('UTC')
+
+        for lesson in range(6):
+            event_title = " ".join([str(this_class), "lesson on", str(lesson_dates[lesson]), "at", lesson_start_hours[lesson], lesson_start_mins[lesson]])
+            new_ke = Ke.objects.create(
+                title=event_title,
+                ke_class=this_class,
+                active_lesson=lesson + 1,
+                length=60,
+                datetime=datetime(lesson_dates[lesson].year, lesson_dates[lesson].month, lesson_dates[lesson].day, int(lesson_start_hours[lesson]), int(lesson_start_mins[lesson]), tzinfo=UTC)
+                )
+            new_ke.save()
+
+    return HttpResponseRedirect(reverse('schedule', kwargs={'classid': classid}))
+
+def updateSchedule(request, classid, keid):
+
+    """updates a scheduled class with a new time -- POST only"""
+
+    this_class = Class.objects.get(pk=classid)
+    form = UpdateKeForm(request.POST)
+
+    if form.is_valid():
+        lesson_date = form.cleaned_data['lesson_date']
+        lesson_start_hour = int(form.cleaned_data['lesson_start_hour'])
+        lesson_start_min = int(form.cleaned_data['lesson_start_min'])
+
+        ke = Ke.objects.get(ke_class=this_class, active_lesson=keid)
+
+        ke.title = " ".join([str(this_class), "lesson on", str(lesson_date), "at", str(lesson_start_hour), str(lesson_start_min)])
+
+        ke.datetime = ke.datetime.replace(
+            year=lesson_date.year,
+            month=lesson_date.month,
+            day=lesson_date.day,
+            hour=lesson_start_hour,
+            minute=lesson_start_min)
+        ke.save()
+
+    return HttpResponseRedirect(reverse('schedule', kwargs={'classid': classid}))
 
 def getCourseProgress(user):
 
@@ -192,27 +324,3 @@ def getPercentComplete(user):
     percent_complete = int(fraction * 100)
 
     return percent_complete
-
-def createWeeklySchedule(scheduled_class, weekday, lesson_start_hour, lesson_start_min, course_start_date):
-
-    """creates and saves a weekly schedule for a class"""
-
-    UTC = pytz.timezone('UTC')
-
-    startdate_weekday = course_start_date.weekday()
-    dayslater = (int(weekday) - startdate_weekday) % 7
-    class_date = course_start_date + timedelta(days=dayslater)
-
-    for lesson in range(1, 7):
-        event_title = " ".join([str(scheduled_class), "lesson on", str(class_date), "at", lesson_start_hour, lesson_start_min])
-        new_ke = Ke.objects.create(
-            title=event_title,
-            ke_class=scheduled_class,
-            active_lesson=lesson,
-            length=60,
-            datetime=datetime(class_date.year, class_date.month, class_date.day, int(lesson_start_hour), int(lesson_start_min), tzinfo=UTC)
-            )
-        new_ke.save()
-        class_date += timedelta(days=7)
-
-    return
