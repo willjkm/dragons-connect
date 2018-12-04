@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Manage lesson schedule for {{ class.title }}</h2>
+<h3>Current Schedule</h3>
+
+{% for lesson in scheduled_lessons %}
+    <p>{{ lesson.title }}</p>
+{% endfor %}
+
+<hr>
+<h3>Create Weekly Schedule</h3>
+<form action="/dashboard/schedule/3" method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="fieldWrapper">
+        {{ form.choose_weekdays.errors }}
+        <label for="{{ form.choose_weekdays.id_for_label }}">Lessons happen each week on:</label>
+        {{ form.choose_weekdays }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.lesson_start_hour.errors }}
+        <label for="{{ form.lesson_start_hour.id_for_label }}">Lessons start at:</label>
+        {{ form.lesson_start_hour }}
+        {{ form.lesson_start_min.errors }}
+        {{ form.lesson_start_min }}
+    </div>
+    <div class="fieldWrapper">
+        {{ form.course_start_date.errors }}
+        <label for="{{ form.course_start_date.id_for_label }}">Course starts on:</label>
+        {{ form.course_start_date }}
+    </div>
+    <input class="btn btn-primary" type="submit" value="Create Schedule">
+</form>
+
+{% endblock %}
+

@@ -5,12 +5,9 @@
 <div class="card mt-4">
     <h2 class="card-title mt-4" style="text-align: center;">My Classes</h2>
     {% for section in sections %}
-    <div class="row m-4">
-        <div class="col m-4">
-            {{ section.fullname }}
-        </div>
-        <div class="col m-4">
-            {{ section.scheduled_time }}
+    <div class="row mb-3">
+        <div class="col-sm-8 m-4">
+            <strong>{{ section.fullname }}</strong> | {{ section.scheduled_time }} | Lesson {{ section.active_lesson }}
         </div>
         <div class="col m-3">
             <a class="btn btn-primary" href="#" role="button">View Class</a>

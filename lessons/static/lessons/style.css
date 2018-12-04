@@ -50,3 +50,14 @@ h3 {
     margin-left: 200px; /* Same as the width of the sidenav */
     padding: 0px 10px;
 }
+
+#id_choose_weekdays {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#id_choose_weekdays li {
+    display: inline;
+}
+

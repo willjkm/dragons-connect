@@ -1,3 +1,5 @@
+"""URLS route the HTTP request to the correct view. Dashbaord URL has its own file"""
+
 from django.conf.urls import url
 from django.urls import path
 from . import views
