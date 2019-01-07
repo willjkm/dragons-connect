@@ -1,8 +1,112 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="h1">class overview page for {{ class.class_name }}</div>
-    {% for student in students %}
-        <h2>{{student.first_name}} {{student.last_name}}</h2>
-    {% endfor %}
+    <h1 class="text-center pt-5">{{ class.class_name }} Class Overview</h1>
+    <div class="m-4">
+        {% if previous_section %}
+            <a class="btn btn-primary" href="../overview/{{ previous_section.section_class.pk }}" role="button">Previous Class</a>
+        {% else %}
+            <button type="button" class="btn btn-primary" disabled>Previous Class</button>
+        {% endif %}
+        {% if next_section %}
+            <a class="btn btn-primary" href="../overview/{{ next_section.section_class.pk }}" role="button">Next Class</a>
+        {% else %}
+            <button type="button" class="btn btn-primary" disabled>Next Class</button>
+        {% endif %}
+        <a class="btn btn-primary" style="float: right;" href="../" role="button">Back to Dashboard</a>
+    </div>
+
+    <div class="card m-4 pb-4" style="background: #fff;">
+        <h2 class="card-title mt-4" style="text-align: center;">Class progress</h2>
+        <p style="text-align: center;">Click on a student name for a detailed report.</p>
+        <div class="row">
+            <div class="col-sm-8">
+                {% for student in students %}
+                <div class="row">
+                    <div class="col-sm-6 mt-2 studentlink" style="text-align: right; font-size: 20px;">
+                        <a href="/dashboard/details/{{ student.pk }}">
+                            <strong>{{ student.last_name }}</strong> {{ student.first_name }}
+                        </a>
+                    </div>
+                    <div class="col">
+                        {% for square in student.matrix %}
+                            <span class="block{{ square }} progressblock">
+                                &#9606; 
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-sm-4">
+                <ul class="mx-4 progressblockkey">
+                    <li class="blocklocked progressblock">&#9606;   </li>
+                    <li>Not started</li>
+                <ul class="mx-4 progressblockkey">
+                </ul>
+                    <li class="blockstarted progressblock">&#9606;   </li>
+                    <li>In progress</li>
+                <ul class="mx-4 progressblockkey">
+                </ul>
+                    <li class="blockcomplete progressblock">&#9606;   </li>
+                    <li>Complete</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card m-4 px-4">
+        <h2 class="card-title m-4" style="text-align: center;">Lesson unlocking</h2>
+        {% if class.manual_unlock_enabled %}
+            <p>Lessons unlock manually. Lessons 1-{{ class.manual_unlock_lesson }} are unlocked.</p>
+            <div class="row mb-4">
+                <div class="col sm-3">
+                    <form action="/dashboard/overview/{{ class.pk }}/setauto" method="post">
+                        {% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Enable auto unlock">
+                    </form>
+                </div>
+            </div>
+            <form class="mx-5 mb-4" action="/dashboard/overview/{{ class.pk }}/unlock" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input class="btn btn-primary" type="submit" value="Unlock Lessons">
+            </form>
+        {% else %}
+            <p>Lessons unlock automatically.</p>
+            <div class="row mb-4">
+                <div class="col sm-3">
+                    <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#unlockform" aria-expanded="false" aria-controls="unlockform">
+                        Enable manual unlock
+                    </button>
+                </div>
+            </div>
+        {% endif %}
+        <div class="collapse" id="unlockform">
+            <form class="mx-5 mb-4" action="/dashboard/overview/{{ class.pk }}/unlock" method="post">
+                {% csrf_token %}
+                {{ form }}
+                <input class="btn btn-primary" type="submit" value="Unlock Lessons">
+            </form>
+        </div>
+    </div>
+    <div class="card m-4">
+        <h2 class="card-title m-4" style="text-align: center;">Current Schedule for {{ class.class_name }}</h2>
+        {% if scheduled_lessons %}
+            {% for lesson in scheduled_lessons %}
+                <div class="row">
+                    <div class="col-sm-8 mt-1">
+                        <p style="text-align: right;">{{ lesson.title }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="mx-4">No lessons scheduled</p>
+        {% endif %}
+        <div class="row mb-4">
+            <div class="col sm-3">
+                <a class="btn btn-primary mx-4" href="../schedule/{{ classid }}" role="button">Manage Scheduled Lessons</a>
+            </div>
+        </div>    
+    </div>
+
 {% endblock %}

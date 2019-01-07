@@ -1,14 +1,26 @@
 """Views organizes and provides data for HTTP requests"""
 
 from datetime import datetime, timedelta
-from django.shortcuts import render
+from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.models import User
 import pytz
 from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
-from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm
+from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm
 
+def home(request):
+
+    """Dragons Connect homepage - either login or get redirected to the dashboard"""
+
+    if not request.user.is_authenticated:
+        return redirect('%s?next=%sdashboard' % (settings.LOGIN_URL, request.path))
+    else:
+        return redirect('/dashboard/')
+
+@login_required
 def index(request):
 
     """Index of lessons page"""
@@ -24,6 +36,7 @@ def index(request):
 
     return render(request, 'lessons/index.html', context)
 
+@login_required
 def slide(request, lessonid, slideid):
 
     """Lesson content pages"""
@@ -103,6 +116,7 @@ def updateProgress(request):
 
     return HttpResponse('')
 
+@login_required
 def dashboard(request):
 
     """user dashboard page"""
@@ -118,7 +132,7 @@ def dashboard(request):
         return render(request, 'lessons/dashboard.html', context)
     elif request.user.profile.role == 'teacher':
 
-        sections = Section.objects.filter(teacher=request.user)
+        sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
 
         for section in sections:
             section.fullname = str(section)
@@ -136,22 +150,105 @@ def dashboard(request):
         }
         return render(request, 'lessons/teacher_dashboard.html', context)
 
+@login_required
 def overview(request, classid):
 
     """displays the overview of a class of students, including progress on the LMS"""
 
+    all_sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
+
+    counter = 0
+    for section in all_sections:
+        if section.section_class.pk == int(classid):
+            this_section_number = counter
+        counter += 1
+
+    if this_section_number < len(all_sections) - 1:
+        next_section = all_sections[this_section_number + 1]
+    else:
+        next_section = None
+    if this_section_number > 0:
+        previous_section = all_sections[this_section_number - 1]
+    else:
+        previous_section = None
+
     this_class = Class.objects.get(pk=classid)
-
     sections = Section.objects.filter(section_class=this_class)
+    students = User.objects.filter(profile__section__in=sections).order_by('last_name')
 
-    students = User.objects.filter(profile__section__in=sections)
+    for student in students:
+        student.matrix = []
+        if student.profile.active_lesson > 1:
+            for _ in range(student.profile.active_lesson - 1):
+                student.matrix.append('complete')
+        student.matrix.append('started')
+        if student.profile.active_lesson < 6:
+            for _ in range(6 - student.profile.active_lesson):
+                student.matrix.append('locked')
+
+    scheduled_lessons = Ke.objects.filter(ke_class=this_class)
+
+    form = UnlockLessonForm()
 
     context = {
         'class': this_class,
-        'students': students
+        'students': students,
+        'scheduled_lessons': scheduled_lessons,
+        'classid': classid,
+        'next_section': next_section,
+        'previous_section': previous_section,
+        'form': form
         }
     return render(request, 'lessons/overview.html', context)
 
+def unlock(request, classid):
+
+    """deals with the form on the overview page that sets manual lesson unlock"""
+
+    this_class = Class.objects.get(pk=classid)
+    form = UnlockLessonForm(request.POST)
+
+    if form.is_valid():
+        this_class.manual_unlock_enabled = True
+        this_class.manual_unlock_lesson = form.cleaned_data['lesson_to_unlock']
+        this_class.save()
+    
+    return HttpResponseRedirect(reverse('overview', kwargs={'classid': classid}))
+
+def setauto(request, classid):
+
+    """sets auto unlock mode on overview page"""
+
+    this_class = Class.objects.get(pk=classid)
+    this_class.manual_unlock_enabled = False
+    this_class.save()
+    
+    return HttpResponseRedirect(reverse('overview', kwargs={'classid': classid}))
+
+@login_required
+def details(request, userid):
+
+    """displays detailed student report"""
+
+    student = User.objects.get(pk=userid)
+    section = str(student.profile.section)
+    course_completion = getCourseProgress(student)
+    return_page = student.profile.section.section_class.pk
+    activity = LearningEvent.objects.filter(user=student)
+    for event in activity:
+        event.description = str(event)
+
+    context = {
+        'student': student,
+        'section': section,
+        'course_completion': course_completion,
+        'activity': activity,
+        'return_page': return_page
+        }
+
+    return render(request, 'lessons/details.html', context)
+
+@login_required
 def schedule(request, classid):
 
     """displays the scheduled lessons for a class. GET only. """

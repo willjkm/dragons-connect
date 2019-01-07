@@ -5,14 +5,14 @@
 <div class="card mt-4">
     <h2 class="card-title mt-4" style="text-align: center;">My Classes</h2>
     {% for section in sections %}
-    <div class="row mb-3">
-        <div class="col-sm-8 m-4">
-            <strong>{{ section.fullname }}</strong> | {{ section.scheduled_time }} | Lesson {{ section.active_lesson }}
+        <div class="row mx-4">
+            <div class="col-sm-8 m-4">
+                <strong>{{ section.fullname }}</strong> | {{ section.scheduled_time }} | Lesson {{ section.active_lesson }}
+            </div>
+            <div class="col m-3">
+                <a class="btn btn-primary" href="overview/{{ section.classid }}" role="button">View Class</a>
+            </div>
         </div>
-        <div class="col m-3">
-            <a class="btn btn-primary" href="overview/{{ section.classid }}" role="button">View Class</a>
-        </div>
-    </div>
     {% endfor %}
 </div>
 <div class="card mt-4">

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center pt-5">{{ student.first_name }} {{ student.last_name }} | {{ section }}</h1>
+    <div class="m-4">
+        <a class="btn btn-primary" href="../overview/{{ return_page }}" role="button">Back to Class Overview</a>
+    </div>
+    <div class="card m-4 px-4 pb-4">
+        <h2 class="card-title m-4" style="text-align: center;">Overall progress</h2>
+        <p>Course completion: {{ course_completion }}%</p>
+    </div>
+        <div class="card m-4 px-4 pb-4">
+        <h2 class="card-title m-4" style="text-align: center;">Activity log</h2>
+        {% for event in activity %}
+            <p>{{ event.description }}</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}

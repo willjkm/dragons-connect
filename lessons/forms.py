@@ -81,3 +81,9 @@ class CreateCustomScheduleForm(forms.Form):
     lesson_6_date = forms.DateField(widget=forms.SelectDateWidget)
     lesson_6_start_hour = forms.ChoiceField(label='Lesson starts at', choices=HOURS)
     lesson_6_start_min = forms.ChoiceField(label='', choices=MINUTES)
+
+class UnlockLessonForm(forms.Form):
+
+    """used to set manual unlocking of lessons"""
+
+    lesson_to_unlock = forms.IntegerField()

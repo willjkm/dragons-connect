@@ -61,3 +61,40 @@ h3 {
     display: inline;
 }
 
+.progressblock {
+    font-size: 30px;
+}
+
+.blockcomplete {
+    color: rgb(43, 238, 17);
+}
+
+.blockstarted {
+    color: rgb(240, 223, 76);
+}
+
+.blocklocked {
+    color: #b9b9b9;
+}
+
+.progressblockkey {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.progressblockkey li {
+    display: inline;
+}
+
+.studentlink a:link {
+    color: black;
+}
+
+.studentlink a:visited {
+    color: black;
+}
+
+.studentlink a:hover {
+    color: blue;
+}
