@@ -31,6 +31,7 @@ class Slide(SortableMixin):
     title = models.CharField(max_length=200)
     lesson = SortableForeignKey(Lesson, on_delete=models.CASCADE, null=True)
     bodyText = models.TextField()
+    content_url = models.CharField(max_length=200, null=True, blank=True)
 
     class Meta:
         ordering = ['slide_order']

@@ -81,6 +81,11 @@ def slide(request, lessonid, slideid):
         _slide.position = counter
         counter += 1
 
+    if current_slide.content_url:
+        url = current_slide.content_url
+    else:
+        url = "../../../games/demogame/"
+
     context = {
         'slides': this_lesson_slides,
         'slide': current_slide,
@@ -93,7 +98,8 @@ def slide(request, lessonid, slideid):
         'next_slide': current_slide_number + 1,
         'is_final_slide': is_final_slide,
         'next_slide_is_available': next_slide_is_available,
-        'role': role
+        'role': role,
+        'url': url
     }
 
     return render(request, 'lessons/slide.html', context)
@@ -212,7 +218,7 @@ def unlock(request, classid):
         this_class.manual_unlock_enabled = True
         this_class.manual_unlock_lesson = form.cleaned_data['lesson_to_unlock']
         this_class.save()
-    
+
     return HttpResponseRedirect(reverse('overview', kwargs={'classid': classid}))
 
 def setauto(request, classid):
@@ -222,7 +228,7 @@ def setauto(request, classid):
     this_class = Class.objects.get(pk=classid)
     this_class.manual_unlock_enabled = False
     this_class.save()
-    
+
     return HttpResponseRedirect(reverse('overview', kwargs={'classid': classid}))
 
 @login_required

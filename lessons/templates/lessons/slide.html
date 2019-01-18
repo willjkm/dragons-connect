@@ -29,7 +29,7 @@
         <iframe id="interactiveContent" class="my-3" width="700" height="400" src="https://www.youtube.com/embed/tgbNymZ7vqY"></iframe>
     -->
 
-    <iframe class="my-3" width="800" height="600" src="../../../games/demogame/" frameborder="0"></iframe>
+    <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0"></iframe>
 
     <p>{{ slide.bodyText }}</p>
 
@@ -118,5 +118,11 @@
     document.getElementById("progressbutton").addEventListener("click", function() {
         enableNextSlide();
     })
+
+    window.addEventListener('keydown', function(e) {
+        if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+        }
+    });
 </script>
 {% endblock %}

@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Making your first Phaser 3 Game - Part 10</title>
+    <title>Multiple Choice Quiz</title>
     <style type="text/css">
         body {
             margin: 0;
@@ -15,9 +15,22 @@
         {% csrf_token %}
     </form>
 
+    <script>
+        var username = "{{ user.username }}";
+
+        // Prevents spacebar from scrolling the page (e.g. during text input in a game)
+
+        window.addEventListener('keydown', function(e) {
+            if (e.keyCode == 32 && e.target == document.body) {
+            e.preventDefault();
+        }
+    });
+    </script>
+
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js"></script>
     <script src="../../media/games/data.js"></script>
-    <script src="../../media/games/quizscene.js"></script>
+    <script src="../../media/games/utils.js"></script>
+    <script src="../../media/games/gameengine.js"></script>
     <script src="../../media/games/startscene.js"></script>
     <script src="../../media/games/main.js"></script>
 
