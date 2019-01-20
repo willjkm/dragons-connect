@@ -104,6 +104,25 @@ def slide(request, lessonid, slideid):
 
     return render(request, 'lessons/slide.html', context)
 
+def gameOver(request):
+
+    """this processes the info submitted by the game when gameover"""
+
+    role = request.user.profile.role
+
+    if request.user.is_authenticated and role == "student":
+        learning_event = LearningEvent.objects.create(
+            user=request.user,
+            action="completed",
+            element_name="game",
+            lesson=request.POST.get('lesson'),
+            score=request.POST.get('score')
+        )
+        learning_event.save()
+
+    return HttpResponse('')
+
+
 def updateProgress(request):
     """this responds to the AJAX request for enabling the next lesson"""
 

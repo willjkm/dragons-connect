@@ -39,9 +39,123 @@
     <div class="col-lg mt-4">
         <div class="card">
             <h2 class="card-title m-4" style="text-align: center;">My Achievements</h2>
-            <p class="card-body m-4">I have completed {{ courseProgress }}% of the course!</p>
+            <h4 style="text-align: center;">I am currently a <strong>red belt</strong></h4>
+            <p style="text-align: center;">90 points until next belt</p>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-sm-2">
+                        <div id="sellPerCirc" class="perCirc my-2">
+                            <div class="perCircInner">
+                                <div class="perCircStat">{{ courseProgress }}%</div><div>Complete</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <h4 class="mt-5 ml-5">Course Completion</h4>
+                    </div>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-sm-2">
+                        <div id="secondCircle" class="perCirc my-2">
+                            <div class="perCircInner">
+                                <div class="perCircStat2">120</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <h4 class="mt-5 ml-5">Experience Points</h4>
+                    </div>
+                </div>
+            </div>
+            <h2 class="mt-4" style="text-align: center;">Badges</h2>
+            <div class="container">
+                <div class="row my-4 mx-2">
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/cracker.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/panda.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/star.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/question.png">
+                    </div>
+                </div>
+                <div class="row my-4 mx-2">
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/question.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/question.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/yinyang.png">
+                    </div>
+                    <div class="col">
+                        <img class="mybadge" src="/media/images/question.png">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+// change the value below from 80 to whichever percentage you want
+perCirc($('#sellPerCirc'), {{ courseProgress }});
+staticCircle($('#secondCircle'), 0);
+
+function perCirc($el, end, i) {
+	if (end < 0) {
+		end = 0;
+    } else if (end > 100) {
+		end = 100;
+    }
+    if (typeof i === 'undefined') {
+		i = 0;
+    }
+	var curr = (100 * i) / 360;
+	$el.find(".perCircStat").html(Math.round(curr) + "%");
+	if (i <= 180) {
+		$el.css('background-image', 'linear-gradient(' + (90 + i) + 'deg, transparent 50%, #ccc 50%),linear-gradient(90deg, #ccc 50%, transparent 50%)');
+	} else {
+		$el.css('background-image', 'linear-gradient(' + (i - 90) + 'deg, transparent 50%, #00cc00 50%),linear-gradient(90deg, #ccc 50%, transparent 50%)');
+	}
+	if (curr < end) {
+		setTimeout(function () {
+			perCirc($el, end, ++i);
+		}, 1);
+	}
+}
+
+function staticCircle($el, end, i) {
+	if (end < 0) {
+		end = 0;
+    } else if (end > 100) {
+		end = 100;
+    }
+    if (typeof i === 'undefined') {
+		i = 0;
+    }
+	var curr = (100 * i) / 360;
+	$el.find(".perCircStat").html(Math.round(curr) + "%");
+	if (i <= 180) {
+		$el.css('background-image', 'linear-gradient(' + (90 + i) + 'deg, transparent 50%, #ccc 50%),linear-gradient(90deg, #ccc 50%, transparent 50%)');
+	} else {
+		$el.css('background-image', 'linear-gradient(' + (i - 90) + 'deg, transparent 50%, #00cc00 50%),linear-gradient(90deg, #ccc 50%, transparent 50%)');
+	}
+	if (curr < end) {
+		setTimeout(function () {
+			perCirc($el, end, ++i);
+		}, 1);
+	}
+}
+
+</script>
 {% endblock %}
