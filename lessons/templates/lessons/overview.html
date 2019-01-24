@@ -93,9 +93,9 @@
         <h2 class="card-title m-4" style="text-align: center;">Current Schedule for {{ class.class_name }}</h2>
         {% if scheduled_lessons %}
             {% for lesson in scheduled_lessons %}
-                <div class="row">
+                <div class="row justify-content-center">
                     <div class="col-sm-8 mt-1">
-                        <p style="text-align: right;">{{ lesson.title }}</p>
+                        <p style="text-align: left;">{{ lesson.title }}  <strong>{{ lesson.message }}</strong></p>
                     </div>
                 </div>
             {% endfor %}
@@ -108,5 +108,14 @@
             </div>
         </div>    
     </div>
-
+    {% if role != 'teacher' %}
+        <div class="card my-4">
+            <h2 class="card-title mt-4" style="text-align: center;">Class creation tool</h2>
+            <form class="mx-5 mb-4" action="/dashboard/overview/createclass" method="post">
+                {% csrf_token %}
+                {{ creation_form }}
+                <input class="btn btn-primary" type="submit" value="Create Class">
+            </form>
+        </div>
+    {% endif%}
 {% endblock %}

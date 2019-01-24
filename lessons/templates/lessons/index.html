@@ -19,17 +19,17 @@
                     <div class="progress mt-4">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
                     </div>
-                {% elif activeLesson == lesson.lesson_order %}
+                {% elif activeLesson == lesson.lesson_order and not nextLessonLocked %}
                     {% if activeSlide > 1 %}
                         <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
                         <div class="progress mt-4">
                             <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}%</div>
                         </div>
-                        {% else %}
+                    {% else %}
                         <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
                         <div class="progress mt-4">
                             <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>    
+                        </div>
                     {% endif %}
                 {% else %}
                     <button type="button" class="btn btn-primary" disabled>Lesson locked</button>

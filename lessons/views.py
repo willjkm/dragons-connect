@@ -1,29 +1,55 @@
 """Views organizes and provides data for HTTP requests"""
 
 from datetime import datetime, timedelta
+import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from django.contrib.auth.models import User
 import pytz
 from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
-from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm
+from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool
 
 def home(request):
 
-    """Dragons Connect homepage - either login or get redirected to the dashboard"""
+    """Dragons Connect homepage - either login or, for logged in students, get redirected to the dashboard"""
 
-    if not request.user.is_authenticated:
-        return redirect('%s?next=%sdashboard' % (settings.LOGIN_URL, request.path))
-    else:
+    if request.user.is_authenticated and request.user.profile.role == "student":
         return redirect('/dashboard/')
+    else:
+        return redirect('%s?next=%sdashboard' % (settings.LOGIN_URL, request.path))
+
+def firstLockedLesson(user):
+
+    """returns the first lesson that is locked and not accessible by the student"""
+
+    my_section = user.profile.section
+    my_class = my_section.section_class
+
+    if my_class.manual_unlock_enabled:
+        first_locked_lesson = my_class.manual_unlock_lesson + 1
+    else:
+        future_scheduled_lessons = Ke.objects.filter(ke_class=my_class).filter(datetime__gte=timezone.now())
+        if future_scheduled_lessons:
+            first_locked_lesson = future_scheduled_lessons[0].active_lesson
+
+    if first_locked_lesson:
+        return first_locked_lesson
+    else:
+        return 100
 
 @login_required
 def index(request):
 
     """Index of lessons page"""
+
+    first_locked_lesson = firstLockedLesson(request.user)
+    nextLessonLocked = False
+    if first_locked_lesson <= request.user.profile.active_lesson:
+        nextLessonLocked = True
 
     context = {
         'title': 'Introduction to Chinese',
@@ -31,7 +57,8 @@ def index(request):
         'lessons': Lesson.objects.all(),
         'activeLesson': request.user.profile.active_lesson,
         'activeSlide': request.user.profile.active_slide,
-        'percentComplete': getPercentComplete(request.user)
+        'percentComplete': getPercentComplete(request.user),
+        'nextLessonLocked': nextLessonLocked
     }
 
     return render(request, 'lessons/index.html', context)
@@ -44,65 +71,84 @@ def slide(request, lessonid, slideid):
     # Find the current lesson and slide
 
     current_lesson = Lesson.objects.get(lesson_order=lessonid)
-    current_slide_number = int(slideid)
-    current_slide = Slide.objects.filter(lesson=current_lesson.pk)[current_slide_number-1]
-    role = request.user.profile.role
+    current_lesson.number = current_lesson.lesson_order
+    current_lesson_slides = Slide.objects.filter(lesson=current_lesson.pk)
+    current_slide = Slide.objects.filter(lesson=current_lesson.pk)[int(slideid)-1]
+    current_slide.number = int(slideid)
+
+    counter = 1
+    for _slide in current_lesson_slides:
+        _slide.position = counter
+        counter += 1
 
     # Determine if this is the final slide or not
 
-    if current_slide_number == len(Slide.objects.filter(lesson=current_lesson.pk)):
+    if current_slide.number == len(Slide.objects.filter(lesson=current_lesson.pk)):
         is_final_slide = True
     else:
         is_final_slide = False
 
     # Determine if the next slide is available to learn when the page loads
 
-    if current_lesson.lesson_order == request.user.profile.active_lesson and \
-    current_slide_number == request.user.profile.active_slide:
-        next_slide_is_available = False
-    else:
-        next_slide_is_available = True
+    first_locked_lesson = firstLockedLesson(request.user)
+    can_unlock_next_slide = True
+    next_slide_is_available = True
+
+    if current_lesson.number == request.user.profile.active_lesson:
+        if current_slide.number == request.user.profile.active_slide:
+            next_slide_is_available = False
+        if first_locked_lesson == current_lesson.number + 1 and is_final_slide:
+            next_slide_is_available = False
+            can_unlock_next_slide = False
 
     # Create new learning event for a logged in student viewing the slide
 
-    if request.user.is_authenticated and role == "student":
+    if request.user.is_authenticated and request.user.profile.role == "student":
         learning_event = LearningEvent.objects.create(
             user=request.user,
             action="viewed",
-            element_name=" ".join(["Lesson", str(current_lesson.lesson_order), "Slide", slideid]),
-            slide=current_slide_number,
-            lesson=current_lesson.lesson_order
+            element_name=" ".join(["Lesson", str(current_lesson.number), "Slide", slideid]),
+            slide=current_slide.number,
+            lesson=current_lesson.number
         )
         learning_event.save()
-
-    this_lesson_slides = Slide.objects.filter(lesson=current_lesson.pk)
-    counter = 1
-    for _slide in this_lesson_slides:
-        _slide.position = counter
-        counter += 1
 
     if current_slide.content_url:
         url = current_slide.content_url
     else:
         url = "../../../games/demogame/"
 
+    # catch students typing in URL of unlocked lessons -> return to dashboard
+    redirect_to_dashboard = False
+    if request.user.profile.role == 'student':
+        if current_lesson.number > request.user.profile.active_lesson:
+            redirect_to_dashboard = True
+        elif current_lesson.number == request.user.profile.active_lesson:
+            if current_slide.number > request.user.profile.active_slide:
+                redirect_to_dashboard = True
+
     context = {
-        'slides': this_lesson_slides,
-        'slide': current_slide,
+        'slides': current_lesson_slides,
+        'current_slide': current_slide,
         'lesson': current_lesson,
-        'activeLesson': request.user.profile.active_lesson,
-        'activeSlide': request.user.profile.active_slide,
-        'next_lesson': current_lesson.lesson_order + 1,
-        'previous_slide': current_slide_number - 1,
-        'current_slide': current_slide_number,
-        'next_slide': current_slide_number + 1,
+        'lesson_number': current_lesson.number,
+        'active_lesson': request.user.profile.active_lesson,
+        'active_slide': request.user.profile.active_slide,
+        'next_lesson_number': current_lesson.number + 1,
+        'previous_slide_number': current_slide.number - 1,
+        'current_slide_number': current_slide.number,
+        'next_slide_number': current_slide.number + 1,
         'is_final_slide': is_final_slide,
         'next_slide_is_available': next_slide_is_available,
-        'role': role,
+        'can_unlock_next_slide': can_unlock_next_slide,
+        'role': request.user.profile.role,
         'url': url
     }
 
-    return render(request, 'lessons/slide.html', context)
+    if redirect_to_dashboard:
+        return redirect('/dashboard/')
+    else:
+        return render(request, 'lessons/slide.html', context)
 
 def gameOver(request):
 
@@ -147,17 +193,34 @@ def dashboard(request):
     """user dashboard page"""
 
     if request.user.profile.role == 'student':
+
+        active_lesson_number = request.user.profile.active_lesson
+        active_slide = request.user.profile.active_slide
+        active_lesson = Lesson.objects.get(lesson_order=active_lesson_number)
+        first_locked_lesson = firstLockedLesson(request.user)
+        lesson_locked = False
+
+        if active_slide == len(Slide.objects.filter(lesson=active_lesson.pk)) and first_locked_lesson == active_lesson_number + 1:
+            lesson_locked = True
+            active_slide = 1
+            active_lesson = Lesson.objects.get(lesson_order=active_lesson_number-1)
+
         context = {
-            'lesson': Lesson.objects.get(lesson_order=request.user.profile.active_lesson),
-            'activeSlide': request.user.profile.active_slide,
+            'lesson': active_lesson,
+            'activeSlide': active_slide,
             'percentComplete': getPercentComplete(request.user),
-            'courseProgress': getCourseProgress(request.user)
+            'courseProgress': getCourseProgress(request.user),
+            'lesson_locked' : lesson_locked
         }
 
         return render(request, 'lessons/dashboard.html', context)
-    elif request.user.profile.role == 'teacher':
-
-        sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
+    else:
+        if request.user.profile.role == 'teacher':
+            sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
+            title = 'Teacher Dashboard'
+        else:
+            sections = Section.objects.all().order_by('section_class__school')
+            title = 'Administrator Dashboard'
 
         for section in sections:
             section.fullname = str(section)
@@ -170,17 +233,26 @@ def dashboard(request):
 
             section.classid = section.section_class.pk
 
+        form = CreateStudentsTool()
+
         context = {
-            'sections': sections
+            'title': title,
+            'sections': sections,
+            'role': request.user.profile.role,
+            'form': form
         }
         return render(request, 'lessons/teacher_dashboard.html', context)
+
 
 @login_required
 def overview(request, classid):
 
     """displays the overview of a class of students, including progress on the LMS"""
 
-    all_sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
+    if request.user.profile.role == 'teacher':
+        all_sections = Section.objects.filter(teacher=request.user).order_by('section_class__school')
+    else:
+        all_sections = Section.objects.all()
 
     counter = 0
     for section in all_sections:
@@ -213,7 +285,18 @@ def overview(request, classid):
 
     scheduled_lessons = Ke.objects.filter(ke_class=this_class)
 
+    last_lesson_time = None
+
+    for l in scheduled_lessons:
+        if l.datetime < timezone.now():
+            l.message = " -- Lesson occurs in past"
+        if last_lesson_time:
+            if l.datetime < last_lesson_time:
+                l.message = "Warning: Lesson occurs out of sequence"
+        last_lesson_time = l.datetime
+
     form = UnlockLessonForm()
+    creation_form = CreateStudentsTool()
 
     context = {
         'class': this_class,
@@ -222,9 +305,39 @@ def overview(request, classid):
         'classid': classid,
         'next_section': next_section,
         'previous_section': previous_section,
-        'form': form
+        'form': form,
+        'creation_form': creation_form,
+        'role': request.user.profile.role
         }
     return render(request, 'lessons/overview.html', context)
+
+def createclass(request):
+
+    """create class tool from JSON data input of students"""
+
+    form = CreateStudentsTool(request.POST)
+
+    if request.method == "POST" and form.is_valid():
+        section = form.cleaned_data['section']
+        data = json.loads(form.cleaned_data['data'])
+        newusers = []
+        for row in data:
+            newusers.append(User.objects.create_user(
+                username=row['username'],
+                email=row['email'],
+                password=row['password'],
+                first_name=row['first_name'],
+                last_name=row['last_name']
+            ))
+        for user in newusers:
+            user.save()
+            user.profile.role = 'student'
+            user.profile.active_lesson = 1
+            user.profile.active_slide = 1
+            user.profile.section = section
+            user.profile.save()
+
+    return HttpResponse('')
 
 def unlock(request, classid):
 
@@ -259,9 +372,15 @@ def details(request, userid):
     section = str(student.profile.section)
     course_completion = getCourseProgress(student)
     return_page = student.profile.section.section_class.pk
-    activity = LearningEvent.objects.filter(user=student)
+    activity = LearningEvent.objects.filter(user=student).order_by('action_datetime').reverse()
+
+    datecounter = None
     for event in activity:
-        event.description = str(event)
+        event.display_date = event.action_datetime.date().strftime('%d %b %Y')
+        event.display_time = event.action_datetime.time().strftime('%H:%M')
+        if event.action_datetime.date() != datecounter:
+            event.firstinlist = True
+            datecounter = event.action_datetime.date()
 
     context = {
         'student': student,

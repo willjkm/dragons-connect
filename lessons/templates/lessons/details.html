@@ -9,10 +9,13 @@
         <h2 class="card-title m-4" style="text-align: center;">Overall progress</h2>
         <p>Course completion: {{ course_completion }}%</p>
     </div>
-        <div class="card m-4 px-4 pb-4">
+    <div class="card m-4 px-4 pb-4">
         <h2 class="card-title m-4" style="text-align: center;">Activity log</h2>
         {% for event in activity %}
-            <p>{{ event.description }}</p>
+            {% if event.firstinlist %}
+                <h4>{{ event.display_date }}</h4>
+            {% endif %}
+            <p class="mx-4">{{ event.display_time }} -- {{ event.action }} {{ event.element_name }} </p>
         {% endfor %}
     </div>
 

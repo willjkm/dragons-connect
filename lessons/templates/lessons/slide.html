@@ -3,20 +3,20 @@
 {% block content %}
 
 <div class="sidenav">
-    <h3>Lesson {{ lesson.lesson_order }}</h3>
+    <h3>Lesson {{ lesson_number }}</h3>
     <p>{{ lesson.title }}</p>
-    {% for s in slides %}
-        {% if s == slide %}
-            <strong><a href="#">{{ s.position }}. {{ s.title }}</a></strong>
+    {% for slide in slides %}
+        {% if slide == current_slide %}
+            <strong><a href="#">{{ slide.position }}. {{ slide.title }}</a></strong>
         {% else %}
-            {% if activeLesson == lesson.lesson_order %}
-                {% if activeSlide < s.position %}
-                    <a href="#" style="color:rgb(167, 167, 167)">{{ s.position }}. {{ s.title }}</a>
+            {% if active_lesson == lesson_number %}
+                {% if active_slide < slide.position %}
+                    <a href="#" style="color:rgb(167, 167, 167)">{{ slide.position }}. {{ slide.title }}</a>
                 {% else %}
-                    <a href="/lessons/{{ lesson.lesson_order }}/slide/{{ s.position }}" style="color:bisque;">{{ s.position }}. {{ s.title }}</a>
+                    <a href="/lessons/{{ lesson_number }}/slide/{{ slide.position }}" style="color:bisque;">{{ slide.position }}. {{ slide.title }}</a>
                 {% endif %}
             {% else %}
-                <a href="/lessons/{{ lesson.lesson_order }}/slide/{{ s.position }}" style="color:bisque;">{{ s.position }}. {{ s.title }}</a>
+                <a href="/lessons/{{ lesson_number }}/slide/{{ slide.position }}" style="color:bisque;">{{ slide.position }}. {{ slide.title }}</a>
             {% endif %}
         {% endif %}
     {% endfor %}
@@ -27,53 +27,54 @@
 
     <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0"></iframe>
 
-    <p>{{ slide.bodyText }}</p>
+    <p>{{ current_slide.bodyText }}</p>
 
     {% if role == 'student' %}
-        <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
-
+        {% if can_unlock_next_slide %}    
+            <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
+        {% endif %}
         <hr>
 
-        {% if current_slide > 1 %}
-            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+        {% if current_slide_number > 1 %}
+            <a class="btn btn-primary mb-4" href="/lessons/{{ lesson_number }}/slide/{{ previous_slide_number }}" role="button">Previous slide</a>
         {% else %}
-            <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+            <button type="button" class="btn btn-primary mb-4" disabled>Previous slide</button>
         {% endif %}
 
         {% if is_final_slide %}
             {% if next_slide_is_available == False %}
-                <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton" disabled>
+                <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton" disabled>
                     Next lesson
                 </button>
             {% else %}
-                <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton">
+                <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton">
                     Next lesson
                 </button>
             {% endif %}
         {% else %}
             {% if next_slide_is_available == False %}
-                <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton" disabled>
+                <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton" disabled>
                     Next slide
                 </button>
             {% else %}
-                <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton">
+                <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton">
                     Next slide
                 </button>
             {% endif %}
         {% endif %}
     {% else %}
-        {% if current_slide > 1 %}
-            <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ previous_slide }}" role="button">Previous slide</a>
+        {% if current_slide_number > 1 %}
+            <a class="btn btn-primary mb-4" href="/lessons/{{ lesson_number }}/slide/{{ previous_slide_number }}" role="button">Previous slide</a>
         {% else %}
-            <button type="button" class="btn btn-primary" disabled>Previous slide</button>
+            <button type="button" class="btn btn-primary mb-4" disabled>Previous slide</button>
         {% endif %}
 
         {% if is_final_slide %}
-            <button type="button" class="btn btn-primary float-right" onclick="startNextLesson()" id="continuebutton">
+            <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton">
                 Next lesson
             </button>
         {% else %}
-            <button type="button" class="btn btn-primary float-right" onclick="goToNextSlide()" id="continuebutton">
+            <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton">
                 Next slide
             </button>
         {% endif %}
@@ -92,11 +93,11 @@
 {% block javascript %}
 <script>
     function goToNextSlide() {
-        window.location.href='/lessons/{{ lesson.lesson_order }}/slide/{{ next_slide }}';
+        window.location.href='/lessons/{{ lesson_number }}/slide/{{ next_slide_number }}';
     }
 
     function startNextLesson() {
-        window.location.href='/lessons/{{ next_lesson }}/slide/1';
+        window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
     }
 
     function enableNextSlide() {

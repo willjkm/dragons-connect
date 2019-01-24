@@ -1,6 +1,7 @@
 """This module contains the forms used throughout the LMS"""
 
 from django import forms
+from .models import Section
 
 WEEKDAYS = (
     ('0', 'Monday'),
@@ -87,3 +88,9 @@ class UnlockLessonForm(forms.Form):
     """used to set manual unlocking of lessons"""
 
     lesson_to_unlock = forms.IntegerField()
+
+class CreateStudentsTool(forms.Form):
+
+    """create a class of students quickly"""
+    section = forms.ModelChoiceField(queryset=Section.objects.all())
+    data = forms.CharField()

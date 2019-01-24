@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1 class="text-center pt-5">Teacher Dashboard</h1>
+<h1 class="text-center pt-5">{{ title }}</h1>
 <div class="card mt-4">
     <h2 class="card-title mt-4" style="text-align: center;">My Classes</h2>
     {% for section in sections %}
@@ -26,5 +26,6 @@
         </div>
     </div>
 </div>
+
 
 {% endblock %}

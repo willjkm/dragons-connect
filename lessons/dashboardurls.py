@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^details/(?P<userid>\d+)$', views.details, name='details'),
     url(r'^overview/(?P<classid>\d+)$', views.overview, name='overview'),
     url(r'^overview/(?P<classid>\d+)/unlock$', views.unlock, name='unlock'),
+    url(r'^overview/createclass$', views.createclass, name='createclass'),
     url(r'^overview/(?P<classid>\d+)/setauto$', views.setauto, name='setauto'),
     url(r'^schedule/(?P<classid>\d+)$', views.schedule, name='schedule'),
     url(r'^schedule/(?P<classid>\d+)/new$', views.newSchedule, name='newSchedule'),

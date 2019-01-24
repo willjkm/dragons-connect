@@ -17,22 +17,30 @@
                     <p class="card-body">{{ lesson.description }}</p>
                 </div>
             </div>
-            {% if activeSlide > 1 %}                    
+            {% if lesson_locked %}
                 <div class="progress mx-4 mt-4" style="background-color: white;">
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                 </div>
-                <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Review lesson</a>
                 <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
             {% else %}
-                <div class="progress mx-4 mt-4">
-                    <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                        <span style="color: black;">
-                            Lesson progress: not started
-                        </span>
+                {% if activeSlide > 1 %}                    
+                    <div class="progress mx-4 mt-4" style="background-color: white;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                     </div>
-                </div>    
-                <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
-                <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
+                    <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                    <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
+                {% else %}
+                    <div class="progress mx-4 mt-4">
+                        <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <span style="color: black;">
+                                Lesson progress: not started
+                            </span>
+                        </div>
+                    </div>    
+                    <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
+                    <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
+                {% endif %}
             {% endif %}
         </div>
     </div>
