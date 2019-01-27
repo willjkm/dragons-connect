@@ -6,6 +6,8 @@ from lessons import views
 
 urlpatterns = [
     path('', views.dashboard, name='dashboard'),
+    path('updateprofile/', views.updateProfile, name='update profile'),
+    path('changeavatar/', views.changeAvatar, name='change avatar'),
     url(r'^details/(?P<userid>\d+)$', views.details, name='details'),
     url(r'^overview/(?P<classid>\d+)$', views.overview, name='overview'),
     url(r'^overview/(?P<classid>\d+)/unlock$', views.unlock, name='unlock'),

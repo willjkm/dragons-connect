@@ -94,3 +94,8 @@ class CreateStudentsTool(forms.Form):
     """create a class of students quickly"""
     section = forms.ModelChoiceField(queryset=Section.objects.all())
     data = forms.CharField()
+
+class UpdateNicknameForm(forms.Form):
+
+    """used to update nickname on updateprofile page"""
+    nickname = forms.CharField(max_length=22)

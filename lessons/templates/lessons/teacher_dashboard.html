@@ -5,11 +5,16 @@
 <div class="card mt-4">
     <h2 class="card-title mt-4" style="text-align: center;">My Classes</h2>
     {% for section in sections %}
-        <div class="row mx-4">
-            <div class="col-sm-8 m-4">
-                <strong>{{ section.fullname }}</strong> | {{ section.scheduled_time }} | Lesson {{ section.active_lesson }}
+        <div class="row justify-content-center">
+            <div class="col-sm-5 mx-4">
+                <strong>{{ section.fullname }}</strong> | {{ section.number_of_students }} students
+                {% if section.next_lesson %}
+                    <p class="ml-4">next lesson: lesson {{ section.next_lesson_number }} on {{ section.display_date }}, {{ section.display_time }}</p>
+                {% else %}
+                    <p class="ml-4">no upcoming lessons</p>
+                {% endif %}                    
             </div>
-            <div class="col m-3">
+            <div class="col-sm-2 mb-4">
                 <a class="btn btn-primary" href="overview/{{ section.classid }}" role="button">View Class</a>
             </div>
         </div>

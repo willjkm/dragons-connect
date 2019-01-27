@@ -32,6 +32,7 @@ class Slide(SortableMixin):
     lesson = SortableForeignKey(Lesson, on_delete=models.CASCADE, null=True)
     bodyText = models.TextField()
     content_url = models.CharField(max_length=200, null=True, blank=True)
+    content_type = models.CharField(max_length=20, null=True, blank=True)
 
     class Meta:
         ordering = ['slide_order']
@@ -145,6 +146,11 @@ class Profile(models.Model):
         null=True,
         blank=True,
         db_index=False)
+    nickname = models.CharField(
+        max_length=22,
+        null=True
+    )
+    avatar = models.PositiveIntegerField(null=True, default=1)
 
 """the following @receiver sections link the saving of the user profile with the user model"""
 

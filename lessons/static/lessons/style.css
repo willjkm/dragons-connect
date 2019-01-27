@@ -139,3 +139,7 @@ img.mybadge {
     height: 50px;
     float: left;
 }
+
+img.avatarchoice:hover {
+    background-color: yellow;
+}

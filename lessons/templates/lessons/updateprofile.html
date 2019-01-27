@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="text-center pt-5">Update Profile</h1>
+    <div class="m-4">
+        <a class="btn btn-primary" href="../" role="button">Back to Dashboard</a>
+    </div>
+    <div class="card m-4 px-4 pb-4">
+        <h2 class="card-title m-4" style="text-align: center;">My profile</h2>
+         <form class="mx-5" action="/dashboard/updateprofile/" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input class="btn btn-primary" type="submit" value="Change nickname">
+        </form>
+        <h2 id="demo1" class="card-title m-4" style="text-align: center;">Select your picture</h2>
+        <div class="container">
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-3">
+                    <img id="av1" class="avatarchoice" onclick="selectAv(1)" src="/static/lessons/av1.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av2" class="avatarchoice" onclick="selectAv(2)" src="/static/lessons/av2.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av3" class="avatarchoice" onclick="selectAv(3)" src="/static/lessons/av3.png" alt="avatar" width="100" height="100">
+                </div>
+            </div>
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-3">
+                    <img id="av4" class="avatarchoice" onclick="selectAv(4)" src="/static/lessons/av4.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av5" class="avatarchoice" onclick="selectAv(5)" src="/static/lessons/av5.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av6" class="avatarchoice" onclick="selectAv(6)" src="/static/lessons/av6.png" alt="avatar" width="100" height="100">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    function selectAv(number) {
+        var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+        
+        $.post('/dashboard/changeavatar/', {
+            csrfmiddlewaretoken: CSRFtoken,
+            avatar: number
+        });
+
+        var avatars = document.getElementsByClassName('avatarchoice')
+
+        for (let i=0; i< avatars.length; i++) {
+            avatars[i].setAttribute("style", "border-style: none");
+        }
+
+        av_number = 'av' + number.toString()
+        document.getElementById(av_number).setAttribute("style", "border-style: solid");
+    }
+</script>
+{% endblock %}

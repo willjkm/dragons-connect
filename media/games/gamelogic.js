@@ -194,9 +194,11 @@ function checkUserInput(choice) {
     if (cards.answers[choice] == cards.question) {
         ui.buttons[choice].fillColor = 0x00ff00;
         setTimeout(nextQuestion, 500);
+        return true
     } else {
         user.answeredCorrectly = false;
         ui.buttons[choice].fillColor = 0xff0000;
+        return false
     }
 }
 

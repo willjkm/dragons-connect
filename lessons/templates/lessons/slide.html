@@ -30,8 +30,10 @@
     <p>{{ current_slide.bodyText }}</p>
 
     {% if role == 'student' %}
-        {% if can_unlock_next_slide %}    
-            <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
+        {% if can_unlock_next_slide %}
+            {% if current_slide.content_type == "game" %}
+                <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
+            {% endif %}
         {% endif %}
         <hr>
 

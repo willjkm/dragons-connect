@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 import pytz
 from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
-from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool
+from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool, UpdateNicknameForm
 
 def home(request):
 
@@ -46,10 +46,11 @@ def index(request):
 
     """Index of lessons page"""
 
-    first_locked_lesson = firstLockedLesson(request.user)
     nextLessonLocked = False
-    if first_locked_lesson <= request.user.profile.active_lesson:
-        nextLessonLocked = True
+    if request.user.profile.role == "student":
+        first_locked_lesson = firstLockedLesson(request.user)
+        if first_locked_lesson <= request.user.profile.active_lesson:
+            nextLessonLocked = True
 
     context = {
         'title': 'Introduction to Chinese',
@@ -90,16 +91,24 @@ def slide(request, lessonid, slideid):
 
     # Determine if the next slide is available to learn when the page loads
 
-    first_locked_lesson = firstLockedLesson(request.user)
     can_unlock_next_slide = True
     next_slide_is_available = True
+    if request.user.profile.role == "student":
+        first_locked_lesson = firstLockedLesson(request.user)
 
-    if current_lesson.number == request.user.profile.active_lesson:
-        if current_slide.number == request.user.profile.active_slide:
-            next_slide_is_available = False
-        if first_locked_lesson == current_lesson.number + 1 and is_final_slide:
-            next_slide_is_available = False
-            can_unlock_next_slide = False
+        if current_lesson.number == request.user.profile.active_lesson:
+            if current_slide.number == request.user.profile.active_slide:
+                next_slide_is_available = False
+            if first_locked_lesson == current_lesson.number + 1 and is_final_slide:
+                next_slide_is_available = False
+                can_unlock_next_slide = False
+
+    # default content for empty slides
+
+    if current_slide.content_url:
+        url = current_slide.content_url
+    else:
+        url = "../../../games/demogame/"
 
     # Create new learning event for a logged in student viewing the slide
 
@@ -113,10 +122,20 @@ def slide(request, lessonid, slideid):
         )
         learning_event.save()
 
-    if current_slide.content_url:
-        url = current_slide.content_url
-    else:
-        url = "../../../games/demogame/"
+    # if slide is a video slide, make the next slide available, and advance the student progress
+
+    if request.user.profile.role == 'student':
+        if current_slide.content_type == "video":
+            next_slide_is_available = True
+            if current_lesson.number == request.user.profile.active_lesson:
+                if current_slide.number == request.user.profile.active_slide:
+                    next_slide = request.user.profile.active_slide + 1
+                    if is_final_slide:
+                        next_slide = 1
+                        request.user.profile.active_lesson += 1
+                    request.user.profile.active_slide = next_slide
+                    request.user.profile.save()
+
 
     # catch students typing in URL of unlocked lessons -> return to dashboard
     redirect_to_dashboard = False
@@ -225,11 +244,17 @@ def dashboard(request):
         for section in sections:
             section.fullname = str(section)
 
-            # to be changed when implementing auto mode
-            section.active_lesson = section.section_class.manual_unlock_lesson
+            # students in section
+            section.number_of_students = User.objects.filter(profile__section=section).count()
 
-            # to be changed when implementing scheduled classes
-            section.scheduled_time = section.section_class.schedule_description
+            # show next scheduled class -- both the time, and the lesson to be learned
+            section.next_lesson = Ke.objects.filter(ke_class=section.section_class).filter(datetime__gte=timezone.now()).first()
+
+            if section.next_lesson:
+                section.display_date = section.next_lesson.datetime.date().strftime('%a %d %b')
+                #section.display_date = 'display this please'
+                section.display_time = section.next_lesson.datetime.time().strftime('%I:%M %p')
+                section.next_lesson_number = section.next_lesson.active_lesson
 
             section.classid = section.section_class.pk
 
@@ -414,6 +439,40 @@ def schedule(request, classid):
         'custom_form': custom_form
     }
     return render(request, 'lessons/schedule.html', context)
+
+@login_required
+def updateProfile(request):
+
+    """Update user nickname and avatar"""
+
+    if request.method == "GET":
+        form = UpdateNicknameForm()
+
+        context = {
+            'user': request.user,
+            'form': form
+        }
+
+        return render(request, 'lessons/updateprofile.html', context)
+
+    elif request.method == "POST":
+        form = UpdateNicknameForm(request.POST)
+
+        if form.is_valid():
+            request.user.profile.nickname = form.cleaned_data['nickname']
+            request.user.save()
+
+        return HttpResponseRedirect('/dashboard/updateprofile')
+
+def changeAvatar(request):
+
+    """Changes the user avatar"""
+
+    if request.user.is_authenticated:
+        request.user.profile.avatar = request.POST.get('avatar')
+        request.user.save()
+
+    return HttpResponse('')
 
 def newSchedule(request, classid):
 
