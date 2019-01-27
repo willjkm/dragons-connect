@@ -30,9 +30,13 @@ class DragonBoatRace extends Phaser.Scene {
     constructor() {
         super({key:"DragonBoatRace"});
     }
-    
+
+    preload() {
+        this.load.image('boat', '../../../media/images/dboat.png');
+        this.load.image('scenery', '../../../media/images/panorama.png');
+    }
+
     create() {
-        var state = {};
 
         var buttonLocations = [
             [60, 425],
@@ -42,13 +46,12 @@ class DragonBoatRace extends Phaser.Scene {
         ]
 
         initialize();
-
         ui.questionBackground = this.add.rectangle(60, 280, 370, 130, 0xccf7f0).setOrigin(0,0);
         ui.questionText = this.add.text(245, 345, cards.question[quiz.prompt], largeFont).setOrigin(0.5,0.5);
         ui.energy = {
             level: 0,
-            displayText: this.add.text(700, 450, "0", defaultFont),
-            bar: this.add.rectangle(710, 430, 40, 2, 0xff0000)
+            displayText: this.add.text(700, 500, "0", defaultFont),
+            bar: this.add.rectangle(710, 480, 40, 2, 0xff0000)
         };
 
         for (let i = 0; i < quiz.numOfAnswers; i++) {
@@ -61,14 +64,9 @@ class DragonBoatRace extends Phaser.Scene {
             ui.buttons[i].on('pointerdown', function () {
                 state.check = checkUserInput(i);
                 if (state.check) {
-                    ui.energy.level += 30; // energy boost
-                    if (ui.energy.level > 100) {
-                        ui.energy.level = 100;
-                    } 
+                    ui.energy.boost += 15;
                 } else {
-                    if (ui.energy.level > 10) {
-                        ui.energy.level -= 10;
-                    }
+                    ui.energy.boost -= 10;
                 }
             });
             ui.answerText.push(this.add.text(
@@ -77,6 +75,35 @@ class DragonBoatRace extends Phaser.Scene {
                 cards.answers[i][quiz.answerFormat],
                 defaultFont).setOrigin(0.5,0.5));
         }
+
+        ui.timer = {
+            background: this.add.rectangle(445, 300, 150, 110, 0x123456).setOrigin(0,0),
+            displayText: this.add.text(500, 345, "0", defaultFont),
+        };
+
+        state.secondsElapsed = 0;
+
+        state.clock = this.time.addEvent({
+            delay: 1000,
+            callback: tick,
+            callbackScope: this,
+            loop: true
+        });
+
+        function tick () {
+            state.secondsElapsed += 1;
+        }    
+
+        ui.scenery = this.add.image(0, -100, 'scenery').setOrigin(0,0);
+        ui.boat = this.add.image(100, 100, 'boat').setOrigin(0,0);
+        ui.team1 = this.add.image(100, 50, 'boat').setOrigin(0,0).setTint(0xcc0000);
+        ui.team2 = this.add.image(100, 150, 'boat').setOrigin(0,0).setTint(0x00cc00);
+        var raceCam = this.cameras.add(0, 0, 800, 250).setOrigin(0,0.6);
+        ui.boat.on('madeSomeProgress', () => {
+            raceCam.startFollow(ui.boat, false, 1, 1, 250, -50);
+            ui.boat.isFollowed = true;
+        });
+        this.cameras.main.setSize(800,300).setPosition(0,300).setScroll(0,300);
     }
 
     update() {
@@ -87,27 +114,55 @@ class DragonBoatRace extends Phaser.Scene {
                 return 0.1;
             }
         }
-        
-        function percentage_to_color(percentage) {
-            var r, g, b = 0;
-            if(percentage < 50) {
-                r = 255;
-                g = Math.round(5.1 * percentage);
+
+        var opponentVelocity = (x) => {
+            if (x < 300) {
+                return 0.2 + (0.8 * x / 300)
+            } else {
+                return 1
             }
-            else {
-                g = 255;
-                r = Math.round(510 - 5.10 * percentage);
-            }
-            var h = r * 0x10000 + g * 0x100 + b * 0x1;
-            return '0x' + ('00000000' + h.toString(16)).slice(-6);
         }
 
-        if (ui.energy.level > 1) {
+        // Update clock display text
+
+        ui.timer.displayText.text = (state.secondsElapsed + state.clock.getProgress()).toFixed(2).toString();
+
+        // Animate energy level
+
+        if (Math.abs(ui.energy.boost) > 1) {
+            ui.energy.level += ui.energy.boost;
+            ui.energy.boost = (ui.energy.boost / 3);
+        } else {
+            ui.energy.boost = 0;
+        }
+
+        if (ui.energy.level > 0) {
             ui.energy.level -= depletion();
-            ui.energy.displayText.text = Math.floor(ui.energy.level).toString();
-            ui.energy.bar.height = ui.energy.level * 2;
-            ui.energy.bar.y = 430 - (ui.energy.level * 2);
-            ui.energy.bar.fillColor = percentage_to_color(ui.energy.level);
+        }
+
+        if (ui.energy.level > 100) {
+            ui.energy.level = 100;
+        } else if (ui.energy.level < 0) {
+            ui.energy.level = 0;
+        }
+
+        ui.energy.displayText.text = Math.floor(ui.energy.level).toString();
+        ui.energy.bar.height = ui.energy.level * 2;
+        ui.energy.bar.y = 480 - (ui.energy.level * 2);
+        ui.energy.bar.fillColor = percentage_to_color(ui.energy.level);
+
+        // Update boat positions
+
+        ui.boat.x += (ui.energy.level/25);
+        ui.team1.x += 2 * opponentVelocity(ui.team1.x)
+        ui.team2.x += 1 * opponentVelocity(ui.team2.x)
+
+        // Turn on camera tracking user boat after the boat made some progress
+
+        if (!ui.boat.isFollowed) {
+            if (ui.boat.x > 250) {
+                ui.boat.emit('madeSomeProgress', ui.boat);
+            }
         }
     }
 }
@@ -143,12 +198,12 @@ class StartScene extends Phaser.Scene {
             this.scene.start('DragonBoatRace');
         }
 
-        var message = "Hello " + username + ", hope you enjoy this game!";
+        var message = "Dragon Boat Race";
 
         this.add.text(30, 30, message, defaultFont);
         var startButton = this.add.rectangle(180, 220, 300, 50, 0x6666ff).setInteractive();
         
-        this.add.text(100, 200, "Click to start", defaultFont);
+        this.add.text(100, 200, "Start", defaultFont);
         startButton.on('pointerdown', function () {
             startGame();
         });

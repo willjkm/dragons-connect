@@ -10,6 +10,7 @@ var quiz = {
 var user;
 var cards;
 var ui;
+var state = {};
 
 defaultFont = {
     fontFamily: 'Arial',
@@ -36,4 +37,18 @@ var diacritic = {
     o: ['ō', 'ó', 'ǒ', 'ò'],
     u: ['ū', 'ú', 'ǔ', 'ù'],
     v: ['ǖ', 'ǘ', 'ǚ', 'ǜ']
+}
+
+var percentage_to_color = (percentage) => {
+    var r, g, b = 0;
+    if(percentage < 50) {
+        r = 255;
+        g = Math.round(5.1 * percentage);
+    }
+    else {
+        g = 255;
+        r = Math.round(510 - 5.10 * percentage);
+    }
+    var h = r * 0x10000 + g * 0x100 + b * 0x1;
+    return '0x' + ('00000000' + h.toString(16)).slice(-6);
 }
