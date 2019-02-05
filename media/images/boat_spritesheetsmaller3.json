@@ -1,0 +1,440 @@
+{
+	"textures": [
+		{
+			"image": "boat_spritesheetsmaller3.png",
+			"format": "RGBA8888",
+			"size": {
+				"w": 1893,
+				"h": 2024
+			},
+			"scale": 0.83333,
+			"frames": [
+				{
+					"filename": "Boat10.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 298
+					},
+					"frame": {
+						"x": 1,
+						"y": 1,
+						"w": 629,
+						"h": 298
+					}
+				},
+				{
+					"filename": "Boat11.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 298
+					},
+					"frame": {
+						"x": 1,
+						"y": 301,
+						"w": 629,
+						"h": 298
+					}
+				},
+				{
+					"filename": "Boat12.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 297
+					},
+					"frame": {
+						"x": 632,
+						"y": 1,
+						"w": 629,
+						"h": 297
+					}
+				},
+				{
+					"filename": "Boat9.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 296
+					},
+					"frame": {
+						"x": 1263,
+						"y": 1,
+						"w": 629,
+						"h": 296
+					}
+				},
+				{
+					"filename": "Boat13.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 295
+					},
+					"frame": {
+						"x": 1263,
+						"y": 299,
+						"w": 629,
+						"h": 295
+					}
+				},
+				{
+					"filename": "Boat8.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 294
+					},
+					"frame": {
+						"x": 632,
+						"y": 300,
+						"w": 629,
+						"h": 294
+					}
+				},
+				{
+					"filename": "Boat14.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 293
+					},
+					"frame": {
+						"x": 1,
+						"y": 601,
+						"w": 629,
+						"h": 293
+					}
+				},
+				{
+					"filename": "Boat7.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 292
+					},
+					"frame": {
+						"x": 632,
+						"y": 596,
+						"w": 629,
+						"h": 292
+					}
+				},
+				{
+					"filename": "Boat15.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 290
+					},
+					"frame": {
+						"x": 1263,
+						"y": 596,
+						"w": 629,
+						"h": 290
+					}
+				},
+				{
+					"filename": "Boat6.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 289
+					},
+					"frame": {
+						"x": 1263,
+						"y": 888,
+						"w": 629,
+						"h": 289
+					}
+				},
+				{
+					"filename": "Boat16.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 286
+					},
+					"frame": {
+						"x": 632,
+						"y": 890,
+						"w": 629,
+						"h": 286
+					}
+				},
+				{
+					"filename": "Boat5.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 285
+					},
+					"frame": {
+						"x": 1,
+						"y": 896,
+						"w": 629,
+						"h": 285
+					}
+				},
+				{
+					"filename": "Boat17.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 284
+					},
+					"frame": {
+						"x": 1,
+						"y": 1183,
+						"w": 629,
+						"h": 284
+					}
+				},
+				{
+					"filename": "Boat4.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 283
+					},
+					"frame": {
+						"x": 632,
+						"y": 1178,
+						"w": 629,
+						"h": 283
+					}
+				},
+				{
+					"filename": "Boat18.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 282
+					},
+					"frame": {
+						"x": 1263,
+						"y": 1179,
+						"w": 629,
+						"h": 282
+					}
+				},
+				{
+					"filename": "Boat3.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 281
+					},
+					"frame": {
+						"x": 1,
+						"y": 1469,
+						"w": 629,
+						"h": 281
+					}
+				},
+				{
+					"filename": "Boat19.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 280
+					},
+					"frame": {
+						"x": 632,
+						"y": 1463,
+						"w": 629,
+						"h": 280
+					}
+				},
+				{
+					"filename": "Boat1.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 278
+					},
+					"frame": {
+						"x": 632,
+						"y": 1745,
+						"w": 629,
+						"h": 278
+					}
+				},
+				{
+					"filename": "Boat2.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 279
+					},
+					"frame": {
+						"x": 1263,
+						"y": 1463,
+						"w": 629,
+						"h": 279
+					}
+				},
+				{
+					"filename": "Boat20.png",
+					"rotated": false,
+					"trimmed": true,
+					"sourceSize": {
+						"w": 667,
+						"h": 375
+					},
+					"spriteSourceSize": {
+						"x": 9,
+						"y": 67,
+						"w": 629,
+						"h": 279
+					},
+					"frame": {
+						"x": 1263,
+						"y": 1744,
+						"w": 629,
+						"h": 279
+					}
+				}
+			]
+		}
+	],
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"smartupdate": "$TexturePacker:SmartUpdate:011615acf3097d6590b651467c153fce:dd576256c98e85de8f4089940a09a12e:70954a0aa5403ad9a921b77b0226a14c$"
+	}
+}

@@ -138,8 +138,10 @@ var initialize = () => {
     cards.answers = getAnswers();
 
     ui = {
-        answerText: [],
-        buttons: []
+        answer: {
+            displayText: [],
+            buttons: []
+        }
     };
 }
 
@@ -192,12 +194,12 @@ function processKeyboardInput(key) {
 
 function checkUserInput(choice) {
     if (cards.answers[choice] == cards.question) {
-        ui.buttons[choice].fillColor = 0x00ff00;
+        ui.answer.buttons[choice].button.setTexture('l_correct');
         setTimeout(nextQuestion, 500);
         return true
     } else {
         user.answeredCorrectly = false;
-        ui.buttons[choice].fillColor = 0xff0000;
+        ui.answer.buttons[choice].button.setTexture('l_false');
         return false
     }
 }
@@ -243,13 +245,13 @@ function nextQuestion() {
     // set questions and answers
     
     if (typeof cards.question !== 'undefined') {
-        ui.questionText.text = cards.question[quiz.prompt];
+        ui.question.displayText.text = cards.question[quiz.prompt];
 
         if (quiz.mode == 'multiple choice') {
             cards.answers = getAnswers();
             for (let i = 0; i < quiz.numOfAnswers; i++) {
-                ui.buttons[i].fillColor = 0x6666ff;
-                ui.answerText[i].text = cards.answers[i][quiz.answerFormat];
+                ui.answer.buttons[i].displayText.text = cards.answers[i][quiz.answerFormat];
+                ui.answer.buttons[i].button.setTexture('l_unclicked');
             }
         } else {
             ui.typedText.style.color = '#ffffff';
@@ -269,7 +271,8 @@ function runOutOfCards() {
             cards.rightPile = [];
             shuffleArray(cards.quizDeck);
         } else {
-            endGame();
+            cards.quizDeck = newQuizDeck(quiz.currentLesson, quiz.maxLength); // this line provides an endless game
+            // endGame(); choose this line for a quiz of limited length
         }
     }
 }

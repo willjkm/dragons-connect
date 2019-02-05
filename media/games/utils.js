@@ -9,8 +9,10 @@ var quiz = {
 };
 var user;
 var cards;
-var ui;
+var ui = {};
 var state = {};
+
+WebFont.load({google: {families: ['Carter One']}});
 
 defaultFont = {
     fontFamily: 'Arial',
@@ -18,10 +20,34 @@ defaultFont = {
     fill: '#FFF'
 }
 
+var darkFont = {
+    fontFamily: 'Arial',
+    fontSize: '32px',
+    fill: '#111'
+}
+
+var themeFont = {
+    fontFamily: 'Carter One',
+    fontSize: '32px',
+    fill: '#111'
+}
+
+var smallFont = {
+    fontFamily: 'Arial',
+    fontSize: '14px',
+    fill: '#111'
+}
+
 var largeFont = {
     fontFamily: 'Arial',
-    fontSize: '80px',
-    fill: '#707070'
+    fontSize: '40px',
+    fill: '#111'
+}
+
+var funnyFont = {
+    fontFamily: 'Carter One',
+    fontSize: '300px',
+    fill: '#e6086d'
 }
 
 var keyDictionary = {
