@@ -35,6 +35,8 @@ def firstLockedLesson(user):
         future_scheduled_lessons = Ke.objects.filter(ke_class=my_class).filter(datetime__gte=timezone.now())
         if future_scheduled_lessons:
             first_locked_lesson = future_scheduled_lessons[0].active_lesson
+        else:
+            first_locked_lesson = None
 
     if first_locked_lesson:
         return first_locked_lesson
@@ -103,12 +105,12 @@ def slide(request, lessonid, slideid):
                 next_slide_is_available = False
                 can_unlock_next_slide = False
 
-    # default content for empty slides
+    # default content for empty slides -- DEVELOPMENT ONLY
 
     if current_slide.content_url:
         url = current_slide.content_url
     else:
-        url = "../../../games/demogame/"
+        url = "../../../games/fallingtones/" + str(current_lesson.number) + "/"
 
     # Create new learning event for a logged in student viewing the slide
 
@@ -179,9 +181,10 @@ def gameOver(request):
         learning_event = LearningEvent.objects.create(
             user=request.user,
             action="completed",
-            element_name="game",
+            element_name=request.POST.get('element_name'),
             lesson=request.POST.get('lesson'),
-            score=request.POST.get('score')
+            score=request.POST.get('score'),
+            award=request.POST.get('award')
         )
         learning_event.save()
 

@@ -8,6 +8,9 @@ function shuffleArray(array) {
 
 function newQuizDeck(lesson, maxItems=20) {
     var allVocab = getData();
+    if (quiz.mode == "falling tones") {
+        allVocab = getToneData();
+    }
     var questionSet = [];
     function filterLesson(item) {
         return item.lesson == lesson;
@@ -120,11 +123,11 @@ function toneConvert(string, tonemark) {
 }
 
 var initialize = () => {
-    user = {
-        correctAnswers: 0,
-        totalAnswers: 0,
-        answeredCorrectly: true    
-    };
+
+    user.correctAnswers = 0;
+    user.totalAnswers = 0;
+    user.answeredCorrectly = true;
+
 
     cards = {
         quizDeck: newQuizDeck(quiz.currentLesson, quiz.maxLength),
@@ -192,6 +195,17 @@ function processKeyboardInput(key) {
     }
 }
 
+function checkToneBucket(choice) {
+    if (choice == cards.question.tone) {
+        nextQuestion();
+        return true
+    } else {
+        user.answeredCorrectly = false;
+        nextQuestion();
+        return false
+    }
+}
+
 function checkUserInput(choice) {
     if (cards.answers[choice] == cards.question) {
         ui.answer.buttons[choice].button.setTexture('l_correct');
@@ -230,8 +244,6 @@ function nextQuestion() {
     
     // load up the next question
 
-    var justasked = cards.question;
-
     if (cards.quizDeck[0] !== cards.question) {
         cards.question = cards.quizDeck.pop();
     } else {
@@ -245,15 +257,18 @@ function nextQuestion() {
     // set questions and answers
     
     if (typeof cards.question !== 'undefined') {
-        ui.question.displayText.text = cards.question[quiz.prompt];
-
         if (quiz.mode == 'multiple choice') {
+            ui.question.displayText.text = cards.question[quiz.prompt];
             cards.answers = getAnswers();
             for (let i = 0; i < quiz.numOfAnswers; i++) {
                 ui.answer.buttons[i].displayText.text = cards.answers[i][quiz.answerFormat];
                 ui.answer.buttons[i].button.setTexture('l_unclicked');
             }
-        } else {
+        } else if (quiz.mode == 'falling tones') {
+            ui.bubble.character.text = cards.question["character"]
+            ui.bubble.pinyin.text = cards.question["pinyin"]
+        } else if (quiz.mode == 'type answer') {
+            ui.question.displayText.text = cards.question[quiz.prompt];
             ui.typedText.style.color = '#ffffff';
             ui.typedText.text = ''
         }
@@ -290,4 +305,64 @@ var endGame = () => {
     });
     game.scene.stop('QuizScene');
     game.scene.start('GameOver');
+}
+
+var addButton = (size, x, y, displayText, game) => {
+    if (size == 'mini') {
+        var result = {
+            button: game.add.sprite(x, y, 'unclicked').setScale(0.3,0.3).setInteractive(),
+            displayText: game.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
+        };
+        result.displayText.setStyle({fontSize:'20px'});
+        result.button.on('pointerover', () => {
+            if (result.button.texture.key == 'unclicked') {
+                result.button.setTexture('hover');
+            }
+        });
+        result.button.on('pointerout', () => {
+            if (result.button.texture.key == 'hover') {
+                result.button.setTexture('unclicked');
+            }
+        });
+        result.button.on('pointerdown', () => {
+            result.button.setTexture('mousedown');
+        });
+    } else if (size == 'small') {
+        var result = {
+            button: game.add.sprite(x, y, 'unclicked').setScale(0.5,0.5).setInteractive(),
+            displayText: game.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
+        };
+        result.button.on('pointerover', () => {
+            if (result.button.texture.key == 'unclicked') {
+                result.button.setTexture('hover');
+            }
+        });
+        result.button.on('pointerout', () => {
+            if (result.button.texture.key == 'hover') {
+                result.button.setTexture('unclicked');
+            }
+        });
+        result.button.on('pointerdown', () => {
+            result.button.setTexture('mousedown');
+        });
+    } else if (size == 'big') {
+        var result = {
+            button: game.add.sprite(x, y, 'l_unclicked').setScale(0.5,0.5).setInteractive(),
+            displayText: game.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
+        };
+        result.button.on('pointerover', () => {
+            if (result.button.texture.key == 'l_unclicked') {
+                result.button.setTexture('l_hover');
+            }
+        });
+        result.button.on('pointerout', () => {
+            if (result.button.texture.key == 'l_hover') {
+                result.button.setTexture('l_unclicked');
+            }
+        });
+        result.button.on('pointerdown', () => {
+            result.button.setTexture('l_mousedown');
+        });
+    }
+    return result;
 }

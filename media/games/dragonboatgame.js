@@ -6,38 +6,33 @@ class DragonBoatRace extends Phaser.Scene {
     }
 
     preload() {
-        //this.load.image('loading', '../../../media/images/loading.jpg');
         this.add.image(0,0, 'loading').setOrigin(0,0);
-        this.load.image('boat', '../../../media/images/dboat.png');
-        this.load.image('background', '../../../media/images/background.jpg');
-        this.load.image('scenery', '../../../media/images/scenery2.jpg');
-        this.load.image('message_frame', '../../../media/images/gameoverbackground.png');
-        this.load.atlas('dboat', '../../../media/images/boat_spritesheetsmaller.png', '../../../media/images/boat_spritesheetsmaller.json');
-        this.load.atlas('enemy1', '../../../media/images/boat_spritesheetsmaller1.png', '../../../media/images/boat_spritesheetsmaller1.json');
-        this.load.atlas('enemy2', '../../../media/images/boat_spritesheetsmaller2.png', '../../../media/images/boat_spritesheetsmaller2.json');
-        this.load.atlas('enemy3', '../../../media/images/boat_spritesheetsmaller3.png', '../../../media/images/boat_spritesheetsmaller3.json');
-        this.load.image('coin', '../../../media/images/coin.png');
-        this.load.image('coin_disabled', '../../../media/images/coin_disabled.png');
-        this.load.image('spark', '../../../media/images/spark.png')
         
-        // button images
-
-        this.load.image('unclicked', '../../../media/images/unclicked.png')
-        this.load.image('l_unclicked', '../../../media/images/l_unclicked.png')
-        this.load.image('hover', '../../../media/images/hover.png')
-        this.load.image('l_hover', '../../../media/images/l_hover.png')
-        this.load.image('mousedown', '../../../media/images/mousedown.png')
-        this.load.image('l_mousedown', '../../../media/images/l_mousedown.png')
-        this.load.image('false', '../../../media/images/false.png')
-        this.load.image('l_false', '../../../media/images/l_false.png')
-        this.load.image('correct', '../../../media/images/correct.png')
-        this.load.image('l_correct', '../../../media/images/l_correct.png')
-
+        var loadConfig = {
+            mediaURL: "../../../media/images/",
+            loadObjects: [
+                {type: "image", name: "boat", file: "dboat.png"},
+                {type: "image", name: "background", file: "background.jpg"},
+                {type: "image", name: "scenery", file: "scenery2.jpg"},
+                {type: "image", name: "message_frame", file: "gameoverbackground.png"},
+                {type: "atlas", name: "dboat", file: "boat_spritesheetsmaller.png", json: "boat_spritesheetsmaller.json"},
+                {type: "atlas", name: "enemy1", file: "boat_spritesheetsmaller1.png", json: "boat_spritesheetsmaller1.json"},
+                {type: "atlas", name: "enemy2", file: "boat_spritesheetsmaller2.png", json: "boat_spritesheetsmaller2.json"},
+                {type: "atlas", name: "enemy3", file: "boat_spritesheetsmaller3.png", json: "boat_spritesheetsmaller3.json"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
+                {type: "image", name: "spark", file: "spark.png"},
+            ]
+        }
+        
+        myLoad(loadConfig, this);
     }
 
     create() {
 
         initialize();
+
+        // create animations
 
         var animationFrames = [];
 
@@ -73,6 +68,15 @@ class DragonBoatRace extends Phaser.Scene {
             });
         }    
 
+        var removeAnimations = () => {
+            this.anims.remove('paddle');
+            this.anims.remove('paddleforever1');
+            this.anims.remove('paddleforever2');
+            this.anims.remove('paddleforever3');    
+        }
+
+        // set game cameras
+
         this.cameras.main.setSize(800,350).setPosition(0,250).setScroll(0,250);
 
         ui.cams = {
@@ -95,67 +99,8 @@ class DragonBoatRace extends Phaser.Scene {
                 });
             }
         };
-        
 
-        var addButton = (size, x, y, displayText) => {
-            if (size == 'mini') {
-                var result = {
-                    button: this.add.sprite(x, y, 'unclicked').setScale(0.3,0.3).setInteractive(),
-                    displayText: this.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
-                };
-                result.displayText.setStyle({fontSize:'20px'});
-                result.button.on('pointerover', () => {
-                    if (result.button.texture.key == 'unclicked') {
-                        result.button.setTexture('hover');
-                    }
-                });
-                result.button.on('pointerout', () => {
-                    if (result.button.texture.key == 'hover') {
-                        result.button.setTexture('unclicked');
-                    }
-                });
-                result.button.on('pointerdown', () => {
-                    result.button.setTexture('mousedown');
-                });
-            } else if (size == 'small') {
-                var result = {
-                    button: this.add.sprite(x, y, 'unclicked').setScale(0.5,0.5).setInteractive(),
-                    displayText: this.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
-                };
-                result.button.on('pointerover', () => {
-                    if (result.button.texture.key == 'unclicked') {
-                        result.button.setTexture('hover');
-                    }
-                });
-                result.button.on('pointerout', () => {
-                    if (result.button.texture.key == 'hover') {
-                        result.button.setTexture('unclicked');
-                    }
-                });
-                result.button.on('pointerdown', () => {
-                    result.button.setTexture('mousedown');
-                });
-            } else if (size == 'big') {
-                var result = {
-                    button: this.add.sprite(x, y, 'l_unclicked').setScale(0.5,0.5).setInteractive(),
-                    displayText: this.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
-                };
-                result.button.on('pointerover', () => {
-                    if (result.button.texture.key == 'l_unclicked') {
-                        result.button.setTexture('l_hover');
-                    }
-                });
-                result.button.on('pointerout', () => {
-                    if (result.button.texture.key == 'l_hover') {
-                        result.button.setTexture('l_unclicked');
-                    }
-                });
-                result.button.on('pointerdown', () => {
-                    result.button.setTexture('l_mousedown');
-                });
-            }
-            return result;
-        }
+        // initialize game state
 
         state = {
             secondsElapsed: 0,
@@ -185,15 +130,19 @@ class DragonBoatRace extends Phaser.Scene {
             }),
         };
 
+        // draw background
 
         ui.background = this.add.image(0,0, 'background').setOrigin(0,0);
+        ui.scenery = this.add.image(0, 0, 'scenery').setOrigin(0,0);
+
+        // draw gameover dialog box
 
         ui.message = {
             background: this.add.image(1200, 1300, 'message_frame'),
             displayText: [
-                this.add.text(1200, 1200, "You came 2nd!", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 1350, "Time: 20.05s", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 1400, "Personal best: 16.75s", smallFont).setOrigin(0.5, 0.5),
+                this.add.text(1200, 1200, "", themeFont).setOrigin(0.5, 0.5),
+                this.add.text(1200, 1350, "", themeFont).setOrigin(0.5, 0.5),
+                this.add.text(1200, 1400, "", smallFont).setOrigin(0.5, 0.5),
             ],
             coins: [
                 this.add.image(1100, 1275, 'coin_disabled').setScale(0.6),
@@ -201,9 +150,9 @@ class DragonBoatRace extends Phaser.Scene {
                 this.add.image(1300, 1275, 'coin_disabled').setScale(0.6),
             ],
             buttons: [
-                addButton('mini', 1050, 1450, 'Replay'),
-                addButton('mini', 1200, 1450, 'Next Level'),
-                addButton('mini', 1350, 1450, 'Menu')
+                addButton('mini', 1050, 1450, 'Replay', this),
+                addButton('mini', 1200, 1450, 'Next Level', this),
+                addButton('mini', 1350, 1450, 'Menu', this)
             ],
             spark: this.add.particles('spark').createEmitter({
                 x: 300,
@@ -216,6 +165,20 @@ class DragonBoatRace extends Phaser.Scene {
                 gravityY: 0
             }).stop()
         };
+
+        ui.message.buttons[0].button.on('pointerdown', () => {
+            removeAnimations();
+            this.scene.restart('DragonBoatRace');
+        })
+
+        ui.message.buttons[1].button.setVisible(false);
+        ui.message.buttons[1].displayText.setVisible(false);
+
+        ui.message.buttons[2].button.on('pointerdown', () => {
+            removeAnimations();
+            this.scene.stop('DragonBoatRace');
+            this.scene.start('StartScene');
+        })
 
         ui.message.allElements = [ui.message.background]
         for (let i=0; i<3; i++) {
@@ -242,8 +205,9 @@ class DragonBoatRace extends Phaser.Scene {
             });
         }
 
+        // draw question and answers
+
         ui.question = {
-            // background: this.add.rectangle(60, 280, 370, 130, 0xccf7f0).setOrigin(0,0),
             displayText: this.add.text(185, 335, cards.question[quiz.prompt], largeFont).setOrigin(0.5,0.5)
         };
 
@@ -255,7 +219,7 @@ class DragonBoatRace extends Phaser.Scene {
 
         for (let i = 0; i < quiz.numOfAnswers; i++) {
             ui.answer.buttons.push(addButton(
-                'big', ui.answer.buttonLocations[i][0], ui.answer.buttonLocations[i][1], cards.answers[i][quiz.answerFormat]));
+                'big', ui.answer.buttonLocations[i][0], ui.answer.buttonLocations[i][1], cards.answers[i][quiz.answerFormat], this));
             ui.answer.buttons[i].button.on('pointerdown', function () {
                 if (state.phase == "race") {
                     state.check = checkUserInput(i);
@@ -269,9 +233,9 @@ class DragonBoatRace extends Phaser.Scene {
             });
         }
 
+        // draw text that shows time and position in race
 
         ui.timer = {
-            // background: this.add.rectangle(445, 300, 150, 110, 0x123456).setOrigin(0,0),
             displayText: [
                 this.add.text(440, 340, "", darkFont).setOrigin(0.5,0.5),
                 this.add.text(598, 340, "", themeFont).setOrigin(0.5,0.5),
@@ -294,6 +258,8 @@ class DragonBoatRace extends Phaser.Scene {
                 }
             }
         };
+
+        // draw energy bar
 
         ui.energy = {
             level: 0,
@@ -324,8 +290,8 @@ class DragonBoatRace extends Phaser.Scene {
             }
         };
         
-        ui.scenery = this.add.image(0, 0, 'scenery').setOrigin(0,0);
-        
+        // computer sprites
+
         ui.opponent = {
             team: [
                 this.add.sprite(100,40,'enemy1','Boat1.png').setScale(0.3,0.3).setFlip(true,false),
@@ -345,12 +311,16 @@ class DragonBoatRace extends Phaser.Scene {
             element.speed = 1 + Math.random();
         })
 
+        // player sprite
+
         ui.dboat = this.add.sprite(100,160,'dboat','Boat1.png').setScale(0.3,0.3).setFlip(true,false);
 
         ui.dboat.on('madeSomeProgress', () => {
             ui.cams.raceCam.startFollow(ui.dboat, false, 1, 1, 250, 10);
             ui.dboat.isFollowed = true;
         });
+
+        // animated starting text
 
         ui.start = {
             number: 3,
@@ -368,8 +338,12 @@ class DragonBoatRace extends Phaser.Scene {
 
     update() {
         if (state.phase == "race") {
+            // update time and race position
+            
             ui.timer.displayText[0].text = (state.secondsElapsed + state.clock.getProgress()).toFixed(2).toString();
             ui.timer.displayText[1].text = ui.timer.findPlace();
+
+            // update energy bar
 
             ui.energy.update();
 
@@ -401,9 +375,21 @@ class DragonBoatRace extends Phaser.Scene {
         }
         
         if (state.phase == 'gameover') {
+            
+            state.phase = 'paused'; // Game over code is executed only once
+
+            // Remove interactive and animated elements from game scene
+            
             ui.opponent.team.forEach(element => {
                 element.setVisible(false);
             });
+
+            ui.answer.buttons.forEach((element) => {
+                element.button.removeInteractive();
+            });
+
+            // work out how many coins will be awarded
+
             var place = 1;
             ui.opponent.team.forEach(element => {
                 if (element.x > ui.dboat.x) {
@@ -412,24 +398,30 @@ class DragonBoatRace extends Phaser.Scene {
             });
             var coins = 4-place;
 
-            ui.answer.buttons.forEach((element) => {
-                element.button.removeInteractive();
-            });
+            // update the game over message text
 
-            ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!"
-            ui.message.displayText[1].text = "Time: " + ui.timer.displayText[0].text + "s"
+            var finalScore = ui.timer.displayText[0].text;
+            ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!";
+            ui.message.displayText[1].text = "Time: " + finalScore + "s";
+
+            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
+                ui.message.displayText[2].text = "New Record!";
+                ui.message.displayText[2].setStyle({fontSize:'30px', color: '#ee7777', fontFamily: 'Carter One'}).setRotation(-0.5).setX(1300).setY(1370);
+            } else if (user.topScore[quiz.level - 1] == "0") {
+                ui.message.displayText[2].text = "";
+            } else {            
+                ui.message.displayText[2].text = "Personal best: " + user.topScore[quiz.level - 1] + "s";
+            }
+
+            // animate the entrance of the game over message
+
             ui.message.flyIn();
-            ui.cams.dim([ui.cams.raceCam, this.cameras.main])
-            state.phase = 'paused';
-            ui.message.buttons[0].button.on('pointerdown', () => {
-                this.anims.remove('paddle');
-                this.anims.remove('paddleforever1');
-                this.anims.remove('paddleforever2');
-                this.anims.remove('paddleforever3');
-                this.scene.restart('DragonBoatRace');
-            })
+            ui.cams.dim([ui.cams.raceCam, this.cameras.main]);        
+            
+            // animate coin sparkles
+
             if (coins > 0) {
-                var counter = 0
+                var counter = 0;
                 this.time.addEvent({
                     delay: 2000,
                     callback: () => {
@@ -450,46 +442,30 @@ class DragonBoatRace extends Phaser.Scene {
                     repeat: coins
                 });
             }
-        }
 
-        // Pause game (debug only)
-
-        this.input.keyboard.on('keydown_P', () => {
-            if (state.phase == 'race') {
-                ui.message.flyIn();
-                ui.cams.dim([ui.cams.raceCam, this.cameras.main])
-                setTimeout(() => {
-                    state.phase = 'paused';
-                }, 800);
-            } else if (state.phase == 'paused') {
-                ui.message.flyOut();
-                ui.cams.undim([ui.cams.raceCam, this.cameras.main])
-                setTimeout(() => {
-                    state.phase = 'race';
-                }, 800);
-            }
-        });    
-    }
-}
-
-class GameOver extends Phaser.Scene {
-    constructor() {
-        super({key:"GameOver"});
-    }
-    create() {
-        const startGame = () => {
-            this.scene.start('DragonBoatRace');
-        }
-
-        var message = "Game over! You gained " + user.accuracy + "% accuracy.";
-
-        this.add.text(30, 30, message, defaultFont);
-        var startButton = this.add.rectangle(180, 220, 300, 50, 0x6666ff).setInteractive();
+            // update user top score and coins
         
-        this.add.text(100, 200, "Play again", defaultFont);
-        startButton.on('pointerdown', function () {
-            startGame();
-        });
+            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
+                user.topScore[quiz.level - 1] = finalScore;
+            } else if (user.topScore[quiz.level - 1] == 0) {
+                user.topScore[quiz.level - 1] = finalScore;
+            }
+
+            if (user.coins[quiz.level - 1] < coins) {
+                user.coins[quiz.level - 1] = coins;
+            }
+
+            // AJAX POST score to database
+
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            $.post('../../../lessons/ajax/gameover/', {
+                csrfmiddlewaretoken: CSRFtoken,
+                element_name: "race",
+                score: Math.floor(finalScore * 100),
+                lesson: importData.lesson,
+                award: "level " + quiz.level.toString() + " " + coins.toString() + " coins"
+            });
+        }
     }
 }
 
@@ -499,64 +475,153 @@ class StartScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('splash', '../../../media/images/splash.jpg');
-        this.load.image('unclicked', '../../../media/images/unclicked.png')
-        this.load.image('hover', '../../../media/images/hover.png')
-        this.load.image('mousedown', '../../../media/images/mousedown.png')
-        this.load.image('loading', '../../../media/images/loading.jpg');
+        var loadConfig = {
+            mediaURL: "../../../media/images/",
+            loadObjects: [
+                {type: "image", name: "splash", file: "splash.jpg"},
+                {type: "image", name: "chooseyourlevel", file: "chooseyourlevel.png"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
+                {type: "image", name: "loading", file: "loading.jpg"},
+            ]
+        }
+        
+        myLoad(loadConfig, this);
+        myLoad("buttons", this);
     }
 
     create() {
+        var gui = {}; // user interface object for the start scene
 
         this.add.image(0, 0, 'splash').setOrigin(0,0);
 
-        var addButton = (size, x, y, displayText) => {
-            if (size == 'small') {
-                var result = {
-                    button: this.add.sprite(x, y, 'unclicked').setScale(0.5,0.5).setInteractive(),
-                    displayText: this.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
-                };
-                result.button.on('pointerover', () => {
-                    if (result.button.texture.key == 'unclicked') {
-                        result.button.setTexture('hover');
-                    }
-                });
-                result.button.on('pointerout', () => {
-                    if (result.button.texture.key == 'hover') {
-                        result.button.setTexture('unclicked');
-                    }
-                });
-                result.button.on('pointerdown', () => {
-                    result.button.setTexture('mousedown');
-                });
-            } else if (size == 'big') {
-                var result = {
-                    button: this.add.sprite(x, y, 'l_unclicked').setScale(0.5,0.5).setInteractive(),
-                    displayText: this.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
-                };
-                result.button.on('pointerover', () => {
-                    if (result.button.texture.key == 'l_unclicked') {
-                        result.button.setTexture('l_hover');
-                    }
-                });
-                result.button.on('pointerout', () => {
-                    if (result.button.texture.key == 'l_hover') {
-                        result.button.setTexture('l_unclicked');
-                    }
-                });
-                result.button.on('pointerdown', () => {
-                    result.button.setTexture('l_mousedown');
+        gui.cams = {
+            msgCam: this.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(0,1000).setVisible(true),
+            dim: (cameraArray) => {
+                this.tweens.add({
+                    targets: cameraArray,
+                    alpha: 0.3,
+                    ease: 'Power1',
+                    duration: 600
                 });
             }
-            return result;
+        };
+
+        var startButton = addButton('small', 290, 250, "Start Game", this);
+        var instructions = addButton('small', 510, 250, "Instructions", this);
+
+        // populate previous top scores (first time only)
+
+        if (typeof user.topScore == "undefined") {
+            user.topScore = ["0","0","0"];
+            for (let i=0;i<3;i++) {
+                if (importData.top_score[i]) {
+                    user.topScore[i] = importData.top_score[i];
+                }
+            }
+        } 
+
+        if (typeof user.coins == "undefined") {
+            user.coins = [0,0,0];
+            for (let i=0;i<3;i++) {
+                if (importData.coins[i]) {
+                    user.coins[i] = importData.coins[i];
+                }
+            }
+        } 
+
+        // create message that shows your previous best times
+
+        var personalBestText = ["","",""];
+
+        for (let i=0;i<3;i++) {
+            if (user.topScore[i] !== "0") {
+                personalBestText[i] = user.topScore[i] + "s";
+            } else {
+                personalBestText[i] = "No record";
+            }
         }
 
-        var startButton = addButton('small', 290, 250, "Start Game")
-        var instructions = addButton('small', 510, 250, "Instructions")
-        
-        startButton.button.on('pointerdown', () => {
-            this.add.image(0,0, 'loading').setOrigin(0,0);
+        // draw level choice dialog box
+
+        gui.message = {
+            background: this.add.image(1200, 1300, 'chooseyourlevel'),
+            bestTimes: [
+                this.add.text(1320, 1224, personalBestText[0], themeFont).setOrigin(0.5, 0.5),
+                this.add.text(1320, 1312, personalBestText[1], themeFont).setOrigin(0.5, 0.5),
+                this.add.text(1320, 1400, personalBestText[2], themeFont).setOrigin(0.5, 0.5),
+            ],
+            coins: [
+                [this.add.image(1290, 1254, 'coin_disabled').setScale(0.2),
+                this.add.image(1320, 1254, 'coin_disabled').setScale(0.2),
+                this.add.image(1350, 1254, 'coin_disabled').setScale(0.2)],
+                [this.add.image(1290, 1342, 'coin_disabled').setScale(0.2),
+                this.add.image(1320, 1342, 'coin_disabled').setScale(0.2),
+                this.add.image(1350, 1342, 'coin_disabled').setScale(0.2)],
+                [this.add.image(1290, 1430, 'coin_disabled').setScale(0.2),
+                this.add.image(1320, 1430, 'coin_disabled').setScale(0.2),
+                this.add.image(1350, 1430, 'coin_disabled').setScale(0.2)],
+            ],
+            buttons: [
+                addButton('small', 1100, 1240, 'Easy', this),
+                addButton('small', 1100, 1328, 'Medium', this),
+                addButton('small', 1100, 1416, 'Challenging', this)
+            ],
+        };
+
+        for (let i=0; i<3; i++) {
+            for (let j=user.coins[i]-1;j>-1;j--) {
+                gui.message.coins[i][j].setTexture('coin');
+            }
+        }
+
+        // prepare fly-in animation
+
+        gui.message.allElements = [gui.message.background]
+        for (let i=0; i<3; i++) {
+            gui.message.allElements.push(
+                gui.message.bestTimes[i], gui.message.buttons[i].button, gui.message.buttons[i].displayText
+            );
+            for (let j=0; j<3; j++) {
+                gui.message.allElements.push(
+                    gui.message.coins[i][j], 
+                );
+            }
+        }
+
+        gui.message.flyIn = () => {
+            this.tweens.add({
+                targets: gui.message.allElements,
+                x: '-=800',
+                ease: 'Power1',
+                duration: 600
+            });
+        }
+
+        // parameters for starting a new game
+
+        var startGame = (level, prompt, format) => {
+            quiz.level = level;
+            quiz.prompt = prompt;
+            quiz.answerFormat = format;
             this.scene.start('DragonBoatRace');
+        }
+
+        // user interface
+
+        startButton.button.on('pointerdown', () => {
+            gui.message.flyIn();
+            gui.cams.dim([this.cameras.main]);
+        });
+
+        gui.message.buttons[0].button.on('pointerdown', () => {
+            startGame(1, 'pinyin', 'english')
+        });
+        gui.message.buttons[1].button.on('pointerdown', () => {
+            startGame(2, 'pinyin', 'character')
+        });
+        gui.message.buttons[2].button.on('pointerdown', () => {
+            startGame(3, 'english', 'character')
         });
     }
 }

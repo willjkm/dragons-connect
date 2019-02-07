@@ -1,5 +1,5 @@
 function getData () {
-    vocabData = [
+    var vocabData = [
         {
           "id": 1,
           "character": "你",
@@ -303,55 +303,48 @@ function getData () {
         },
         {
           "id": 44,
-          "character": "老师",
-          "pinyin": "lǎoshī",
-          "english": "teacher",
-          "lesson": 5
-        },
-        {
-          "id": 45,
           "character": "朋友",
           "pinyin": "péngyou",
           "english": "friend",
           "lesson": 5
         },
         {
-          "id": 46,
+          "id": 45,
           "character": "这",
           "pinyin": "zhè",
           "english": "this",
           "lesson": 5
         },
         {
-          "id": 47,
+          "id": 46,
           "character": "叫",
           "pinyin": "jiào",
           "english": "called",
           "lesson": 6
         },
         {
-          "id": 48,
+          "id": 47,
           "character": "什么",
           "pinyin": "shénme",
           "english": "what",
           "lesson": 6
         },
         {
-          "id": 49,
+          "id": 48,
           "character": "名字",
           "pinyin": "míngzi",
           "english": "name",
           "lesson": 6
         },
         {
-          "id": 50,
+          "id": 49,
           "character": "几",
           "pinyin": "jǐ",
           "english": "how many",
           "lesson": 6
         },
         {
-          "id": 51,
+          "id": 50,
           "character": "岁",
           "pinyin": "suì",
           "english": "years",
@@ -359,4 +352,409 @@ function getData () {
         }
     ];
     return vocabData;
+}
+
+function getToneData () {
+  var vocabData = [
+    {
+      "id": 1,
+      "character": "你",
+      "pinyin": "ni",
+      "tone": 3,
+      "lesson": 1
+    },
+    {
+      "id": 2,
+      "character": "好",
+      "pinyin": "hao",
+      "tone": 3,
+      "lesson": 1
+    },
+    {
+      "id": 3,
+      "character": "我",
+      "pinyin": "wo",
+      "tone": 3,
+      "lesson": 1
+    },
+    {
+      "id": 4,
+      "character": "很",
+      "pinyin": "hen",
+      "tone": 3,
+      "lesson": 1
+    },
+    {
+      "id": 5,
+      "character": "再",
+      "pinyin": "zai",
+      "tone": 4,
+      "lesson": 1
+    },
+    {
+      "id": 6,
+      "character": "见",
+      "pinyin": "jian",
+      "tone": 4,
+      "lesson": 1
+    },
+    {
+      "id": 7,
+      "character": "谢",
+      "pinyin": "xie",
+      "tone": 4,
+      "lesson": 1
+    },
+    {
+      "id": 8,
+      "character": "去",
+      "pinyin": "qu",
+      "tone": 4,
+      "lesson": 2
+    },
+    {
+      "id": 9,
+      "character": "哪",
+      "pinyin": "na",
+      "tone": 3,
+      "lesson": 2
+    },
+    {
+      "id": 10,
+      "character": "商",
+      "pinyin": "shang",
+      "tone": 1,
+      "lesson": 2
+    },
+    {
+      "id": 11,
+      "character": "店",
+      "pinyin": "dian",
+      "tone": 4,
+      "lesson": 2
+    },
+    {
+      "id": 12,
+      "character": "公",
+      "pinyin": "gong",
+      "tone": 1,
+      "lesson": 2
+    },
+    {
+      "id": 13,
+      "character": "园",
+      "pinyin": "yuan",
+      "tone": 2,
+      "lesson": 2
+    },
+    {
+      "id": 14,
+      "character": "学",
+      "pinyin": "xue",
+      "tone": 2,
+      "lesson": 2
+    },
+    {
+      "id": 15,
+      "character": "校",
+      "pinyin": "xiao",
+      "tone": 4,
+      "lesson": 2
+    },
+    {
+      "id": 16,
+      "character": "咖",
+      "pinyin": "ka",
+      "tone": 1,
+      "lesson": 2
+    },
+    {
+      "id": 17,
+      "character": "啡",
+      "pinyin": "fei",
+      "tone": 1,
+      "lesson": 2
+    },
+    {
+      "id": 18,
+      "character": "馆",
+      "pinyin": "guan",
+      "tone": 3,
+      "lesson": 2
+    },
+    {
+      "id": 19,
+      "character": "回",
+      "pinyin": "hui",
+      "tone": 2,
+      "lesson": 2
+    },
+    {
+      "id": 20,
+      "character": "家",
+      "pinyin": "jia",
+      "tone": 1,
+      "lesson": 2
+    },
+    {
+      "id": 21,
+      "character": "有",
+      "pinyin": "you",
+      "tone": 3,
+      "lesson": 3
+    },
+    {
+      "id": 22,
+      "character": "书",
+      "pinyin": "shu",
+      "tone": 1,
+      "lesson": 3
+    },
+    {
+      "id": 23,
+      "character": "笔",
+      "pinyin": "bi",
+      "tone": 3,
+      "lesson": 3
+    },
+    {
+      "id": 24,
+      "character": "水",
+      "pinyin": "shui",
+      "tone": 3,
+      "lesson": 3
+    },
+    {
+      "id": 25,
+      "character": "手",
+      "pinyin": "shou",
+      "tone": 3,
+      "lesson": 3
+    },
+    {
+      "id": 26,
+      "character": "机",
+      "pinyin": "ji",
+      "tone": 1,
+      "lesson": 3
+    },
+    {
+      "id": 27,
+      "character": "没",
+      "pinyin": "mei",
+      "tone": 2,
+      "lesson": 3
+    },
+    {
+      "id": 28,
+      "character": "有",
+      "pinyin": "you",
+      "tone": 3,
+      "lesson": 3
+    },
+    {
+      "id": 29,
+      "character": "一",
+      "pinyin": "yi",
+      "tone": 1,
+      "lesson": 4
+    },
+    {
+      "id": 30,
+      "character": "二",
+      "pinyin": "er",
+      "tone": 4,
+      "lesson": 4
+    },
+    {
+      "id": 31,
+      "character": "三",
+      "pinyin": "san",
+      "tone": 1,
+      "lesson": 4
+    },
+    {
+      "id": 32,
+      "character": "四",
+      "pinyin": "si",
+      "tone": 4,
+      "lesson": 4
+    },
+    {
+      "id": 33,
+      "character": "五",
+      "pinyin": "wu",
+      "tone": 3,
+      "lesson": 4
+    },
+    {
+      "id": 34,
+      "character": "六",
+      "pinyin": "liu",
+      "tone": 4,
+      "lesson": 4
+    },
+    {
+      "id": 35,
+      "character": "七",
+      "pinyin": "qi",
+      "tone": 1,
+      "lesson": 4
+    },
+    {
+      "id": 36,
+      "character": "八",
+      "pinyin": "ba",
+      "tone": 1,
+      "lesson": 4
+    },
+    {
+      "id": 37,
+      "character": "九",
+      "pinyin": "jiu",
+      "tone": 3,
+      "lesson": 4
+    },
+    {
+      "id": 38,
+      "character": "十",
+      "pinyin": "shi",
+      "tone": 2,
+      "lesson": 4
+    },
+    {
+      "id": 39,
+      "character": "老",
+      "pinyin": "lao",
+      "tone": 3,
+      "lesson": 4
+    },
+    {
+      "id": 40,
+      "character": "师",
+      "pinyin": "shi",
+      "tone": 1,
+      "lesson": 4
+    },
+    {
+      "id": 41,
+      "character": "球",
+      "pinyin": "qiu",
+      "tone": 2,
+      "lesson": 4
+    },
+    {
+      "id": 42,
+      "character": "他",
+      "pinyin": "ta",
+      "tone": 1,
+      "lesson": 5
+    },
+    {
+      "id": 43,
+      "character": "她",
+      "pinyin": "ta",
+      "tone": 1,
+      "lesson": 5
+    },
+    {
+      "id": 44,
+      "character": "是",
+      "pinyin": "shi",
+      "tone": 4,
+      "lesson": 5
+    },
+    {
+      "id": 45,
+      "character": "谁",
+      "pinyin": "shei",
+      "tone": 3,
+      "lesson": 5
+    },
+    {
+      "id": 46,
+      "character": "爸",
+      "pinyin": "ba",
+      "tone": 4,
+      "lesson": 5
+    },
+    {
+      "id": 47,
+      "character": "妈",
+      "pinyin": "ma",
+      "tone": 1,
+      "lesson": 5
+    },
+    {
+      "id": 48,
+      "character": "王",
+      "pinyin": "wang",
+      "tone": 2,
+      "lesson": 5
+    },
+    {
+      "id": 49,
+      "character": "朋",
+      "pinyin": "peng",
+      "tone": 2,
+      "lesson": 5
+    },
+    {
+      "id": 50,
+      "character": "友",
+      "pinyin": "you",
+      "tone": 3,
+      "lesson": 5
+    },
+    {
+      "id": 51,
+      "character": "这",
+      "pinyin": "zhe",
+      "tone": 4,
+      "lesson": 5
+    },
+    {
+      "id": 52,
+      "character": "叫",
+      "pinyin": "jiao",
+      "tone": 4,
+      "lesson": 6
+    },
+    {
+      "id": 53,
+      "character": "什",
+      "pinyin": "shen",
+      "tone": 2,
+      "lesson": 6
+    },
+    {
+      "id": 54,
+      "character": "名",
+      "pinyin": "ming",
+      "tone": 2,
+      "lesson": 6
+    },
+    {
+      "id": 55,
+      "character": "字",
+      "pinyin": "zi",
+      "tone": 4,
+      "lesson": 6
+    },
+    {
+      "id": 56,
+      "character": "几",
+      "pinyin": "ji",
+      "tone": 3,
+      "lesson": 6
+    },
+    {
+      "id": 57,
+      "character": "岁",
+      "pinyin": "sui",
+      "tone": 4,
+      "lesson": 6
+    }
+   ];
+  return vocabData;
 }
