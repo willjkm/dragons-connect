@@ -110,7 +110,7 @@ def slide(request, lessonid, slideid):
     if current_slide.content_url:
         url = current_slide.content_url
     else:
-        url = "../../../games/fallingtones/" + str(current_lesson.number) + "/"
+        url = "../../../games/2/" + str(current_lesson.number) + "/" # 1 = dragon boat, 2 = falling tones, 3 = rockets, 4 = characters
 
     # Create new learning event for a logged in student viewing the slide
 

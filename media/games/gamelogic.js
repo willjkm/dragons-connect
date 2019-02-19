@@ -1,11 +1,4 @@
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
 function newQuizDeck(lesson, maxItems=20) {
     var allVocab = getData();
     if (quiz.mode == "falling tones") {
@@ -364,5 +357,114 @@ var addButton = (size, x, y, displayText, game) => {
             result.button.setTexture('l_mousedown');
         });
     }
+    return result;
+}
+
+var gameEndDialog = (sceneName, game) => {
+    var result = {
+        background: game.add.image(1200, 1300, 'message_frame'),
+        displayText: [
+            game.add.text(1200, 1200, "", themeFont).setOrigin(0.5, 0.5),
+            game.add.text(1200, 1350, "", themeFont).setOrigin(0.5, 0.5),
+            game.add.text(1200, 1400, "", smallFont).setOrigin(0.5, 0.5),
+        ],
+        coins: [
+            game.add.image(1100, 1275, 'coin_disabled').setScale(0.6),
+            game.add.image(1200, 1275, 'coin_disabled').setScale(0.6),
+            game.add.image(1300, 1275, 'coin_disabled').setScale(0.6),
+        ],
+        buttons: [
+            addButton('mini', 1050, 1450, 'Replay', game),
+            addButton('mini', 1200, 1450, 'Next Level', game),
+            addButton('mini', 1350, 1450, 'Menu', game)
+        ],
+        spark: game.add.particles('spark').createEmitter({
+            x: 300,
+            y: 1275,
+            speed: { min: -200, max: 200 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'SCREEN',
+            lifespan: 600,
+            gravityY: 0
+        }).stop()
+    };
+
+    result.buttons[0].button.on('pointerdown', () => {
+        ui.removeAnimations();
+        game.scene.restart(sceneName);
+    })
+
+    result.buttons[1].button.setVisible(false);
+    result.buttons[1].displayText.setVisible(false);
+
+    result.buttons[2].button.on('pointerdown', () => {
+        ui.removeAnimations();
+        game.scene.stop(sceneName);
+        game.scene.start('StartScene');
+    })
+
+    result.allElements = [result.background]
+    for (let i=0; i<3; i++) {
+        result.allElements.push(
+            result.displayText[i], result.coins[i], result.buttons[i].button, result.buttons[i].displayText
+        )
+    }
+
+    result.flyIn = () => {
+        game.tweens.add({
+            targets: result.allElements,
+            x: '-=800',
+            ease: 'Power1',
+            duration: 600
+        });
+    }
+
+    result.flyOut = () => {
+        game.tweens.add({
+            targets: result.allElements,
+            x: '+=800',
+            ease: 'Power1',
+            duration: 600
+        });
+    }
+
+    result.sparkle = (coins) => {
+        var counter = 0;
+        game.time.addEvent({
+            delay: 2000,
+            callback: () => {
+                if (counter == 0) {
+                    result.spark.start();
+                } else {
+                    result.coins[counter-1].setTexture('coin');
+                    if (result.coins[counter]) {
+                        result.spark.setPosition(result.coins[counter].x,result.coins[counter].y);
+                    } 
+                    if (counter == coins) {
+                        result.spark.stop();
+                    }    
+                }
+                counter += 1;
+            },
+            callbackScope: game,
+            repeat: coins
+        });
+    }
+    return result;
+}
+
+var addCameras = (game) => {
+    var result = {
+        msgCam: game.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(0,1000).setVisible(true),
+        dim: (cameraArray) => {
+            game.tweens.add({
+                targets: cameraArray,
+                alpha: 0.3,
+                ease: 'Power1',
+                duration: 600
+            });
+        },
+    };
     return result;
 }

@@ -25,17 +25,8 @@ class FallingTones extends Phaser.Scene {
     create() {
         initialize();
 
-        ui.cams = {
-            msgCam: this.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(0,2000).setVisible(true),
-            dim: (cameraArray) => {
-                this.tweens.add({
-                    targets: cameraArray,
-                    alpha: 0.3,
-                    ease: 'Power1',
-                    duration: 600
-                });
-            }
-        };
+        ui.cams = addCameras(this);
+        ui.cams.msgCam.setVisible(false);
 
         var animationFrames = [];
 
@@ -51,7 +42,7 @@ class FallingTones extends Phaser.Scene {
             repeat: 0
         });
 
-        var removeAnimations = () => {
+        ui.removeAnimations = () => {
             this.anims.remove('pop');
         }
 
@@ -63,7 +54,67 @@ class FallingTones extends Phaser.Scene {
             score: this.add.text(680, 120, "0", newFontLarger).setOrigin(0.5, 0.5),
             levelTitle: this.add.text(680, 180, "Level", barFont).setOrigin(0.5, 0.5),
             level: this.add.text(680, 240, "1", newFontLarger).setOrigin(0.5, 0.5),
+            reminderTitle: this.add.text(680, 310, "Hints", barFont).setOrigin(0.5, 0.5),
+            reminders: [
+                this.add.text(680, 360, "", newFont).setOrigin(0.5, 0.5).setAlpha(0),
+                this.add.text(680, 360, "", newFont).setOrigin(0.5, 0.5).setAlpha(0),
+                this.add.text(680, 360, "", newFont).setOrigin(0.5, 0.5).setAlpha(0),
+            ]
         }
+
+        ui.shiftDown = (text) => {
+            this.tweens.add({
+                targets: text,
+                y: '+=40',
+                ease: 'Power1',
+                duration: 300
+            });
+        }
+
+        ui.fadeIn = (obj) => {
+            obj.y = 360;
+            this.tweens.add({
+                targets: obj,
+                alpha: 1,
+                ease: 'Power1',
+                duration: 300
+            });
+        }
+
+        ui.fadeOut = (obj) => {
+            this.tweens.add({
+                targets: obj,
+                alpha: 0,
+                ease: 'Power1',
+                duration: 300,
+                onComplete: (obj) => {
+                    ui.fadeIn(obj);
+                }
+            });
+        }
+
+        ui.addHint = (pinyin, character) => {
+            ui.barText.reminders.forEach((element) => {
+                if (element.alpha == 1) {
+                    if (element.y < 440) {
+                        ui.shiftDown(element);
+                    } else {
+                        ui.fadeOut(element);
+                    }
+                }
+            });
+            function newtext() {
+                for (let i=0;i<3;i++) {
+                    if (ui.barText.reminders[i].alpha == 0) {
+                        ui.barText.reminders[i].text = pinyin + " " + character;
+                        ui.fadeIn(ui.barText.reminders[i]);
+                        break
+                    }            
+                }
+            }
+            setTimeout(newtext, 360);
+        }
+
         ui.bubble = {
             sprite: this.physics.add.sprite(50, 10, 'bubble').setOrigin(0,0).setScale(0.3).setCollideWorldBounds(true),
             character: this.add.text(95, 45, cards.question["character"], darkFont).setOrigin(0.5, 0.5),
@@ -89,7 +140,7 @@ class FallingTones extends Phaser.Scene {
                 ui.raiseWall();
                 ui.newBubble();
             } else {
-                state.phase = "gameover";
+                state.gameOver();
             }
         });
         ui.newBubble = () => {
@@ -108,66 +159,9 @@ class FallingTones extends Phaser.Scene {
             state.phase = "play"
         }
 
-        // draw gameover dialog box
+        // create gameover dialog box
 
-        ui.message = {
-            background: this.add.image(1200, 2300, 'message_frame'),
-            displayText: [
-                this.add.text(1200, 2200, "", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 2350, "", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 2400, "", smallFont).setOrigin(0.5, 0.5),
-            ],
-            coins: [
-                this.add.image(1100, 2275, 'coin_disabled').setScale(0.6),
-                this.add.image(1200, 2275, 'coin_disabled').setScale(0.6),
-                this.add.image(1300, 2275, 'coin_disabled').setScale(0.6),
-            ],
-            buttons: [
-                addButton('mini', 1050, 2450, 'Replay', this),
-                addButton('mini', 1200, 2450, 'Next Level', this),
-                addButton('mini', 1350, 2450, 'Menu', this)
-            ],
-            spark: this.add.particles('spark').createEmitter({
-                x: 300,
-                y: 2275,
-                speed: { min: -200, max: 200 },
-                angle: { min: 0, max: 360 },
-                scale: { start: 1, end: 0 },
-                blendMode: 'SCREEN',
-                lifespan: 600,
-                gravityY: 0
-            }).stop()
-        };
-
-        ui.message.buttons[0].button.on('pointerdown', () => {
-            removeAnimations();
-            this.scene.restart('FallingTones');
-        })
-
-        ui.message.buttons[1].button.setVisible(false);
-        ui.message.buttons[1].displayText.setVisible(false);
-
-        ui.message.buttons[2].button.on('pointerdown', () => {
-            removeAnimations();
-            this.scene.stop('FallingTones');
-            this.scene.start('StartScene');
-        })
-
-        ui.message.allElements = [ui.message.background]
-        for (let i=0; i<3; i++) {
-            ui.message.allElements.push(
-                ui.message.displayText[i], ui.message.coins[i], ui.message.buttons[i].button, ui.message.buttons[i].displayText
-            )
-        }
-
-        ui.message.flyIn = () => {
-            this.tweens.add({
-                targets: ui.message.allElements,
-                x: '-=800',
-                ease: 'Power1',
-                duration: 600
-            });
-        }
+        ui.message = gameEndDialog('FallingTones', this);
 
         ui.wall = this.add.image(0,430, 'wall').setOrigin(0,0);
         ui.raiseWall = () => {
@@ -197,12 +191,25 @@ class FallingTones extends Phaser.Scene {
                 return 4
             }
         };
+
+        state.gameOver = () => {
+            var coins = Math.floor(user.score / 30);
+            if (coins > 3) {
+                coins = 3;
+            }
+            ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
+            ui.cams.msgCam.setVisible(true);
+            ui.message.flyIn();
+            ui.cams.dim([this.cameras.main]);        
+
+            if (coins > 0) {
+                ui.message.sparkle(coins);
+            }
+        }
     }
 
     update() {
         
-        // update bubble position
-
         ui.bubble.setVelocityX(0);
         ui.bubble.setVelocityY(0);
 
@@ -220,13 +227,19 @@ class FallingTones extends Phaser.Scene {
             }
             if (ui.bubble.sprite.y > ui.wallHeight + 15) {
                 user.chosenBucket = user.findBucket(ui.bubble.sprite.x);
+                var recentBubble = {
+                    character: ui.bubble.character.text,
+                    pinyin: toneConvert(ui.bubble.pinyin.text, cards.question.tone - 1)
+                }
                 var correct = checkToneBucket(user.chosenBucket);
                 if (!correct) {
                     if (ui.wallHeight > 110) {
+                        ui.addHint(recentBubble.character, recentBubble.pinyin);
                         ui.raiseWall();
                         ui.newBubble();
                     } else {
                         state.phase = "gameover";
+                        state.gameOver();
                     }
                 } else {
                     user.score += 10;
@@ -240,6 +253,7 @@ class FallingTones extends Phaser.Scene {
                     }
                     if (user.score == 500) {
                         state.phase = "gameover";
+                        state.gameOver();
                     }
                     ui.barText.score.text = user.score.toString();
                     if (state.phase !== "gameover") {
@@ -274,45 +288,6 @@ class FallingTones extends Phaser.Scene {
             } else if (ui.cursors.down.isDown) {
                 ui.bubble.setVelocityY(200);
             }
-        }
-
-        if (state.phase == "gameover") {
-            state.phase = 'paused'; // Game over code is executed only once
-            var coins = Math.floor(user.score / 30);
-            if (coins > 3) {
-                coins = 3;
-            }
-            ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
-            ui.message.displayText[1].text = "";
-            ui.message.displayText[2].text = "";
-            ui.message.flyIn();
-            ui.cams.dim([ui.cams.raceCam, this.cameras.main]);        
-            
-            // animate coin sparkles
-
-            if (coins > 0) {
-                var counter = 0;
-                this.time.addEvent({
-                    delay: 2000,
-                    callback: () => {
-                        if (counter == 0) {
-                            ui.message.spark.start();
-                        } else {
-                            ui.message.coins[counter-1].setTexture('coin');
-                            if (ui.message.coins[counter]) {
-                                ui.message.spark.setPosition(ui.message.coins[counter].x,ui.message.coins[counter].y);
-                            } 
-                            if (counter == coins) {
-                                ui.message.spark.stop();
-                            }    
-                        }
-                        counter += 1;
-                    },
-                    callbackScope: this,
-                    repeat: coins
-                });
-            }
-
         }
     }
 }

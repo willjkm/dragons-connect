@@ -3,20 +3,33 @@ var quiz = {
     numOfAnswers: 4,
     correctGuesses: 1, // number of times each item needs to be answered correctly before end of game
     maxLength: 10,
-    mode: "falling tones", // multiple choice, type answer, add tones, falling tones
+    mode: "", // multiple choice, type answer, add tones, falling tones
     prompt: "english",
     answerFormat: "pinyin" // character, english, pinyin
 };
+
+if (importData.scene_name == 'FallingTones') {
+    quiz.mode = 'falling tones';
+} else {
+    quiz.mode = 'multiple choice';
+}
+
 var user = {};
 var cards;
 var ui = {};
 var state = {};
 
-WebFont.load({google: {families: ['Carter One', 'ABeeZee']}});
+WebFont.load({google: {families: ['Carter One', 'ABeeZee', 'Ubuntu']}});
 
 defaultFont = {
     fontFamily: 'Arial',
     fontSize: '32px',
+    fill: '#FFF'
+}
+
+var ubuntuFont = {
+    fontFamily: 'Ubuntu',
+    fontSize: '30px',
     fill: '#FFF'
 }
 
@@ -65,6 +78,12 @@ var largeFont = {
 var funnyFont = {
     fontFamily: 'Carter One',
     fontSize: '300px',
+    fill: '#e6086d'
+}
+
+var funnyFontMedium = {
+    fontFamily: 'Carter One',
+    fontSize: '150px',
     fill: '#e6086d'
 }
 
@@ -117,7 +136,18 @@ function myLoad(config, game) {
                 game.load.image(element.name, config.mediaURL + element.file);
             } else if (element.type == "atlas") {
                 game.load.atlas(element.name, config.mediaURL + element.file, config.mediaURL + element.json);
+            } else if (element.type == "sound") {
+                game.load.audio(element.name, config.mediaURL + element.file);
             }
         });
     }
+}
+
+function shuffleArray(arr) {
+    var array = arr;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }

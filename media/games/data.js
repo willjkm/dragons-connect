@@ -668,7 +668,7 @@ function getToneData () {
       "id": 45,
       "character": "谁",
       "pinyin": "shei",
-      "tone": 3,
+      "tone": 2,
       "lesson": 5
     },
     {

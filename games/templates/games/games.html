@@ -2,13 +2,15 @@
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
-    <title>Dragon Boat Game</title>
+    <title>{{ scene_name }}</title>
     <style type="text/css">
         body {
             margin: 0;
         }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> 
 </head>
 <body>
 
@@ -20,7 +22,8 @@
         var importData = {
             lesson: {{ lesson }},
             top_score: {{ top_score }},
-            coins: {{ coins }}
+            coins: {{ coins }},
+            scene_name: '{{ scene_name }}'
         }
 
         // Prevents spacebar from scrolling the page (e.g. during text input in a game)
@@ -36,7 +39,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
     <script src="../../../media/games/data.js"></script>
     <script src="../../../media/games/utils.js"></script>
-    <script src="../../../media/games/dragonboatgame.js"></script>
+    {% if scene_name == 'DragonBoatRace' %}
+        <script src="../../../media/games/dragonboatgame.js"></script>
+    {% elif scene_name == 'FallingTones' %}
+        <script src="../../../media/games/fallingtones.js"></script>
+    {% elif scene_name == 'Rockets' %}
+        <script src="../../../media/games/rockets.js"></script>
+    {% elif scene_name == 'Characters' %}
+        <script src="../../../media/games/characters.js"></script>
+    {% endif %}
     <script src="../../../media/games/gamelogic.js"></script>
     <script src="../../../media/games/main.js"></script>
 

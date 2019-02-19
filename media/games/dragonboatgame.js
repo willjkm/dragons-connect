@@ -68,7 +68,7 @@ class DragonBoatRace extends Phaser.Scene {
             });
         }    
 
-        var removeAnimations = () => {
+        ui.removeAnimations = () => {
             this.anims.remove('paddle');
             this.anims.remove('paddleforever1');
             this.anims.remove('paddleforever2');
@@ -77,28 +77,11 @@ class DragonBoatRace extends Phaser.Scene {
 
         // set game cameras
 
-        this.cameras.main.setSize(800,350).setPosition(0,250).setScroll(0,250);
+        this.cameras.main.setSize(800,350).setPosition(0,250).setScroll(0,250); 
+        ui.raceCam = this.cameras.add(0, 0, 800, 250).setOrigin(0,0.6)
+        
+        ui.cams = addCameras(this);
 
-        ui.cams = {
-            raceCam: this.cameras.add(0, 0, 800, 250).setOrigin(0,0.6),
-            msgCam: this.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(0,1000).setVisible(true),
-            dim: (cameraArray) => {
-                this.tweens.add({
-                    targets: cameraArray,
-                    alpha: 0.3,
-                    ease: 'Power1',
-                    duration: 600
-                });
-            },
-            undim: (cameraArray) => {
-                this.tweens.add({
-                    targets: cameraArray,
-                    alpha: 1,
-                    ease: 'Power1',
-                    duration: 600
-                });
-            }
-        };
 
         // initialize game state
 
@@ -137,73 +120,7 @@ class DragonBoatRace extends Phaser.Scene {
 
         // draw gameover dialog box
 
-        ui.message = {
-            background: this.add.image(1200, 1300, 'message_frame'),
-            displayText: [
-                this.add.text(1200, 1200, "", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 1350, "", themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1200, 1400, "", smallFont).setOrigin(0.5, 0.5),
-            ],
-            coins: [
-                this.add.image(1100, 1275, 'coin_disabled').setScale(0.6),
-                this.add.image(1200, 1275, 'coin_disabled').setScale(0.6),
-                this.add.image(1300, 1275, 'coin_disabled').setScale(0.6),
-            ],
-            buttons: [
-                addButton('mini', 1050, 1450, 'Replay', this),
-                addButton('mini', 1200, 1450, 'Next Level', this),
-                addButton('mini', 1350, 1450, 'Menu', this)
-            ],
-            spark: this.add.particles('spark').createEmitter({
-                x: 300,
-                y: 1275,
-                speed: { min: -200, max: 200 },
-                angle: { min: 0, max: 360 },
-                scale: { start: 1, end: 0 },
-                blendMode: 'SCREEN',
-                lifespan: 600,
-                gravityY: 0
-            }).stop()
-        };
-
-        ui.message.buttons[0].button.on('pointerdown', () => {
-            removeAnimations();
-            this.scene.restart('DragonBoatRace');
-        })
-
-        ui.message.buttons[1].button.setVisible(false);
-        ui.message.buttons[1].displayText.setVisible(false);
-
-        ui.message.buttons[2].button.on('pointerdown', () => {
-            removeAnimations();
-            this.scene.stop('DragonBoatRace');
-            this.scene.start('StartScene');
-        })
-
-        ui.message.allElements = [ui.message.background]
-        for (let i=0; i<3; i++) {
-            ui.message.allElements.push(
-                ui.message.displayText[i], ui.message.coins[i], ui.message.buttons[i].button, ui.message.buttons[i].displayText
-            )
-        }
-
-        ui.message.flyIn = () => {
-            this.tweens.add({
-                targets: ui.message.allElements,
-                x: '-=800',
-                ease: 'Power1',
-                duration: 600
-            });
-        }
-
-        ui.message.flyOut = () => {
-            this.tweens.add({
-                targets: ui.message.allElements,
-                x: '+=800',
-                ease: 'Power1',
-                duration: 600
-            });
-        }
+        ui.message = gameEndDialog('DragonBoatRace', this);
 
         // draw question and answers
 
@@ -316,7 +233,7 @@ class DragonBoatRace extends Phaser.Scene {
         ui.dboat = this.add.sprite(100,160,'dboat','Boat1.png').setScale(0.3,0.3).setFlip(true,false);
 
         ui.dboat.on('madeSomeProgress', () => {
-            ui.cams.raceCam.startFollow(ui.dboat, false, 1, 1, 250, 10);
+            ui.raceCam.startFollow(ui.dboat, false, 1, 1, 250, 10);
             ui.dboat.isFollowed = true;
         });
 
@@ -334,6 +251,73 @@ class DragonBoatRace extends Phaser.Scene {
             ease: 'Power1',
             duration: 300
         });
+
+        state.gameOver = () => {
+            // Remove interactive and animated elements from game scene
+                        
+            ui.opponent.team.forEach(element => {
+                element.setVisible(false);
+            });
+
+            ui.answer.buttons.forEach((element) => {
+                element.button.removeInteractive();
+            });
+
+            // work out how many coins will be awarded
+
+            var place = 1;
+            ui.opponent.team.forEach(element => {
+                if (element.x > ui.dboat.x) {
+                    place += 1;
+                };
+            });
+            var coins = 4-place;
+
+            // update the game over message text
+
+            var finalScore = ui.timer.displayText[0].text;
+            ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!";
+            ui.message.displayText[1].text = "Time: " + finalScore + "s";
+
+            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
+                ui.message.displayText[2].text = "New Record!";
+                ui.message.displayText[2].setStyle({fontSize:'30px', color: '#ee7777', fontFamily: 'Carter One'}).setRotation(-0.5).setX(1300).setY(1370);
+            } else if (user.topScore[quiz.level - 1] == "0") {
+                ui.message.displayText[2].text = "";
+            } else {            
+                ui.message.displayText[2].text = "Personal best: " + user.topScore[quiz.level - 1] + "s";
+            }
+
+            ui.message.flyIn();
+            ui.cams.dim([ui.raceCam, this.cameras.main]);        
+
+            if (coins > 0) {
+                ui.message.sparkle(coins);
+            }
+
+            // update user top score and coins
+
+            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
+                user.topScore[quiz.level - 1] = finalScore;
+            } else if (user.topScore[quiz.level - 1] == 0) {
+                user.topScore[quiz.level - 1] = finalScore;
+            }
+
+            if (user.coins[quiz.level - 1] < coins) {
+                user.coins[quiz.level - 1] = coins;
+            }
+
+            // AJAX POST score to database
+
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            $.post('../../../lessons/ajax/gameover/', {
+                csrfmiddlewaretoken: CSRFtoken,
+                element_name: "race",
+                score: Math.floor(finalScore * 100),
+                lesson: importData.lesson,
+                award: "level " + quiz.level.toString() + " " + coins.toString() + " coins"
+            });
+        }
     }
 
     update() {
@@ -370,103 +354,11 @@ class DragonBoatRace extends Phaser.Scene {
             // End of game when boat progresses 2300 pixels
 
             if (ui.dboat.x > 2300) {
-                state.phase = 'gameover';
+                state.phase = "gameover";
+                state.gameOver();
             }
         }
-        
-        if (state.phase == 'gameover') {
-            
-            state.phase = 'paused'; // Game over code is executed only once
-
-            // Remove interactive and animated elements from game scene
-            
-            ui.opponent.team.forEach(element => {
-                element.setVisible(false);
-            });
-
-            ui.answer.buttons.forEach((element) => {
-                element.button.removeInteractive();
-            });
-
-            // work out how many coins will be awarded
-
-            var place = 1;
-            ui.opponent.team.forEach(element => {
-                if (element.x > ui.dboat.x) {
-                    place += 1;
-                };
-            });
-            var coins = 4-place;
-
-            // update the game over message text
-
-            var finalScore = ui.timer.displayText[0].text;
-            ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!";
-            ui.message.displayText[1].text = "Time: " + finalScore + "s";
-
-            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
-                ui.message.displayText[2].text = "New Record!";
-                ui.message.displayText[2].setStyle({fontSize:'30px', color: '#ee7777', fontFamily: 'Carter One'}).setRotation(-0.5).setX(1300).setY(1370);
-            } else if (user.topScore[quiz.level - 1] == "0") {
-                ui.message.displayText[2].text = "";
-            } else {            
-                ui.message.displayText[2].text = "Personal best: " + user.topScore[quiz.level - 1] + "s";
-            }
-
-            // animate the entrance of the game over message
-
-            ui.message.flyIn();
-            ui.cams.dim([ui.cams.raceCam, this.cameras.main]);        
-            
-            // animate coin sparkles
-
-            if (coins > 0) {
-                var counter = 0;
-                this.time.addEvent({
-                    delay: 2000,
-                    callback: () => {
-                        if (counter == 0) {
-                            ui.message.spark.start();
-                        } else {
-                            ui.message.coins[counter-1].setTexture('coin');
-                            if (ui.message.coins[counter]) {
-                                ui.message.spark.setPosition(ui.message.coins[counter].x,ui.message.coins[counter].y);
-                            } 
-                            if (counter == coins) {
-                                ui.message.spark.stop();
-                            }    
-                        }
-                        counter += 1;
-                    },
-                    callbackScope: this,
-                    repeat: coins
-                });
-            }
-
-            // update user top score and coins
-        
-            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
-                user.topScore[quiz.level - 1] = finalScore;
-            } else if (user.topScore[quiz.level - 1] == 0) {
-                user.topScore[quiz.level - 1] = finalScore;
-            }
-
-            if (user.coins[quiz.level - 1] < coins) {
-                user.coins[quiz.level - 1] = coins;
-            }
-
-            // AJAX POST score to database
-
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "race",
-                score: Math.floor(finalScore * 100),
-                lesson: importData.lesson,
-                award: "level " + quiz.level.toString() + " " + coins.toString() + " coins"
-            });
-        }
-    }
+    } 
 }
 
 class StartScene extends Phaser.Scene {
@@ -495,17 +387,7 @@ class StartScene extends Phaser.Scene {
 
         this.add.image(0, 0, 'splash').setOrigin(0,0);
 
-        gui.cams = {
-            msgCam: this.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(0,1000).setVisible(true),
-            dim: (cameraArray) => {
-                this.tweens.add({
-                    targets: cameraArray,
-                    alpha: 0.3,
-                    ease: 'Power1',
-                    duration: 600
-                });
-            }
-        };
+        gui.cams = addCameras(this);
 
         var startButton = addButton('small', 290, 250, "Start Game", this);
         var instructions = addButton('small', 510, 250, "Instructions", this);
