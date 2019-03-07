@@ -20,7 +20,7 @@ function newQuizDeck(lesson, maxItems=20) {
         const extraQuestions = allVocab.filter(earlierLessons);
         shuffleArray(extraQuestions);
         if (extraQuestions.length < itemsToAdd) {
-            itemsToAdd = extraQuestions.length
+            itemsToAdd = extraQuestions.length;
         }
         for (let i = 1; i <= itemsToAdd; i++) {
             questionSet.push(extraQuestions[i]);

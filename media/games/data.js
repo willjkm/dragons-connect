@@ -758,3 +758,94 @@ function getToneData () {
    ];
   return vocabData;
 }
+function getQuizData () {
+  var quizData = [
+    {
+      "lesson": 1,
+      "category": 0,
+      "question": "What is the capital of China?",
+      "answer": "Beijing",
+      "wrong": ["Delhi", "Seoul", "New York", "London", "Paris"]
+    },
+    {
+      "lesson": 1,
+      "category": 1,
+      "question": "Select the English word for 好.",
+      "answer": "good",
+      "wrong": ["bad", "very", "you", "me", "again", "see"]
+    },
+    {
+      "lesson": 1,
+      "category": 2,
+      "question": "Select the correct character for qiú.",
+      "answer": "球",
+      "wrong": ["那", "我", "好", "在"]
+    },
+    {
+      "lesson": 1,
+      "category": 3,
+      "question": "Which tone is 在 (zai)?",
+      "answer": "4th",
+      "wrong": ["1st", "2nd", "3rd"]
+    },
+    {
+      "lesson": 1,
+      "category": 4,
+      "question": "Select the English word for 山.",
+      "answer": "mountain",
+      "wrong": ["river", "three", "water", "sky", "China"]
+    },
+    {
+      "lesson": 1,
+      "category": 5,
+      "question": "Select the word you hear.",
+      "answer": "fèi",
+      "wrong": ["mǎ", "xì", "wén", "guāng", "rì"],
+      "sound": "fei4"
+    },
+    {
+      "lesson": 1,
+      "category": 0,
+      "question": "What is the economic capital of China?",
+      "answer": "Shanghai",
+      "wrong": ["Delhi", "Seoul", "New York", "London", "Paris"]
+    },
+    {
+      "lesson": 1,
+      "category": 1,
+      "question": "Select the English word for 你.",
+      "answer": "you",
+      "wrong": ["bad", "very", "good", "me", "again", "see"]
+    },
+    {
+      "lesson": 1,
+      "category": 2,
+      "question": "Select the correct character for nà.",
+      "answer": "那",
+      "wrong": ["球", "我", "好", "在"]
+    },
+    {
+      "lesson": 1,
+      "category": 3,
+      "question": "Which tone is 我 (wo)?",
+      "answer": "3rd",
+      "wrong": ["1st", "2nd", "4th"]
+    },
+    {
+      "lesson": 1,
+      "category": 4,
+      "question": "Select the English word for 三.",
+      "answer": "three",
+      "wrong": ["river", "mountain", "water", "sky", "China"]
+    },
+    {
+      "lesson": 1,
+      "category": 5,
+      "question": "Select the word you hear.",
+      "answer": "féi",
+      "wrong": ["mǎ", "fèi", "wén", "guāng", "rì"],
+      "sound": "fei2"
+    }
+  ]
+  return quizData;
+}

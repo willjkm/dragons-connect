@@ -375,6 +375,14 @@ class StartScene extends Phaser.Scene {
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "loading", file: "loading.jpg"},
+                {type: "image", name: "dbr0", file: "dbr0.jpg"},
+                {type: "image", name: "dbr1", file: "dbr1.jpg"},
+                {type: "image", name: "dbr2", file: "dbr2.jpg"},
+                {type: "image", name: "dbr3", file: "dbr3.jpg"},
+                {type: "image", name: "dbr4", file: "dbr4.jpg"},
+                {type: "image", name: "dbr5", file: "dbr5.jpg"},
+                {type: "image", name: "iarrow", file: "instruction_arrow.png"},
+                {type: "image", name: "idialog", file: "instruction_dialog.png"},
             ]
         }
         
@@ -391,6 +399,10 @@ class StartScene extends Phaser.Scene {
 
         var startButton = addButton('small', 290, 250, "Start Game", this);
         var instructions = addButton('small', 510, 250, "Instructions", this);
+
+        instructions.button.on('pointerdown', () => {
+            runInstructions('race', this);
+        });
 
         // populate previous top scores (first time only)
 

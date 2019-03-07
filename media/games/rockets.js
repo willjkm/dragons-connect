@@ -109,7 +109,8 @@ class Rockets extends Phaser.Scene {
                 })
                 ui.choiceText.forEach((t, index) => {
                     t.setText(state.round[state.currentRound].pinyin[index]);
-                })    
+                })
+                state.round[state.currentRound].audio[state.correctAnswer].play();
             }
         }
 
@@ -126,6 +127,21 @@ class Rockets extends Phaser.Scene {
             if (coins > 0) {
                 ui.message.sparkle(coins);
             }
+
+            if (user.topScore < user.score) {
+                user.topScore = user.score;
+            }
+
+            // AJAX POST score to database
+
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            $.post('../../../lessons/ajax/gameover/', {
+                csrfmiddlewaretoken: CSRFtoken,
+                element_name: "rockets",
+                score: user.score,
+                lesson: importData.lesson,
+                award: coins.toString() + " coins"
+            });
         }
 
         ui.cams = addCameras(this);
@@ -148,7 +164,7 @@ class Rockets extends Phaser.Scene {
 
             for (let i=0; i<9; i++) {
                 ui.explosion[j].leadSprite.push(
-                    this.physics.add.sprite(0,0, 'spark').setScale(0.5)
+                    this.physics.add.sprite(-10,-10, 'spark').setScale(0.5)
                 );
                 ui.explosion[j].trail.push(
                     this.add.particles('spark').createEmitter({
@@ -238,6 +254,9 @@ class Rockets extends Phaser.Scene {
                 if (index == state.correctAnswer) {
                     rocket.launch();
                     state.correctAnswer = state.nextQuestion();
+                    if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
+                        state.round[state.currentRound].audio[state.correctAnswer].play();
+                    }
                     if (state.correctAnswer === null) {
                         setTimeout(state.nextRound, 3000);
                     }
@@ -284,9 +303,16 @@ class Rockets extends Phaser.Scene {
 
         for (let i=0;i<4;i++) {
             ui.choiceText.push(
-                this.add.text(100+(100*i), 535, state.round[state.currentRound].pinyin[i], ubuntuFont).setOrigin(0.5, 0.5)
-            )
+                this.add.text(100+(100*i), 535, state.round[state.currentRound].pinyin[i], defaultFont).setOrigin(0.5, 0.5)
+            );
         }
+
+        for (let i=0;i<4;i++) {
+            ui.choiceText[i].setVisible(false);
+            ui.choiceText[i].setVisible(true);
+        }
+
+        state.round[state.currentRound].audio[state.correctAnswer].play(); // first sound of game
 
         user.lives = 6;
         user.score = 0;
@@ -351,7 +377,14 @@ class StartScene extends Phaser.Scene {
             mediaURL: "../../../media/images/",
             loadObjects: [
                 {type: "image", name: "splash", file: "splashscreen_f.jpg"},
-                {type: "image", name: "loading", file: "loading_f.jpg"}
+                {type: "image", name: "loading", file: "loading_f.jpg"},
+                {type: "image", name: "fw0", file: "fw0.jpg"},
+                {type: "image", name: "fw1", file: "fw1.jpg"},
+                {type: "image", name: "fw2", file: "fw2.jpg"},
+                {type: "image", name: "fw3", file: "fw3.jpg"},
+                {type: "image", name: "fw4", file: "fw4.jpg"},
+                {type: "image", name: "iarrow", file: "instruction_arrow.png"},
+                {type: "image", name: "idialog", file: "instruction_dialog.png"},
             ]
         }
         
@@ -361,8 +394,19 @@ class StartScene extends Phaser.Scene {
 
     create() {
         this.add.image(0,0, 'splash').setOrigin(0,0);
+
+        if (typeof user.topScore == "undefined") {
+            user.topScore = importData.top_score;
+        }
+
+        this.add.text(400, 300, "Top score: " + user.topScore.toString(), defaultFont).setOrigin(0.5,0.5);
+
         var startButton = addButton('small', 290, 420, "Start Game", this);
         var instructions = addButton('small', 510, 420, "Instructions", this);
+        instructions.button.on('pointerdown', () => {
+            runInstructions('rockets', this);
+        });
+
         startButton.button.on('pointerdown', () => {
             this.scene.start('Rockets');
         });

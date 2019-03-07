@@ -40,29 +40,29 @@ class Characters extends Phaser.Scene {
 
         ui.data = [
             {
-                character: "店",
+                character: "一",
                 pinyin: "diàn",
-                english: "shop"
+                english: "one"
             },
             {
-                character: "园",
+                character: "二",
                 pinyin: "yuán",
-                english: "garden"
+                english: "two"
             },
             {
-                character: "学",
+                character: "三",
                 pinyin: "xué",
-                english: "learn"
+                english: "three"
             },
             {
-                character: "公",
+                character: "四",
                 pinyin: "gōng",
-                english: "public"
+                english: "four"
             },
             {
-                character: "商",
+                character: "五",
                 pinyin: "shāng",
-                english: "commerce"
+                english: "five"
             }
         ]
 
@@ -94,7 +94,10 @@ class Characters extends Phaser.Scene {
             var nextQuestion = null;
             var candidateQuestions = [];
             var availableVocab = [];
+            var counter = 0
             while (!nextQuestion) {
+                counter++
+                console.log('no question yet!');
                 ui.blocks.forEach((column) => {
                     column.forEach((block) => {
                         if (!block.locked) {
@@ -124,6 +127,9 @@ class Characters extends Phaser.Scene {
                     ui.questionList = ui.newQuestionList(ui.prompt.vocab);
                     nextQuestion = ui.questionList[0]
                 }
+                if (counter > 200) {
+                    nextQuestion = ui.data[0]
+                }
             }
             return nextQuestion;
         }
@@ -149,6 +155,7 @@ class Characters extends Phaser.Scene {
         ui.totalBlocks = 0
         ui.blockGroup = this.physics.add.group()
 
+
         ui.addBlock = (column) => {
             ui.totalBlocks++;
             ui.blocksOnScreen++;
@@ -171,7 +178,9 @@ class Characters extends Phaser.Scene {
                 }
             })
             newBlock.on('pointerdown', () => {
-                ui.processInput(newBlock);
+                if (!ui.exploding) {
+                    ui.processInput(newBlock);
+                }
             })
             if (typeof ui.blocks[column] !== 'undefined') {
                 ui.blocks[column].push(newBlock);
@@ -273,16 +282,22 @@ class Characters extends Phaser.Scene {
                         });
                     });
                     if (!moreOutThere) {
-                        ui.clearMessage.setVisible(true);
                         user.score += 5;
                         ui.scoreText.text = user.score;
+                        ui.nextround.dialog.setVisible(true);
+                        ui.nextround.text.setVisible(true);                        
+                        ui.exploding = true;
+                        var recentQuestion = ui.prompt.vocab;
+                        ui.prompt.vocab = ui.getNextQuestion(recentQuestion);
+                        ui.prompt.displayText.text = ui.prompt.vocab.english;
+                        ui.nextround.text.setText("Now find:" + ui.prompt.vocab.english);
+
                         setTimeout(() => {
-                            ui.clearMessage.setVisible(false);
+                            ui.nextround.dialog.setVisible(false);
+                            ui.nextround.text.setVisible(false);
+                            ui.exploding = false;
                             ui.bar.rect.width = 160;
-                            var recentQuestion = ui.prompt.vocab;
-                            ui.prompt.vocab = ui.getNextQuestion(recentQuestion);
-                            ui.prompt.displayText.text = ui.prompt.vocab.english;
-                        }, 1000)
+                        }, 2000)
                     }
                 } else {
                     block.locked = true;
@@ -327,6 +342,21 @@ class Characters extends Phaser.Scene {
             if (coins > 0) {
                 ui.message.sparkle(coins);
             }
+
+            if (user.topScore < user.score) {
+                user.topScore = user.score;
+            }
+
+            // AJAX POST score to database
+
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            $.post('../../../lessons/ajax/gameover/', {
+                csrfmiddlewaretoken: CSRFtoken,
+                element_name: "characters",
+                score: user.score,
+                lesson: importData.lesson,
+                award: coins.toString() + " coins"
+            });
         }
 
 
@@ -351,6 +381,11 @@ class Characters extends Phaser.Scene {
 
         function hitBlock (sprite, block) {
             ui.removeBlock(block);
+        }
+
+        ui.nextround = {
+            dialog: this.add.image(400,1300, 'idialog').setVisible(false),
+            text: this.add.text(300,1300,'Great job!', darkFont).setVisible(false)
         }
 
         ui.explosion = ["","","",""]
@@ -405,7 +440,9 @@ class Characters extends Phaser.Scene {
         }
 
         if (state.phase == "play") {
-            ui.bar.rect.width -= 0.4;
+            if (!ui.exploding) {
+                ui.bar.rect.width -= 0.4;
+            }
             if (ui.blocksOnScreen < 3) {
                 user.score += 100;
                 state.gameOver();
@@ -414,10 +451,22 @@ class Characters extends Phaser.Scene {
 
         if (!ui.exploding) {
             if (ui.bar.rect.width <= 0) {
-                ui.bar.rect.width = 160;
                 var recentQuestion = ui.prompt.vocab;
                 ui.prompt.vocab = ui.getNextQuestion(recentQuestion);
                 ui.prompt.displayText.text = ui.prompt.vocab.english;
+
+                ui.nextround.dialog.setVisible(true);
+                ui.nextround.text.setVisible(true);                        
+                ui.exploding = true;
+                ui.nextround.text.setText("Now find:" + ui.prompt.vocab.english);
+
+                setTimeout(() => {
+                    ui.nextround.dialog.setVisible(false);
+                    ui.nextround.text.setVisible(false);
+                    ui.exploding = false;
+                    ui.bar.rect.width = 160;
+                }, 2000)
+            
                 user.power--;
                 if (user.power < 0) {
                     user.power = 0;
@@ -473,7 +522,14 @@ class StartScene extends Phaser.Scene {
             mediaURL: "../../../media/images/",
             loadObjects: [
                 {type: "image", name: "splash", file: "block_splash.jpg"},
-                {type: "image", name: "loading", file: "loading_ch.jpg"}
+                {type: "image", name: "loading", file: "loading_ch.jpg"},
+                {type: "image", name: "bz0", file: "bz0.jpg"},
+                {type: "image", name: "bz1", file: "bz1.jpg"},
+                {type: "image", name: "bz2", file: "bz2.jpg"},
+                {type: "image", name: "bz3", file: "bz3.jpg"},
+                {type: "image", name: "bz4", file: "bz4.jpg"},
+                {type: "image", name: "iarrow", file: "instruction_arrow.png"},
+                {type: "image", name: "idialog", file: "instruction_dialog.png"}
             ]
         }
         
@@ -483,8 +539,19 @@ class StartScene extends Phaser.Scene {
 
     create() {
         this.add.image(0,0, 'splash').setOrigin(0,0);
+
+        if (typeof user.topScore == "undefined") {
+            user.topScore = importData.top_score;
+        }
+
+        this.add.text(400, 330, "Top score: " + user.topScore.toString(), newFontLarger).setOrigin(0.5,0.5);
+
         var startButton = addButton('small', 290, 420, "Start Game", this);
         var instructions = addButton('small', 510, 420, "Instructions", this);
+        instructions.button.on('pointerdown', () => {
+            runInstructions('blockzi', this);
+        });
+
         startButton.button.on('pointerdown', () => {
             this.scene.start('Characters');
         });

@@ -205,6 +205,21 @@ class FallingTones extends Phaser.Scene {
             if (coins > 0) {
                 ui.message.sparkle(coins);
             }
+
+            if (user.topScore < user.score) {
+                user.topScore = user.score;
+            }
+
+            // AJAX POST score to database
+
+            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            $.post('../../../lessons/ajax/gameover/', {
+                csrfmiddlewaretoken: CSRFtoken,
+                element_name: "falling tones",
+                score: user.score,
+                lesson: importData.lesson,
+                award: coins.toString() + " coins"
+            });
         }
     }
 
@@ -303,6 +318,14 @@ class StartScene extends Phaser.Scene {
             loadObjects: [
                 {type: "image", name: "splash", file: "splashscreen.jpg"},
                 {type: "image", name: "loading", file: "loading2.jpg"},
+                {type: "image", name: "ft0", file: "ft0.jpg"},
+                {type: "image", name: "ft1", file: "ft1.jpg"},
+                {type: "image", name: "ft2", file: "ft2.jpg"},
+                {type: "image", name: "ft3", file: "ft3.jpg"},
+                {type: "image", name: "ft4", file: "ft4.jpg"},
+                {type: "image", name: "ft5", file: "ft5.jpg"},
+                {type: "image", name: "iarrow", file: "instruction_arrow.png"},
+                {type: "image", name: "idialog", file: "instruction_dialog.png"},
             ]
         }
         
@@ -311,9 +334,18 @@ class StartScene extends Phaser.Scene {
     }
 
     create() {
+
+        if (typeof user.topScore == "undefined") {
+            user.topScore = importData.top_score;
+        }
         this.add.image(0,0, 'splash').setOrigin(0,0);
+        this.add.text(595, 438, user.topScore.toString(), sketchyFont);
         var startButton = addButton('small', 290, 300, "Start Game", this);
         var instructions = addButton('small', 510, 300, "Instructions", this);
+        instructions.button.on('pointerdown', () => {
+            runInstructions('fallingTones', this);
+        });
+
         startButton.button.on('pointerdown', () => {
             this.scene.start('FallingTones');
         });
