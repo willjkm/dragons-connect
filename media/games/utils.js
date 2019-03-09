@@ -45,6 +45,12 @@ var ubuntuFont = {
     fill: '#FFF'
 }
 
+var ubuntuRed = {
+    fontFamily: 'Ubuntu',
+    fontSize: '50px',
+    fill: '#e21616'
+}
+
 var darkFont = {
     fontFamily: 'Arial',
     fontSize: '32px',

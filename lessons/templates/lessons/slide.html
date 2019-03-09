@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block custom_style %}
+<style>
+</style>
+{% endblock %}
+
 {% block content %}
 
 <div class="sidenav">
@@ -20,22 +25,22 @@
             {% endif %}
         {% endif %}
     {% endfor %}
-    <a class="btn btn-secondary mt-4" href="/lessons/" style="width: 80%; margin: auto; text-align: left;" role="button">Back to index</a>
+    <a class="btn btn-outline-warning mt-4" href="/lessons/" style="width: 80%; margin: auto; text-align: left;" role="button">Back to index</a>
 </div>
 
 <div class="main" id="mainContent">
 
     <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0"></iframe>
 
-    <p>{{ current_slide.bodyText }}</p>
+    <!-- <p>{{ current_slide.bodyText }}</p> -->
 
     {% if role == 'student' %}
         {% if can_unlock_next_slide %}
             {% if current_slide.content_type == "game" %}
-                <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button>
+                <!-- <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button> -->
             {% endif %}
         {% endif %}
-        <hr>
+        <!-- <hr> -->
 
         {% if current_slide_number > 1 %}
             <a class="btn btn-primary mb-4" href="/lessons/{{ lesson_number }}/slide/{{ previous_slide_number }}" role="button">Previous slide</a>
@@ -45,21 +50,21 @@
 
         {% if is_final_slide %}
             {% if next_slide_is_available == False %}
-                <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton" disabled>
+                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton" disabled>
                     Next lesson
                 </button>
             {% else %}
-                <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton">
+                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton">
                     Next lesson
                 </button>
             {% endif %}
         {% else %}
             {% if next_slide_is_available == False %}
-                <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton" disabled>
+                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="goToNextSlide()" id="continuebutton" disabled>
                     Next slide
                 </button>
             {% else %}
-                <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton">
+                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="goToNextSlide()" id="continuebutton">
                     Next slide
                 </button>
             {% endif %}
@@ -114,9 +119,9 @@
         }
     }
 
-    document.getElementById("progressbutton").addEventListener("click", function() {
-        enableNextSlide();
-    })
+    //document.getElementById("progressbutton").addEventListener("click", function() {
+    //    enableNextSlide();
+    //})
 
     window.addEventListener('keydown', function(e) {
         if (e.keyCode == 32 && e.target == document.body) {

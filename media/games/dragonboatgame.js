@@ -12,8 +12,8 @@ class DragonBoatRace extends Phaser.Scene {
             mediaURL: "../../../media/images/",
             loadObjects: [
                 {type: "image", name: "boat", file: "dboat.png"},
-                {type: "image", name: "background", file: "background.jpg"},
-                {type: "image", name: "scenery", file: "scenery2.jpg"},
+                {type: "image", name: "background", file: "newerbackground.jpg"},
+                {type: "image", name: "scenery", file: "sceneryNEW.jpg"},
                 {type: "image", name: "message_frame", file: "gameoverbackground.png"},
                 {type: "atlas", name: "dboat", file: "boat_spritesheetsmaller.png", json: "boat_spritesheetsmaller.json"},
                 {type: "atlas", name: "enemy1", file: "boat_spritesheetsmaller1.png", json: "boat_spritesheetsmaller1.json"},
@@ -78,7 +78,7 @@ class DragonBoatRace extends Phaser.Scene {
         // set game cameras
 
         this.cameras.main.setSize(800,350).setPosition(0,250).setScroll(0,250); 
-        ui.raceCam = this.cameras.add(0, 0, 800, 250).setOrigin(0,0.6)
+        ui.raceCam = this.cameras.add(0, 0, 800, 300).setOrigin(0,0.766)
         
         ui.cams = addCameras(this);
 
@@ -125,13 +125,13 @@ class DragonBoatRace extends Phaser.Scene {
         // draw question and answers
 
         ui.question = {
-            displayText: this.add.text(185, 335, cards.question[quiz.prompt], largeFont).setOrigin(0.5,0.5)
+            displayText: this.add.text(185, 380, cards.question[quiz.prompt], largeFont).setOrigin(0.5,0.5)
         };
 
         ui.answer = {
             displayText: [],
             buttons: [],
-            buttonLocations: [[210, 450],[210, 525],[500, 450],[500, 525]]
+            buttonLocations: [[155, 470],[155, 545],[455, 470],[455, 545]]
         };
 
         for (let i = 0; i < quiz.numOfAnswers; i++) {
@@ -152,10 +152,12 @@ class DragonBoatRace extends Phaser.Scene {
 
         // draw text that shows time and position in race
 
+        this.add.rectangle(700, 1050, 100, 55, 0xffffff).setAlpha(0.6)
+
         ui.timer = {
             displayText: [
-                this.add.text(440, 340, "", darkFont).setOrigin(0.5,0.5),
-                this.add.text(598, 340, "", themeFont).setOrigin(0.5,0.5),
+                this.add.text(700, 1050, "", darkFont).setOrigin(0.5,0.5),
+                this.add.text(705, 515, "", themeFont).setOrigin(0.5,0.5),
             ],
             findPlace: () => {
                 var place = 1;
@@ -176,12 +178,13 @@ class DragonBoatRace extends Phaser.Scene {
             }
         };
 
+
         // draw energy bar
 
         ui.energy = {
             level: 0,
-            bar: this.add.rectangle(728, 531, 52, 2, 0xff0000),                                                                                                                                                                 
-            displayText: this.add.text(726, 495, "", defaultFont).setOrigin(0.5,0)
+            bar: this.add.rectangle(352, 373.3, 0, 40.5, 0xff0000),                                                                                                                                                                 
+            displayText: this.add.text(726, 495, "", defaultFont).setOrigin(0.5,0).setVisible(false)
         };
 
         ui.energy.update = () => {
@@ -211,9 +214,9 @@ class DragonBoatRace extends Phaser.Scene {
 
         ui.opponent = {
             team: [
-                this.add.sprite(100,40,'enemy1','Boat1.png').setScale(0.3,0.3).setFlip(true,false),
-                this.add.sprite(100,80,'enemy2','Boat1.png').setScale(0.3,0.3).setFlip(true,false),
-                this.add.sprite(100,120,'enemy3','Boat1.png').setScale(0.3,0.3).setFlip(true,false)
+                this.add.sprite(100,120,'enemy1','Boat1.png').setScale(0.3,0.3).setFlip(true,false),
+                this.add.sprite(100,160,'enemy2','Boat1.png').setScale(0.3,0.3).setFlip(true,false),
+                this.add.sprite(100,200,'enemy3','Boat1.png').setScale(0.3,0.3).setFlip(true,false)
             ],
             returnVelocity: (x) => {            
                 if (x < 300) {
@@ -230,7 +233,7 @@ class DragonBoatRace extends Phaser.Scene {
 
         // player sprite
 
-        ui.dboat = this.add.sprite(100,160,'dboat','Boat1.png').setScale(0.3,0.3).setFlip(true,false);
+        ui.dboat = this.add.sprite(100,240,'dboat','Boat1.png').setScale(0.3,0.3).setFlip(true,false);
 
         ui.dboat.on('madeSomeProgress', () => {
             ui.raceCam.startFollow(ui.dboat, false, 1, 1, 250, 10);
@@ -332,8 +335,11 @@ class DragonBoatRace extends Phaser.Scene {
             ui.energy.update();
 
             ui.energy.displayText.text = Math.floor(ui.energy.level).toString();
-            ui.energy.bar.height = ui.energy.level * 2.4;
-            ui.energy.bar.y = 531 - ui.energy.bar.height;
+            ui.energy.bar.width = - ui.energy.level * 5;
+            if (ui.energy.bar.width < -418) {
+                ui.energy.bar.width = -418;
+            }
+            ui.energy.bar.x = 356 - ui.energy.bar.width;
             ui.energy.bar.fillColor = percentage_to_color(ui.energy.level);
 
             // Update boat positions

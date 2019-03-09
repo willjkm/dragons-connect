@@ -257,27 +257,36 @@ class UnitQuiz extends Phaser.Scene {
         for (let i = 0; i < 4; i++) {
             ui.answer.buttons.push(addButton(
                 'big', ui.answer.buttonLocations[i][0], ui.answer.buttonLocations[i][1], "", this));
+            ui.answer.buttons[i].available = true;
             ui.answer.buttons[i].button.on('pointerdown', function () {
                 if (ui.answer.buttons[i].correct) {
                     ui.answer.buttons[i].button.setTexture('l_correct');
                     user.step++;
+                    ui.background.setTexture('shanghai'+user.step);    
                     if (user.step == 9) {
-                        state.gameOver();
+                        setTimeout(() => {
+                            state.gameOver();
+                        }, 1500);
                     } else {
                         ui.spin();
-                        ui.background.setTexture('shanghai'+user.step);    
+                        for (let j = 0; j<4;j++) {
+                            ui.answer.buttons[j].available = true;
+                        }
                     }
                 } else {
                     ui.answer.buttons[i].button.setTexture('l_false');
-                    user.score -= 10;
-                    if (user.score < 0) {
-                        user.score = 0;
+                    if (ui.answer.buttons[i].available) {
+                        ui.answer.buttons[i].available = false;
+                        user.score -= 10;
+                        if (user.score < 0) {
+                            user.score = 0;
+                        }
+                        user.step--;
+                        if (user.step < 0) {
+                            user.step = 0;
+                        }
+                        ui.background.setTexture('shanghai'+user.step);    
                     }
-                    user.step--;
-                    if (user.step < 0) {
-                        user.step = 0;
-                    }
-                    ui.background.setTexture('shanghai'+user.step);
                 }
             });
         }
@@ -294,11 +303,6 @@ class UnitQuiz extends Phaser.Scene {
                 duration: 2000
             });
         }
-
-        ui.spinner.on('pointerdown', () => {
-            ui.spin();
-        })
-
 
         state.phase = "starting"
         ui.cams = addCameras(this);

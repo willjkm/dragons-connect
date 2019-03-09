@@ -1,5 +1,26 @@
-h3 {
-    color: rgb(238, 31, 16);
+h1 {
+    color: #ffec83;
+    font-family: 'Carter One';
+    font-size: 70px;
+    text-shadow: 2px 2px #111;
+}
+
+h2 {
+    font-family: 'Carter One';
+}
+
+h4 {
+    font-family: 'Ubuntu';
+}
+
+p {
+    font-family: 'Ubuntu';
+}
+
+.navbar a {
+    color: #111;
+    font-size: 20px;
+    font-family: 'Ubuntu';
 }
 
 .progress {
@@ -7,8 +28,15 @@ h3 {
 }
 
 .card {
-    background: #ecece7;
+    background: #ffffcc;
     border-radius: 25px;
+}
+
+.btn-huge {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    /* width: 400px; */
+    font-size: 30px;
 }
 
 .sidenav {
@@ -16,7 +44,7 @@ h3 {
     width: 200px;
     position: fixed;
     left: 0;
-    background-color: #585858;
+    background-color: #ee2024;
     overflow-x: hidden;
     padding-top: 20px;
 }
@@ -43,13 +71,23 @@ h3 {
 }
 
 .sidenav a:hover {
-    color: #d1d1d1;
+    color: #000000;
+}
+
+.nextslide {
+    position: absolute;
+    left: 995px;
 }
 
 .main {
     margin-left: 200px; /* Same as the width of the sidenav */
     padding: 0px 10px;
 }
+
+.main iframe {
+    border-radius: 15px;
+}
+
 
 #id_choose_weekdays {
     list-style-type: none;
@@ -116,7 +154,7 @@ h3 {
 	width: 90px;
 	height: 90px;
 	border-radius: 100%;
-	background-color: #eee;
+	background-color: #ffffcc;
 }
 .perCirc .perCircInner div {
 	position: relative;
@@ -135,11 +173,15 @@ h3 {
 
 img.mybadge {
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
     float: left;
 }
 
 img.avatarchoice:hover {
     background-color: yellow;
+}
+
+.chart {
+    width: 400px;
 }

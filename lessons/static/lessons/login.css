@@ -1,0 +1,28 @@
+body {
+    background: url("china_scenery.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 1080px;
+}
+
+.login-card {
+    width: 35rem;
+    background-color: rgba(255, 255, 255, 0.877);
+    border-radius: 25px;
+    text-align: center;
+}
+
+.login-card p {
+    font-family: 'Open Sans', 'Arial', sans-serif;
+    font-size: 24px;
+    color: #000000;
+}
+
+.login-card a {
+    font-size: 18px;
+    color: #000000;
+}
+
+.login-card img {
+    width: 400px;
+}

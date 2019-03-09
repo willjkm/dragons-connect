@@ -1,11 +1,21 @@
 {% extends 'base.html' %}
 
+{% block custom_style %}
+<style>
+body {
+    background-color: #ee2024;
+}
+</style>
+{% endblock %}
+
+
 {% block content %}
 <h1 class="text-center pt-5">Student Dashboard</h1>
 <div class="row">
     <div class="col-lg mt-4">
         <div class="card mb-4">
             <h2 class="card-title m-4" style="text-align: center;">Current Lesson</h2>
+            <h4 class="mx-4 mb-4" style="text-align: center;">Lesson {{ lesson.lesson_order }}: {{ lesson.title }}</h4>
             <div class="row">
                 <div class="col-sm-4">
                     {% if lesson.image %}
@@ -13,7 +23,7 @@
                     {% endif %}
                 </div>
                 <div class="col-sm-8">
-                    <h4 class="mx-4">{{ lesson.title }}</h4>
+                    <!-- <h4 class="mx-4">{{ lesson.title }}</h4> -->
                     <p class="card-body">{{ lesson.description }}</p>
                 </div>
             </div>
@@ -28,8 +38,8 @@
                     <div class="progress mx-4 mt-4" style="background-color: white;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                     </div>
-                    <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
-                    <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
+                    <a class="btn btn-success btn-huge m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                    <a class="btn btn-outline-success mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
                 {% else %}
                     <div class="progress mx-4 mt-4">
                         <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
@@ -43,18 +53,17 @@
                 {% endif %}
             {% endif %}
         </div>
-        <div class="card mt-4">
+        <div class="card my-4">
             <h2 class="card-title m-4" style="text-align: center;">Live Classroom</h2>
-            <h4 class="mx-4">I am in <strong>yellow group.</strong></h4>
-            <p class="card-body">Click below to enter the live class with Ms Bai.</p>
-            <a class="btn btn-primary mx-4 mb-4" href="" role="button">Enter Live Class</a>
+            <a class="btn btn-primary btn-huge mx-4 mb-4" href="" role="button">Enter Live Class</a>
         </div>
     </div>
     <div class="col-lg mt-4">
         <div class="card">
             <h2 class="card-title m-4" style="text-align: center;">My Achievements</h2>
-            <h4 style="text-align: center;">I am currently a <strong>red belt</strong></h4>
+            <h4 style="text-align: center;">I am a <strong>red belt</strong></h4>
             <p style="text-align: center;">90 points until next belt</p>
+            <img class="belt" src="/media/images/redbelt.png">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-sm-2">
@@ -85,30 +94,13 @@
             <div class="container">
                 <div class="row my-4 mx-2">
                     <div class="col">
-                        <img class="mybadge" src="/media/images/cracker.png">
+                        <img class="mybadge" src="/media/images/badge1.png">
                     </div>
                     <div class="col">
-                        <img class="mybadge" src="/media/images/panda.png">
+                        <img class="mybadge" src="/media/images/badge4.png">
                     </div>
                     <div class="col">
-                        <img class="mybadge" src="/media/images/star.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/question.png">
-                    </div>
-                </div>
-                <div class="row my-4 mx-2">
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/question.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/question.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/yinyang.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/question.png">
+                        <img class="mybadge" src="/media/images/badge5.png">
                     </div>
                 </div>
             </div>

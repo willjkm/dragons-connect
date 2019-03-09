@@ -10,17 +10,27 @@ class Rockets extends Phaser.Scene {
             loadObjects: [
                 {type: "image", name: "background", file: "nightsky.jpg"},
                 {type: "image", name: "rocket", file: "rocket.png"},
+                {type: "image", name: "rocket_selected", file: "rocket_selected.png"},
                 {type: "image", name: "moon1", file: "moon1.png"},
                 {type: "image", name: "moon2", file: "moon2.png"},
                 {type: "image", name: "moon3", file: "moon3.png"},
                 {type: "image", name: "moon4", file: "moon4.png"},
                 {type: "image", name: "moon5", file: "moon5.png"},
                 {type: "image", name: "moon6", file: "moon6.png"},
-                {type: "image", name: "bar", file: "bar.png"},
-                {type: "image", name: "listenagain", file: "listenagain.png"},
-                {type: "image", name: "listenagain_hover", file: "listenagain_hover.png"},
-                {type: "image", name: "listenagain_down", file: "listenagain_down.png"},
+                {type: "image", name: "housing", file: "housing.png"},
+                {type: "image", name: "barrel", file: "barrel.png"},
+                {type: "image", name: "barrel_selected", file: "barrel_selected.png"},
+                {type: "image", name: "barrel_top", file: "barrel_top.png"},
+                {type: "image", name: "barrel_top_selected", file: "barrel_top_selected.png"},
+                {type: "image", name: "listenagain", file: "listen_lantern.png"},
+                {type: "image", name: "listenagain_hover", file: "listen_lantern_selected.png"},
                 {type: "image", name: "spark", file: "spark.png"},
+                {type: "image", name: "spark0", file: "spark.png"},
+                {type: "image", name: "spark1", file: "spark1.png"},
+                {type: "image", name: "spark2", file: "spark2.png"},
+                {type: "image", name: "spark3", file: "spark3.png"},
+                {type: "image", name: "spark4", file: "spark4.png"},
+                {type: "image", name: "spark5", file: "spark5.png"},
                 {type: "image", name: "trail", file: "trail.png"},
                 {type: "image", name: "message_frame", file: "gameoverbackground2.png"},
                 {type: "image", name: "coin", file: "coin.png"},
@@ -99,9 +109,8 @@ class Rockets extends Phaser.Scene {
             } else {
                 state.correctAnswer = Math.floor(Math.random()*4)
                 ui.rocket.forEach((rocket, index) => {
-                    rocket.x = (index + 1)*100;
-                    rocket.y = 500;
-                    rocket.spark.stop();
+                    rocket.x = ((index + 1)*120) + 980;
+                    rocket.y = 635;
                     rocket.setRotation(-1.2);
                     rocket.failed = false;
                     rocket.launched = false;
@@ -145,10 +154,13 @@ class Rockets extends Phaser.Scene {
         }
 
         ui.cams = addCameras(this);
+        ui.foregroundCamera = this.cameras.add(0, 0, 800, 600).setOrigin(0,0).setScroll(1000,0).setVisible(true)
 
         ui.removeAnimations = () => {};
 
         ui.background = this.add.image(0,0, 'background').setOrigin(0,0);
+        this.add.sprite(-130,800,"housing").setOrigin(0,0);
+
         ui.trailblazer = ["","","",""]
         ui.explosion = ["","","",""]
         ui.trail = ["","","",""]
@@ -164,7 +176,7 @@ class Rockets extends Phaser.Scene {
 
             for (let i=0; i<9; i++) {
                 ui.explosion[j].leadSprite.push(
-                    this.physics.add.sprite(-10,-10, 'spark').setScale(0.5)
+                    this.physics.add.sprite(-10,-10, 'spark').setScale(0.6)
                 );
                 ui.explosion[j].trail.push(
                     this.add.particles('spark').createEmitter({
@@ -181,7 +193,11 @@ class Rockets extends Phaser.Scene {
             }
 
             ui.trailblazer[j].explode = () => {
+                var randomColor = Math.floor(Math.random()*6);
                 ui.explosion[j].leadSprite.forEach((sprite) => {
+                    sprite.setAlpha();
+                    sprite.setVisible(true);
+                    sprite.setTexture('spark'+randomColor);
                     sprite.x = ui.trailblazer[j].x;
                     sprite.y = ui.trailblazer[j].y;
                     sprite.setVelocityX(Math.floor(Math.random()*400)-200)
@@ -215,16 +231,93 @@ class Rockets extends Phaser.Scene {
                 follow: ui.trailblazer[j]
             }).stop();
         }
+        
+        
         ui.rocket = [];
+        ui.barrel = [];
+        ui.barrel_top = [];
 
         for (let i=0;i<4;i++) {
-            ui.rocket.push(this.physics.add.sprite((i+1)*100,500, 'rocket').setScale(0.6).setRotation(-1.2).setInteractive());
+            ui.barrel.push(this.physics.add.sprite(((i+1)*120)-20+1000,600-15, 'barrel').setScale(0.6).setRotation(0.36).setInteractive());
+            ui.rocket.push(this.physics.add.sprite(((i+1)*120)-20+1000,650-15, 'rocket').setScale(0.6).setRotation(-1.2).setInteractive());
+            ui.barrel_top.push(this.physics.add.sprite(((i+1)*120)-20+1000,600-15, 'barrel_top').setScale(0.6).setRotation(0.36).setInteractive());
+        }
+
+        for (let i=0;i<4;i++) {
+            ui.barrel[i].on('pointerover', () => {
+                ui.rocket.highlight(i);
+            });
+            ui.barrel[i].on('pointerout', () => {
+                ui.rocket.unhighlight(i);
+            });
+            ui.barrel_top[i].on('pointerover', () => {
+                ui.rocket.highlight(i);
+            });
+            ui.barrel_top[i].on('pointerout', () => {
+                ui.rocket.unhighlight(i);
+            });
+            ui.rocket[i].on('pointerover', () => {
+                ui.rocket.highlight(i);
+            });
+            ui.rocket[i].on('pointerout', () => {
+                ui.rocket.unhighlight(i);
+            });
+            ui.barrel[i].on('pointerdown', () => {
+                ui.rocket.processInput(i);
+            });
+            ui.barrel_top[i].on('pointerdown', () => {
+                ui.rocket.processInput(i);
+            });
+        }
+
+        ui.rocket.highlight = (i) => {
+            if (ui.rocket[i].texture.key == 'rocket') {
+                if (ui.rocket[i].available) {
+                    ui.rocket[i].setTexture('rocket_selected');
+                    ui.barrel[i].setTexture('barrel_selected');
+                    ui.barrel_top[i].setTexture('barrel_top_selected');    
+                }
+            }
+        }
+
+        ui.rocket.unhighlight = (i) => {
+            if (ui.rocket[i].texture.key == 'rocket_selected') {
+                ui.rocket[i].setTexture('rocket');
+                ui.barrel[i].setTexture('barrel');
+                ui.barrel_top[i].setTexture('barrel_top');
+            }
+        }
+
+        ui.rocket.processInput = (i) => {
+            if (ui.rocket[i].available) {
+                ui.rocket[i].available = false;
+                if (i == state.correctAnswer) {
+                    ui.rocket[i].launch();
+                    state.correctAnswer = state.nextQuestion();
+                    if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
+                        state.round[state.currentRound].audio[state.correctAnswer].play();
+                    }
+                    if (state.correctAnswer === null) {
+                        setTimeout(state.nextRound, 3000);
+                    }
+                    user.score += 10;
+                    ui.scoreText.setText(user.score.toString());
+                } else {
+                    ui.rocket[i].fail();    
+                    user.lives -= 1
+                    if (user.lives == 0) {
+                        state.gameOver()
+                    } else {
+                        ui.moon.setTexture(ui.moonTextures[6-user.lives])
+                    }
+                }    
+            }
         }
 
         ui.rocket.forEach((rocket, index) => {
             rocket.spark = this.add.particles('spark').createEmitter({
-                x: rocket.x-100-(index*100),
-                y: rocket.y-510,
+                x: -1000,
+                y: 950,
                 speed: { min: 0, max: 700 },
                 angle: { min: 100, max: 120 },
                 scale: { start: 1, end: 0 },
@@ -240,45 +333,24 @@ class Rockets extends Phaser.Scene {
                 rocket.spark.start();
                 setTimeout(() => {
                     rocket.launched = true;
-                }, 500)
+                }, 200)
             }
             rocket.fail = () => {
                 rocket.spark.start();
                 setTimeout(() => {
                     rocket.failed = true;
                     rocket.spark.stop();
-                }, 500)
+                }, 200)
             }
             rocket.on('pointerdown', () => {
-                rocket.available = false;
-                if (index == state.correctAnswer) {
-                    rocket.launch();
-                    state.correctAnswer = state.nextQuestion();
-                    if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
-                        state.round[state.currentRound].audio[state.correctAnswer].play();
-                    }
-                    if (state.correctAnswer === null) {
-                        setTimeout(state.nextRound, 3000);
-                    }
-                    user.score += 10;
-                    ui.scoreText.setText(user.score.toString());
-                } else {
-                    rocket.fail();    
-                    user.lives -= 1
-                    if (user.lives == 0) {
-                        state.gameOver()
-                    } else {
-                        ui.moon.setTexture(ui.moonTextures[6-user.lives])
-                    }
-                }
+                ui.rocket.processInput(index)
             });
         });
 
 
-        ui.bar = this.add.image(0,500, 'bar').setOrigin(0,0);
         ui.moonTextures = ['moon1','moon2','moon3','moon4','moon5','moon6']
         ui.moon = this.add.image(600,50, 'moon1').setOrigin(0,0).setScale(0.5).setBlendMode('SCREEN');
-        ui.listenAgain = this.add.sprite(50,50, 'listenagain').setOrigin(0,0).setInteractive();
+        ui.listenAgain = this.add.sprite(20,10, 'listenagain').setOrigin(0,0).setInteractive();
         ui.listenAgain.on('pointerover', () => {
             if (ui.listenAgain.texture.key == 'listenagain') {
                 ui.listenAgain.setTexture('listenagain_hover');
@@ -290,7 +362,7 @@ class Rockets extends Phaser.Scene {
             }
         });
         ui.listenAgain.on('pointerdown', () => {
-            ui.listenAgain.setTexture('listenagain_down');
+            ui.listenAgain.setTexture('listenagain');
             if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
                 state.round[state.currentRound].audio[state.correctAnswer].play();
             }
@@ -303,7 +375,7 @@ class Rockets extends Phaser.Scene {
 
         for (let i=0;i<4;i++) {
             ui.choiceText.push(
-                this.add.text(100+(100*i), 535, state.round[state.currentRound].pinyin[i], defaultFont).setOrigin(0.5, 0.5)
+                this.add.text(110+(120*i)+1000, 560, state.round[state.currentRound].pinyin[i], defaultFont).setOrigin(0.5, 0.5)
             );
         }
 
@@ -316,20 +388,20 @@ class Rockets extends Phaser.Scene {
 
         user.lives = 6;
         user.score = 0;
-        ui.scoreTitle = this.add.text(580, 535, "Score:", ubuntuFont).setOrigin(0, 0.5)
-        ui.scoreText = this.add.text(670, 535, "", ubuntuFont).setOrigin(0, 0.5)
+        ui.scoreText = this.add.text(1685, 565, "0", ubuntuFont).setOrigin(0, 0.5)
         ui.message = gameEndDialog('Rockets', this);
     }
 
     update() {
         ui.rocket.forEach((rocket, index) => {
             if (rocket.launched) {
-                rocket.displacement = (500-rocket.y)
+                rocket.displacement = (700-rocket.y)
                 rocket.speed = 50 + rocket.displacement**1.5
                 rocket.setVelocityX(rocket.speed/2.4);
                 rocket.setVelocityY(-rocket.speed);
                 if (rocket.y < -300) {
                     rocket.launched = false;
+                    rocket.spark.stop();
                     rocket.setVelocityX(0);
                     rocket.setVelocityY(0);
                     ui.trail[index].start();
@@ -339,10 +411,9 @@ class Rockets extends Phaser.Scene {
                 }
             }
             if (rocket.failed) {
-                rocket.setRotation(rocket.rotation+0.03)
-                rocket.setVelocityX(-20);
-                rocket.setVelocityY(120);
-                if (rocket.rotation > 0) {
+                rocket.setVelocityX(-90);
+                rocket.setVelocityY(200);
+                if (rocket.y > 800) {
                     rocket.failed = false;
                     rocket.setVelocityX(0);
                     rocket.setVelocityY(0);

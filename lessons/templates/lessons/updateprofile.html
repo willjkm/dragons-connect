@@ -1,10 +1,16 @@
+
 {% extends 'base.html' %}
+
+{% block custom_style %}
+<style>
+body {
+    background-color: #ee2024;
+}
+</style>
+{% endblock %}
 
 {% block content %}
     <h1 class="text-center pt-5">Update Profile</h1>
-    <div class="m-4">
-        <a class="btn btn-primary" href="../" role="button">Back to Dashboard</a>
-    </div>
     <div class="card m-4 px-4 pb-4">
         <h2 class="card-title m-4" style="text-align: center;">My profile</h2>
          <form class="mx-5" action="/dashboard/updateprofile/" method="post">
@@ -37,7 +43,11 @@
                 </div>
             </div>
         </div>
+        <div class="m-4">
+            <a class="btn btn-primary btn-huge" href="../" role="button">Back to Dashboard</a>
+        </div>
     </div>
+
 {% endblock %}
 
 {% block javascript %}
