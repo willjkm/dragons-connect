@@ -895,7 +895,7 @@ function getDictionaryData () {
       "lesson": 1,
       "character": "吗",
       "pinyin": "ma",
-      "english": "word used for asking a question",
+      "english": "(particle)",
       "part of speech": "particle",
       "notes": "This word is put at the end of a sentence to create a question.",
       "testable": "n",
@@ -925,7 +925,7 @@ function getDictionaryData () {
       "lesson": 1,
       "character": "呢",
       "pinyin": "ne",
-      "english": "word used for returning a question",
+      "english": "(particle)",
       "part of speech": "particle",
       "notes": "This word is put at the end of a sentence to return a question that was just asked.",
       "testable": "n",
@@ -1147,7 +1147,7 @@ function getDictionaryData () {
       "pinyin": "nǎr",
       "english": "where",
       "part of speech": "pronoun",
-      "notes": "儿 is the only character that doesn't have a full syllable. It indicates an -r ending.",
+      "notes": "儿 indicates an -r sound.",
       "testable": "y",
       "soundfile": "vocab30.ogg"
     },
@@ -1265,7 +1265,7 @@ function getDictionaryData () {
       "lesson": 6,
       "character": "吧",
       "pinyin": "ba",
-      "english": "word used for making a suggestion",
+      "english": "(particle)",
       "part of speech": "particle",
       "notes": "This word is put at the end of a sentence to create a suggestion.",
       "testable": "n",
@@ -2130,8 +2130,15 @@ function getDialogData () {
     {
       "Lesson": 9,
       "Speaker": "meimei",
-      "Chinese": "~你好！我叫~梅梅！我住在~中国~北京。",
-      "English": "Hello! I'm called Meimei! I live in Beijing, China.",
+      "Chinese": "~你好！我叫~梅梅！",
+      "English": "Hello! I'm called Meimei!",
+      "Soundfile": "dialog63.ogg"
+    },
+    {
+      "Lesson": 9,
+      "Speaker": "meimei",
+      "Chinese": "我住在~中国~北京。",
+      "English": "I live in Beijing, China.",
       "Soundfile": "dialog63.ogg"
     },
     {

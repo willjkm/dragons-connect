@@ -57,6 +57,12 @@ var ubuntuDark = {
     fill: '#111'
 }
 
+var ubuntuDarkSmall = {
+    fontFamily: 'Ubuntu',
+    fontSize: '25px',
+    fill: '#111'
+}
+
 var ubuntuGrey = {
     fontFamily: 'Ubuntu',
     fontSize: '26px',
