@@ -23,6 +23,11 @@ p {
     font-family: 'Ubuntu';
 }
 
+.username {
+    color: #ff2222;
+    display: inline;
+}
+
 .progress {
     height: 20px;
 }

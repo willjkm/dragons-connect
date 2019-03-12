@@ -24,6 +24,8 @@ if (importData.scene_name == 'DragonBoatRace') {
     config.scene = [ StartScene, Characters ];
 } else if (importData.scene_name == 'UnitQuiz') {
     config.scene = [ StartScene, UnitQuiz ];
+} else if (importData.scene_name == 'Grammar') {
+    config.scene = [ StartScene, Grammar ];
 }
 
 var game = new Phaser.Game(config);

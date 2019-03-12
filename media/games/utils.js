@@ -19,12 +19,18 @@ var cards;
 var ui = {};
 var state = {};
 
-WebFont.load({google: {families: ['Carter One', 'ABeeZee', 'Ubuntu', 'Ubuntu Mono', 'Cabin Sketch']}});
+WebFont.load({google: {families: ['Carter One', 'ABeeZee', 'Ubuntu', 'Ubuntu Mono', 'Cabin Sketch', 'Noto Sans SC']}});
 
 defaultFont = {
     fontFamily: 'Arial',
     fontSize: '32px',
     fill: '#FFF'
+}
+
+var chineseFont = {
+    fontFamily: 'Noto Sans SC',
+    fontSize: '32px',
+    fill: '#111'
 }
 
 var sketchyFont = {
@@ -43,6 +49,18 @@ var ubuntuFont = {
     fontFamily: 'Ubuntu',
     fontSize: '30px',
     fill: '#FFF'
+}
+
+var ubuntuDark = {
+    fontFamily: 'Ubuntu',
+    fontSize: '30px',
+    fill: '#111'
+}
+
+var ubuntuGrey = {
+    fontFamily: 'Ubuntu',
+    fontSize: '26px',
+    fill: '#3f86dd'
 }
 
 var ubuntuRed = {
