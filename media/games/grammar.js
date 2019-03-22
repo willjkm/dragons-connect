@@ -17,6 +17,14 @@ class Grammar extends Phaser.Scene {
                 {type: "image", name: "rightArrowHover", file: "right_arrow_hover.png"},
                 {type: "image", name: "leftArrow", file: "left_arrow.png"},
                 {type: "image", name: "leftArrowHover", file: "left_arrow_hover.png"},
+                {type: "image", name: "meimei", file: "mei_circle.png"},
+                {type: "image", name: "an", file: "an_circle.png"},
+                {type: "image", name: "tianwen", file: "tianwen_circle.png"},
+                {type: "image", name: "emptyCircle", file: "empty_circle.png"},
+                {type: "image", name: "emptyCircleWhite", file: "empty_circle_white.png"},
+                {type: "image", name: "progressGrey", file: "progress_grey.png"},
+                {type: "image", name: "progressGreen", file: "progress_green.png"},
+                {type: "image", name: "audioIcon", file: "audio_icon.png"},
             ]
         }
         myLoad(loadConfig, this);
@@ -24,7 +32,7 @@ class Grammar extends Phaser.Scene {
 
     create() {
         this.add.image(0,0, 'background').setOrigin(0,0);
-        var currentLesson = 2;
+        var currentLesson = 4;
         var currentLine = 0;
         var vocabData = getDictionaryData();
         var dialogData = getDialogData();
@@ -104,6 +112,21 @@ class Grammar extends Phaser.Scene {
 
         var displaySentence = () => {
             
+            if (currentLine == 0) {
+                ui.leftArrow.setVisible(false);
+            }
+
+            if (currentLine == 1) {
+                ui.leftArrow.setVisible(true);
+            }
+
+            ui.circle.setTexture(lines[currentLine].Speaker);
+
+            ui.progress[currentLine].setTexture('progressGreen');
+            if (currentLine < lines.length - 1) {
+                ui.progress[currentLine + 1].setTexture('progressGrey');
+            }
+
             if (ui.displayList !== []) {
                 ui.displayList.forEach((vocab) => {
                     vocab.displayText.setVisible(false);
@@ -117,40 +140,25 @@ class Grammar extends Phaser.Scene {
             var punctuation = ["!","?",".",","]
             var capitalize = true
 
-            ui.displayList.forEach((vocab) => {
-                if (ui.displayMode == "characters") {
-                    vocab.displayText = this.add.text(cursor, 335, vocab.character, ubuntuDark).setInteractive();
-                } else {
-                    if (punctuation.includes(vocab.pinyin)) {
-                        vocab.displayText = this.add.text(cursor, 335, vocab.pinyin, ubuntuDarkSmall).setInteractive();
-                        if (vocab.pinyin !== ",") {
-                            capitalize = true;
-                        }
-                    } else {
-                        if (capitalize) {
-                            let newPinyin = vocab.pinyin.slice(0,1).toUpperCase() + vocab.pinyin.slice(1);
-                            vocab.displayText = this.add.text(cursor, 335, " " + newPinyin, ubuntuDarkSmall).setInteractive();
-                            capitalize = false;
-                        } else {
-                            vocab.displayText = this.add.text(cursor, 335, " " + vocab.pinyin, ubuntuDarkSmall).setInteractive();
-                        }
+            var populateDictionary = (vocab) => {
+                if (vocab.english) { // if an entry exists
+                    var width = (vocab.displayText.width*0.5) + cursor - 150;
+                    if (width > 430) {
+                        width = 430;
                     }
-                }
-                if (vocab.english) {
-                    var width = vocab.displayText.width*0.5
                     var characterWidth;
                     if (ui.displayMode == "pinyin") {
                         var dummyText = this.add.text(0,0,vocab.character, ubuntuDark).setVisible(false);
                         characterWidth = dummyText.width;
                     } else {
-                        characterWidth = width * 2
+                        characterWidth = vocab.displayText.width;
                     }
                     vocab.dictionary = {
-                        "bubble": this.add.image(cursor-40+width,110, 'dictbubble').setOrigin(0,0).setVisible(false),
-                        "character": this.add.text(cursor-20+width, 130, vocab.character, ubuntuDark).setVisible(false),
-                        "pinyin": this.add.text(cursor-15+width + characterWidth, 135, vocab.pinyin, ubuntuGrey).setVisible(false),
-                        "english": this.add.text(cursor-20+width, 170, vocab.english, ubuntuRed).setVisible(false),
-                        "notes":this.add.text(cursor-20+width, 230, vocab.notes, smallFont).setWordWrapWidth(335, true).setVisible(false)
+                        "bubble": this.add.image(width - 20,110, 'dictbubble').setOrigin(0,0).setVisible(false),
+                        "character": this.add.text(width, 130, vocab.character, chineseFont).setVisible(false),
+                        "pinyin": this.add.text(width + characterWidth + 5, 135, vocab.pinyin, ubuntuGrey).setVisible(false),
+                        "english": this.add.text(width, 170, vocab.english, ubuntuRed).setVisible(false),
+                        "notes":this.add.text(width, 230, vocab.notes, smallFont).setWordWrapWidth(335, true).setVisible(false)
                     }
                     vocab.displayText.on('pointerover', () => {
                         vocab.displayText.setColor('#FFF');
@@ -169,8 +177,52 @@ class Grammar extends Phaser.Scene {
                         vocab.dictionary.notes.setVisible(false);
                     });
                 }
-                cursor += vocab.displayText.width;
-            });
+            }
+
+            // find length of pinyin: if it's too long, then reduce font size
+
+            var displayPinyin = (font) => {
+                ui.displayList.forEach((vocab) => {
+                    if (punctuation.includes(vocab.pinyin)) {
+                        vocab.displayText = this.add.text(cursor, 335, vocab.pinyin, font).setInteractive();
+                        if (vocab.pinyin !== ",") {
+                            capitalize = true;
+                        }
+                    } else {
+                        if (capitalize) {
+                            let newPinyin = vocab.pinyin.slice(0,1).toUpperCase() + vocab.pinyin.slice(1);
+                            vocab.displayText = this.add.text(cursor, 335, " " + newPinyin, font).setInteractive();
+                            capitalize = false;
+                        } else {
+                            vocab.displayText = this.add.text(cursor, 335, " " + vocab.pinyin, font).setInteractive();
+                        }
+                    }
+                    populateDictionary(vocab);
+                    cursor += vocab.displayText.width;
+                })
+            }
+
+            if (ui.displayMode == "pinyin") {
+                displayPinyin(ubuntuDark);
+                if (cursor > 600) { //re-write with smaller font
+                    cursor = 130;
+                    ui.displayList.forEach((vocab) => {
+                        vocab.displayText.setVisible(false);
+                    })
+                    displayPinyin(ubuntuDarkSmall);
+                }
+            } else if (ui.displayMode == "characters") {
+                ui.displayList.forEach((vocab) => {
+                    vocab.displayText = this.add.text(cursor, 335, vocab.character, chineseFont).setInteractive();
+                    populateDictionary(vocab);
+                    cursor += vocab.displayText.width;
+                });
+            }
+
+            // populate dictionary
+
+
+
             var shift = 0.5*(670 - cursor)
             ui.displayList.forEach((vocab) => {
                 vocab.displayText.x += shift
@@ -251,10 +303,10 @@ class Grammar extends Phaser.Scene {
 
 
         ui.pinyinToggle = {
-            "grey": this.add.image(20, 510, 'toggleGrey').setOrigin(0,0).setInteractive(),
-            "blue": this.add.image(20, 510, 'toggleBlue').setOrigin(0,0).setAlpha(0).setInteractive(),
-            "button": this.add.image(20, 510, 'toggleButton').setOrigin(0,0).setInteractive(),
-            "displayText": this.add.text(100,515, 'Toggle Pinyin', ubuntuDarkSmall).setOrigin(0,0),
+            "grey": this.add.image(150, 510, 'toggleGrey').setOrigin(0,0).setInteractive(),
+            "blue": this.add.image(150, 510, 'toggleBlue').setOrigin(0,0).setAlpha(0).setInteractive(),
+            "button": this.add.image(150, 510, 'toggleButton').setOrigin(0,0).setInteractive(),
+            "displayText": this.add.text(230,515, 'Show Pinyin', ubuntuDarkSmall).setOrigin(0,0).setInteractive(),
             "active": false
         }
 
@@ -286,13 +338,17 @@ class Grammar extends Phaser.Scene {
             ui.pinyinToggle.toggle();
         })
 
-        ui.english = this.add.text(400,435, lines[currentLine].English, ubuntuGrey).setOrigin(0.5,0.5).setAlpha(0)
+        ui.pinyinToggle.displayText.on('pointerdown', () => {
+            ui.pinyinToggle.toggle();
+        })
+
+        ui.english = this.add.text(400,455, lines[currentLine].English, ubuntuGrey).setOrigin(0.5,0.5).setAlpha(0)
 
         ui.englishToggle = {
-            "grey": this.add.image(260, 510, 'toggleGrey').setOrigin(0,0).setInteractive(),
-            "blue": this.add.image(260, 510, 'toggleBlue').setOrigin(0,0).setAlpha(0).setInteractive(),
-            "button": this.add.image(260, 510, 'toggleButton').setOrigin(0,0).setInteractive(),
-            "displayText": this.add.text(340,515, 'Show English', ubuntuDarkSmall).setOrigin(0,0),
+            "grey": this.add.image(400, 510, 'toggleGrey').setOrigin(0,0).setInteractive(),
+            "blue": this.add.image(400, 510, 'toggleBlue').setOrigin(0,0).setAlpha(0).setInteractive(),
+            "button": this.add.image(400, 510, 'toggleButton').setOrigin(0,0).setInteractive(),
+            "displayText": this.add.text(480,515, 'Show English', ubuntuDarkSmall).setOrigin(0,0).setInteractive(),
             "active": false
         }
 
@@ -322,7 +378,38 @@ class Grammar extends Phaser.Scene {
             ui.englishToggle.toggle();
         })
 
+        ui.englishToggle.displayText.on('pointerdown', () => {
+            ui.englishToggle.toggle();
+        })
+
+        ui.audio = {
+            "circle": this.add.sprite(625, 175, 'emptyCircle').setInteractive(),
+            "icon": this.add.image(625, 150, 'audioIcon'),
+            "displayText": this.add.text(625, 195, 'Listen again', ubuntuDarkSmall).setOrigin(0.5,0.5)
+        }
+
+        ui.audio.circle.on('pointerover', () => {
+            ui.audio.circle.setTexture('emptyCircleWhite');
+        });
+
+        ui.audio.circle.on('pointerout', () => {
+            ui.audio.circle.setTexture('emptyCircle');
+        });
+
+        ui.circle = this.add.sprite(175, 175, 'emptyCircle')
         
+        ui.progress = []
+
+        if (lines.length > 11) {
+            lines.forEach((line, index) => {
+                ui.progress.push(this.add.sprite(50 + index*55, 30, 'progressGrey').setScale(0.6, 0.8))
+            })
+        } else {
+            lines.forEach((line, index) => {
+                ui.progress.push(this.add.sprite(50 + index*70 + (11-lines.length)*35, 30, 'progressGrey').setScale(0.8))
+            })
+        }
+
         displaySentence();
 
     }

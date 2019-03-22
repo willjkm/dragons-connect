@@ -28,7 +28,7 @@ defaultFont = {
 }
 
 var chineseFont = {
-    fontFamily: 'Noto Sans SC',
+    fontFamily: 'Georgia, "Times New Roman", KaiTi, 楷体, STKaiti, 华文楷体, "Microsoft Yahei", 微软雅黑, 宋体, SimSun, STXihei, 华文细黑',
     fontSize: '32px',
     fill: '#111'
 }
