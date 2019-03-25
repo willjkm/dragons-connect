@@ -1,6 +1,6 @@
-class Grammar extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"Grammar"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -442,7 +442,7 @@ class StartScene extends Phaser.Scene {
         var startButton = addButton('small', 290, 420, "Start", this);
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('Grammar');
+            this.scene.start('GameScene');
         });
     }
 }

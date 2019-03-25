@@ -1,8 +1,10 @@
 
 function newQuizDeck(lesson, maxItems=20) {
-    var allVocab = getData();
+    var allVocab;
     if (quiz.mode == "falling tones") {
         allVocab = getToneData();
+    } else {
+        allVocab = getData();
     }
     var questionSet = [];
     function filterLesson(item) {
@@ -431,12 +433,14 @@ var gameEndDialog = (sceneName, game) => {
 
     result.sparkle = (coins) => {
         var counter = 0;
+        var sparkleSound = game.sound.add('sparkle');
         game.time.addEvent({
             delay: 2000,
             callback: () => {
                 if (counter == 0) {
                     result.spark.start();
                 } else {
+                    sparkleSound.play();
                     result.coins[counter-1].setTexture('coin');
                     if (result.coins[counter]) {
                         result.spark.setPosition(result.coins[counter].x,result.coins[counter].y);

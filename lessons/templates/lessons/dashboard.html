@@ -15,11 +15,11 @@ body {
     <div class="col-lg mt-4">
         <div class="card mb-4">
             <h2 class="card-title m-4" style="text-align: center;">Current Lesson</h2>
-            <h4 class="mx-4 mb-4" style="text-align: center;">Lesson {{ lesson.lesson_order }}: {{ lesson.title }}</h4>
+            <h4 class="mx-4 mb-4" style="text-align: center;">Lesson {{ lesson.number }}: {{ lesson.title }}</h4>
             <div class="row">
                 <div class="col-sm-4">
                     {% if lesson.image %}
-                        <img src="{{ lesson.image.url }}" alt="Image" class="img-thumbnail rounded mx-4">
+                        <img src="{{ lesson.image }}" alt="Image" class="img-thumbnail rounded mx-4">
                     {% endif %}
                 </div>
                 <div class="col-sm-8">
@@ -31,14 +31,14 @@ body {
                 <div class="progress mx-4 mt-4" style="background-color: white;">
                     <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                 </div>
-                <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Review lesson</a>
+                <a class="btn btn-primary m-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Review lesson</a>
                 <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
             {% else %}
                 {% if activeSlide > 1 %}                    
                     <div class="progress mx-4 mt-4" style="background-color: white;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                     </div>
-                    <a class="btn btn-success btn-huge m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                    <a class="btn btn-success btn-huge m-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
                     <a class="btn btn-outline-success mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
                 {% else %}
                     <div class="progress mx-4 mt-4">
@@ -48,7 +48,7 @@ body {
                             </span>
                         </div>
                     </div>    
-                    <a class="btn btn-primary m-4" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
+                    <a class="btn btn-primary m-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
                     <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
                 {% endif %}
             {% endif %}
@@ -61,36 +61,20 @@ body {
     <div class="col-lg mt-4">
         <div class="card">
             <h2 class="card-title m-4" style="text-align: center;">My Achievements</h2>
-            <h4 style="text-align: center;">I am a <strong>red belt</strong></h4>
-            <p style="text-align: center;">90 points until next belt</p>
-            <img class="belt" src="/media/images/redbelt.png">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-sm-2">
-                        <div id="sellPerCirc" class="perCirc my-2">
-                            <div class="perCircInner">
-                                <div class="perCircStat">{{ courseProgress }}%</div><div>Complete</div>
-                            </div>
-                        </div>
+                        <img class="mybadge" src="/media/images/coin.png">
                     </div>
                     <div class="col-sm-7">
-                        <h4 class="mt-5 ml-5">Course Completion</h4>
-                    </div>
-                </div>
-                <div class="row justify-content-center">
-                    <div class="col-sm-2">
-                        <div id="secondCircle" class="perCirc my-2">
-                            <div class="perCircInner">
-                                <div class="perCircStat2">120</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-7">
-                        <h4 class="mt-5 ml-5">Experience Points</h4>
+                        <h4 class="mt-1 ml-5"><span class="verybig"> x {{ coins }}</span></h4>
                     </div>
                 </div>
             </div>
-            <h2 class="mt-4" style="text-align: center;">Badges</h2>
+            <img class="belt" src="/media/images/redbelt.png">
+            <h4 class="cointext" style="text-align: center;">I am a <strong>red belt</strong></h4>
+            <p class="cointext" style="text-align: center;">24 coins until next belt</p>
+            <h2 class="mt-4" style="text-align: center;">Recent Badges</h2>
             <div class="container">
                 <div class="row my-4 mx-2">
                     <div class="col">
@@ -100,10 +84,11 @@ body {
                         <img class="mybadge" src="/media/images/badge4.png">
                     </div>
                     <div class="col">
-                        <img class="mybadge" src="/media/images/badge5.png">
+                        <img class="mybadge" src="/media/images/badge2.png">
                     </div>
                 </div>
             </div>
+            <a class="btn btn-outline-success mx-4 mb-4" href="#" role="button">See all badges</a>
         </div>
     </div>
 </div>

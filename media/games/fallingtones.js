@@ -1,6 +1,6 @@
-class FallingTones extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"FallingTones"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -20,10 +20,29 @@ class FallingTones extends Phaser.Scene {
             ]
         }
         myLoad(loadConfig, this);
+        var soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: [
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"},
+                {type: "sound", name: "correct", file: "correct.ogg"},
+                {type: "sound", name: "pop", file: "pop.ogg"},
+                {type: "sound", name: "raiseWall", file: "wall_raise.ogg"}
+            ]
+        }
+        myLoad(soundLoadConfig, this);
+
     }
 
     create() {
-        initialize();
+        quiz.mode = "falling tones";
+
+        initialize(); 
+
+        ui.sound = {
+            pop: this.sound.add('pop'),
+            raiseWall: this.sound.add('raiseWall'),
+            correct: this.sound.add('correct')
+        }
 
         ui.cams = addCameras(this);
         ui.cams.msgCam.setVisible(false);
@@ -161,10 +180,11 @@ class FallingTones extends Phaser.Scene {
 
         // create gameover dialog box
 
-        ui.message = gameEndDialog('FallingTones', this);
+        ui.message = gameEndDialog('GameScene', this);
 
         ui.wall = this.add.image(0,430, 'wall').setOrigin(0,0);
         ui.raiseWall = () => {
+            ui.sound.raiseWall.play();
             ui.wallHeight -= 40;
             this.tweens.add({
                 targets: [ui.wall, ui.bowls],
@@ -215,10 +235,10 @@ class FallingTones extends Phaser.Scene {
             var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
-                element_name: "falling tones",
+                element_name: "Falling Tones",
                 score: user.score,
                 lesson: importData.lesson,
-                award: coins.toString() + " coins"
+                coins: coins
             });
         }
     }
@@ -257,6 +277,7 @@ class FallingTones extends Phaser.Scene {
                         state.gameOver();
                     }
                 } else {
+                    ui.sound.correct.play();
                     user.score += 10;
                     if (user.score % 30 == 0) {
                         state.level += 1
@@ -287,6 +308,7 @@ class FallingTones extends Phaser.Scene {
                     ui.bubble.pinyin.setVisible(false);
                     ui.bubble.character.setVisible(false);
                     ui.bubble.sprite.play('pop');
+                    ui.sound.pop.play();
                 }
             }
         }
@@ -347,7 +369,7 @@ class StartScene extends Phaser.Scene {
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('FallingTones');
+            this.scene.start('GameScene');
         });
 
     }

@@ -1,6 +1,6 @@
-class UnitQuiz extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"UnitQuiz"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -42,6 +42,12 @@ class UnitQuiz extends Phaser.Scene {
             loadObjects: [
                 {type: "sound", name: "fei2", file: "fei2.ogg"},
                 {type: "sound", name: "fei4", file: "fei4.ogg"},
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"},
+                {type: "sound", name: "correct", file: "correct.ogg"},
+                {type: "sound", name: "wrong", file: "wrong.ogg"},
+                {type: "sound", name: "click", file: "click.ogg"},
+                {type: "sound", name: "next_question", file: "next_question.ogg"},
+
             ]
         }
         myLoad(soundLoadConfig, this);
@@ -49,6 +55,13 @@ class UnitQuiz extends Phaser.Scene {
     }
 
     create() {
+
+        ui.sound = {
+            correct: this.sound.add('correct'),
+            wrong: this.sound.add('wrong'),
+            click: this.sound.add('click'),
+            next_question: this.sound.add('next_question'),
+        }
 
         user.score = 90; // start at 90 and 10 points off for every incorrect answer
         user.step = 0; // this variable tracks how many answers have been answered correctly
@@ -81,6 +94,7 @@ class UnitQuiz extends Phaser.Scene {
             }
 
             setTimeout(() => {
+                ui.sound.next_question.play();
                 for (let i=0;i<4;i++) {
                     ui.answer.buttons[i].displayText.text = "";
                 }
@@ -261,6 +275,7 @@ class UnitQuiz extends Phaser.Scene {
             ui.answer.buttons[i].button.on('pointerdown', function () {
                 if (ui.answer.buttons[i].correct) {
                     ui.answer.buttons[i].button.setTexture('l_correct');
+                    ui.sound.correct.play();
                     user.step++;
                     ui.background.setTexture('shanghai'+user.step);    
                     if (user.step == 9) {
@@ -281,6 +296,7 @@ class UnitQuiz extends Phaser.Scene {
                         if (user.score < 0) {
                             user.score = 0;
                         }
+                        ui.sound.wrong.play();
                         user.step--;
                         if (user.step < 0) {
                             user.step = 0;
@@ -335,14 +351,14 @@ class UnitQuiz extends Phaser.Scene {
             var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
-                element_name: "unit quiz",
+                element_name: "Quiz Time",
                 score: user.score,
                 lesson: importData.lesson,
-                award: coins.toString() + " coins"
+                coins: coins
             });
         }
 
-        ui.message = gameEndDialog('UnitQuiz', this);
+        ui.message = gameEndDialog('GameScene', this);
         ui.colorNum = 0;
         ui.spin();
     }
@@ -350,7 +366,11 @@ class UnitQuiz extends Phaser.Scene {
     update() {
         ui.colorNum = Math.floor(((ui.arrow.rotation+(Math.PI/12))%Math.PI)*(6/Math.PI));
         if (ui.colorNum < 0) ui.colorNum += 6;
+        let recentTexture = ui.question.rect.texture;
         ui.question.rect.setTexture('q' + ui.colorNum);
+        if (ui.question.rect.texture !== recentTexture) {
+            ui.sound.click.play();
+        }
     }
 }
 
@@ -395,7 +415,7 @@ class StartScene extends Phaser.Scene {
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('UnitQuiz');
+            this.scene.start('GameScene');
         });
     }
 }

@@ -18,26 +18,29 @@ h1 {
     <div class="row p-4">
         <div class="col-sm-4">
             {% if lesson.image %}
-                <img src="{{ lesson.image.url }}" alt="Image" class="img-thumbnail rounded">
+                <img src="{{ lesson.image }}" alt="Image" class="img-thumbnail rounded">
             {% endif %}
         </div>
         <div class="col-sm-8">
-            <h2>Lesson {{ lesson.lesson_order }}: {{ lesson.title }}</h2>
+            <h2>Lesson {{ lesson.number }}: {{ lesson.title }}</h2>
             <p>{{ lesson.description }}</p>
             {% if role == 'student' %}
-                {% if activeLesson > lesson.lesson_order %}
-                    <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/1" role="button">Review lesson</a>
+                {% if activeLesson > lesson.number %}
+                    <a class="btn btn-primary mr-4" href="/lessons/{{ lesson.number }}/slide/1" role="button">Review lesson</a>
+                    <img class="littlecoin" src="/media/images/coin.png"><span class="cointext"> x <strong>{{ lesson.coins }}</strong>/20</span>
                     <div class="progress mt-4">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">100%</div>
                     </div>
-                {% elif activeLesson == lesson.lesson_order and not nextLessonLocked %}
+                {% elif activeLesson == lesson.number and not nextLessonLocked %}
                     {% if activeSlide > 1 %}
-                        <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                        <a class="btn btn-primary mr-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Continue lesson</a>
+                        <img class="littlecoin" src="/media/images/coin.png"><span class="cointext"> x <strong>{{ lesson.coins }}</strong>/20</span>
                         <div class="progress mt-4">
                             <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}%</div>
                         </div>
                     {% else %}
-                        <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
+                        <a class="btn btn-primary mr-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
+                        <img class="littlecoin" src="/media/images/coin.png"><span class="cointext"> x <strong>{{ lesson.coins }}</strong>/20</span>
                         <div class="progress mt-4">
                             <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -49,7 +52,7 @@ h1 {
                     </div>
                 {% endif %}
             {% else %}
-                <a class="btn btn-primary" href="/lessons/{{ lesson.lesson_order }}/slide/1" role="button">View lesson</a>
+                <a class="btn btn-primary" href="/lessons/{{ lesson.number }}/slide/1" role="button">View lesson</a>
             {% endif %}
         </div>
     </div>

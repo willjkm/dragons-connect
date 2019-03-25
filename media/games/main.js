@@ -11,21 +11,8 @@ var config = {
     },
     audio: {
         disableWebAudio: true
-    }
+    },
+    scene: [ StartScene, GameScene ] 
 };
-
-if (importData.scene_name == 'DragonBoatRace') {
-    config.scene = [ StartScene, DragonBoatRace ];
-} else if (importData.scene_name == 'FallingTones') {
-    config.scene = [ StartScene, FallingTones ];
-} else if (importData.scene_name == 'Rockets') {
-    config.scene = [ StartScene, Rockets ];
-} else if (importData.scene_name == 'Characters') {
-    config.scene = [ StartScene, Characters ];
-} else if (importData.scene_name == 'UnitQuiz') {
-    config.scene = [ StartScene, UnitQuiz ];
-} else if (importData.scene_name == 'Grammar') {
-    config.scene = [ StartScene, Grammar ];
-}
 
 var game = new Phaser.Game(config);

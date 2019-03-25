@@ -53,6 +53,7 @@ class LearningEvent(models.Model):
     lesson = models.PositiveIntegerField(null=True)
     action_datetime = models.DateTimeField(auto_now_add=True)
     score = models.PositiveIntegerField(null=True)
+    coins = models.PositiveIntegerField(null=True)
     award = models.CharField(max_length=25, null=True)
 
     def __str__(self):

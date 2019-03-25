@@ -12,16 +12,16 @@
     <p>{{ lesson.title }}</p>
     {% for slide in slides %}
         {% if slide == current_slide %}
-            <strong><a href="#">{{ slide.position }}. {{ slide.title }}</a></strong>
+            <strong><a href="#">{{ slide.number }}. {{ slide.title }}</a></strong>
         {% else %}
             {% if active_lesson == lesson_number %}
-                {% if active_slide < slide.position %}
-                    <a href="#" style="color:rgb(167, 167, 167)">{{ slide.position }}. {{ slide.title }}</a>
+                {% if active_slide < slide.number %}
+                    <a href="#" style="color:rgb(167, 167, 167)">{{ slide.number }}. {{ slide.title }}</a>
                 {% else %}
-                    <a href="/lessons/{{ lesson_number }}/slide/{{ slide.position }}" style="color:bisque;">{{ slide.position }}. {{ slide.title }}</a>
+                    <a href="/lessons/{{ lesson_number }}/slide/{{ slide.number }}" style="color:bisque;">{{ slide.number }}. {{ slide.title }}</a>
                 {% endif %}
             {% else %}
-                <a href="/lessons/{{ lesson_number }}/slide/{{ slide.position }}" style="color:bisque;">{{ slide.position }}. {{ slide.title }}</a>
+                <a href="/lessons/{{ lesson_number }}/slide/{{ slide.number }}" style="color:bisque;">{{ slide.number }}. {{ slide.title }}</a>
             {% endif %}
         {% endif %}
     {% endfor %}

@@ -1,8 +1,8 @@
 
 
-class DragonBoatRace extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"DragonBoatRace"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -26,6 +26,18 @@ class DragonBoatRace extends Phaser.Scene {
         }
         
         myLoad(loadConfig, this);
+
+        var soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: [
+                {type: "sound", name: "countdown", file: "countdown2.ogg"},
+                {type: "sound", name: "countdown_high", file: "countdown2_high.ogg"},
+                {type: "sound", name: "correct", file: "correct.ogg"},
+                {type: "sound", name: "wrong", file: "wrong.ogg"},
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"}
+            ]
+        }
+        myLoad(soundLoadConfig, this);
     }
 
     create() {
@@ -82,6 +94,14 @@ class DragonBoatRace extends Phaser.Scene {
         
         ui.cams = addCameras(this);
 
+        // sounds
+
+        ui.sound = {
+            correct: this.sound.add('correct'),
+            wrong: this.sound.add('wrong'),
+            countdown: this.sound.add('countdown'),
+            countdown_high: this.sound.add('countdown_high')
+        }
 
         // initialize game state
 
@@ -95,12 +115,15 @@ class DragonBoatRace extends Phaser.Scene {
                         ui.start.number -= 1;
                         ui.start.displayText.text = ui.start.number.toString();
                         if (ui.start.number == 0) {
+                            ui.sound.countdown_high.play();
                             state.phase = "race";
                             state.clock.elapsed = 0;
                             ui.start.displayText.text = "GO!";
                             ui.opponent.team[0].play('paddleforever1');
                             ui.opponent.team[1].play('paddleforever2');
                             ui.opponent.team[2].play('paddleforever3');
+                        } else {
+                            ui.sound.countdown.play();
                         }
                         ui.start.tween.restart();
                     } else {
@@ -120,7 +143,7 @@ class DragonBoatRace extends Phaser.Scene {
 
         // draw gameover dialog box
 
-        ui.message = gameEndDialog('DragonBoatRace', this);
+        ui.message = gameEndDialog('GameScene', this);
 
         // draw question and answers
 
@@ -141,9 +164,11 @@ class DragonBoatRace extends Phaser.Scene {
                 if (state.phase == "race") {
                     state.check = checkUserInput(i);
                     if (state.check) {
+                        ui.sound.correct.play()
                         ui.energy.boost += 15;
                         ui.dboat.anims.play('paddle', true);
                     } else {
+                        ui.sound.wrong.play()
                         ui.energy.boost -= 10;
                     }    
                 }
@@ -282,13 +307,13 @@ class DragonBoatRace extends Phaser.Scene {
             ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!";
             ui.message.displayText[1].text = "Time: " + finalScore + "s";
 
-            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
+            if (Number(user.topScore) > Number(finalScore)) {
                 ui.message.displayText[2].text = "New Record!";
                 ui.message.displayText[2].setStyle({fontSize:'30px', color: '#ee7777', fontFamily: 'Carter One'}).setRotation(-0.5).setX(1300).setY(1370);
-            } else if (user.topScore[quiz.level - 1] == "0") {
+            } else if (user.topScore == "0") {
                 ui.message.displayText[2].text = "";
             } else {            
-                ui.message.displayText[2].text = "Personal best: " + user.topScore[quiz.level - 1] + "s";
+                ui.message.displayText[2].text = "Personal best: " + user.topScore + "s";
             }
 
             ui.message.flyIn();
@@ -300,14 +325,14 @@ class DragonBoatRace extends Phaser.Scene {
 
             // update user top score and coins
 
-            if (Number(user.topScore[quiz.level - 1]) > Number(finalScore)) {
-                user.topScore[quiz.level - 1] = finalScore;
-            } else if (user.topScore[quiz.level - 1] == 0) {
-                user.topScore[quiz.level - 1] = finalScore;
+            if (Number(user.topScore) > Number(finalScore)) {
+                user.topScore = finalScore;
+            } else if (user.topScore == 0) {
+                user.topScore = finalScore;
             }
 
-            if (user.coins[quiz.level - 1] < coins) {
-                user.coins[quiz.level - 1] = coins;
+            if (user.coins < coins) {
+                user.coins = coins;
             }
 
             // AJAX POST score to database
@@ -315,10 +340,10 @@ class DragonBoatRace extends Phaser.Scene {
             var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
-                element_name: "race",
+                element_name: "Dragon Boat Race",
                 score: Math.floor(finalScore * 100),
                 lesson: importData.lesson,
-                award: "level " + quiz.level.toString() + " " + coins.toString() + " coins"
+                coins: coins
             });
         }
     }
@@ -377,7 +402,6 @@ class StartScene extends Phaser.Scene {
             mediaURL: "../../../media/images/",
             loadObjects: [
                 {type: "image", name: "splash", file: "splash.jpg"},
-                {type: "image", name: "chooseyourlevel", file: "chooseyourlevel.png"},
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "loading", file: "loading.jpg"},
@@ -413,90 +437,18 @@ class StartScene extends Phaser.Scene {
         // populate previous top scores (first time only)
 
         if (typeof user.topScore == "undefined") {
-            user.topScore = ["0","0","0"];
-            for (let i=0;i<3;i++) {
-                if (importData.top_score[i]) {
-                    user.topScore[i] = importData.top_score[i];
-                }
+            user.topScore = "0";
+            if (importData.top_score) {
+                user.topScore = importData.top_score;
             }
         } 
 
         if (typeof user.coins == "undefined") {
-            user.coins = [0,0,0];
-            for (let i=0;i<3;i++) {
-                if (importData.coins[i]) {
-                    user.coins[i] = importData.coins[i];
-                }
+            user.coins = 0;
+            if (importData.coins) {
+                user.coins = importData.coins;
             }
         } 
-
-        // create message that shows your previous best times
-
-        var personalBestText = ["","",""];
-
-        for (let i=0;i<3;i++) {
-            if (user.topScore[i] !== "0") {
-                personalBestText[i] = user.topScore[i] + "s";
-            } else {
-                personalBestText[i] = "No record";
-            }
-        }
-
-        // draw level choice dialog box
-
-        gui.message = {
-            background: this.add.image(1200, 1300, 'chooseyourlevel'),
-            bestTimes: [
-                this.add.text(1320, 1224, personalBestText[0], themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1320, 1312, personalBestText[1], themeFont).setOrigin(0.5, 0.5),
-                this.add.text(1320, 1400, personalBestText[2], themeFont).setOrigin(0.5, 0.5),
-            ],
-            coins: [
-                [this.add.image(1290, 1254, 'coin_disabled').setScale(0.2),
-                this.add.image(1320, 1254, 'coin_disabled').setScale(0.2),
-                this.add.image(1350, 1254, 'coin_disabled').setScale(0.2)],
-                [this.add.image(1290, 1342, 'coin_disabled').setScale(0.2),
-                this.add.image(1320, 1342, 'coin_disabled').setScale(0.2),
-                this.add.image(1350, 1342, 'coin_disabled').setScale(0.2)],
-                [this.add.image(1290, 1430, 'coin_disabled').setScale(0.2),
-                this.add.image(1320, 1430, 'coin_disabled').setScale(0.2),
-                this.add.image(1350, 1430, 'coin_disabled').setScale(0.2)],
-            ],
-            buttons: [
-                addButton('small', 1100, 1240, 'Easy', this),
-                addButton('small', 1100, 1328, 'Medium', this),
-                addButton('small', 1100, 1416, 'Challenging', this)
-            ],
-        };
-
-        for (let i=0; i<3; i++) {
-            for (let j=user.coins[i]-1;j>-1;j--) {
-                gui.message.coins[i][j].setTexture('coin');
-            }
-        }
-
-        // prepare fly-in animation
-
-        gui.message.allElements = [gui.message.background]
-        for (let i=0; i<3; i++) {
-            gui.message.allElements.push(
-                gui.message.bestTimes[i], gui.message.buttons[i].button, gui.message.buttons[i].displayText
-            );
-            for (let j=0; j<3; j++) {
-                gui.message.allElements.push(
-                    gui.message.coins[i][j], 
-                );
-            }
-        }
-
-        gui.message.flyIn = () => {
-            this.tweens.add({
-                targets: gui.message.allElements,
-                x: '-=800',
-                ease: 'Power1',
-                duration: 600
-            });
-        }
 
         // parameters for starting a new game
 
@@ -504,24 +456,13 @@ class StartScene extends Phaser.Scene {
             quiz.level = level;
             quiz.prompt = prompt;
             quiz.answerFormat = format;
-            this.scene.start('DragonBoatRace');
+            this.scene.start('GameScene');
         }
 
         // user interface
 
         startButton.button.on('pointerdown', () => {
-            gui.message.flyIn();
-            gui.cams.dim([this.cameras.main]);
-        });
-
-        gui.message.buttons[0].button.on('pointerdown', () => {
             startGame(1, 'pinyin', 'english')
-        });
-        gui.message.buttons[1].button.on('pointerdown', () => {
-            startGame(2, 'pinyin', 'character')
-        });
-        gui.message.buttons[2].button.on('pointerdown', () => {
-            startGame(3, 'english', 'character')
         });
     }
 }

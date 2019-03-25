@@ -1,6 +1,6 @@
-class Rockets extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"Rockets"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -53,6 +53,10 @@ class Rockets extends Phaser.Scene {
                 {type: "sound", name: "fei2", file: "fei2.ogg"},
                 {type: "sound", name: "fei3", file: "fei3.ogg"},
                 {type: "sound", name: "fei4", file: "fei4.ogg"},
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"},
+                {type: "sound", name: "wrong", file: "wrong.ogg"},
+                {type: "sound", name: "takeoff", file: "firework_takeoff.ogg"},
+                {type: "sound", name: "bang", file: "firework_bang.ogg"},
             ]
         }
         myLoad(soundLoadConfig, this);
@@ -61,6 +65,12 @@ class Rockets extends Phaser.Scene {
 
     create() {
         initialize();
+
+        ui.sound = {
+            wrong: this.sound.add('wrong'),
+            takeoff: this.sound.add('takeoff'),
+            bang: this.sound.add('bang')
+        }
 
         state.round = [
             {
@@ -146,10 +156,10 @@ class Rockets extends Phaser.Scene {
             var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
-                element_name: "rockets",
+                element_name: "Fireworks",
                 score: user.score,
                 lesson: importData.lesson,
-                award: coins.toString() + " coins"
+                coins: coins
             });
         }
 
@@ -193,6 +203,7 @@ class Rockets extends Phaser.Scene {
             }
 
             ui.trailblazer[j].explode = () => {
+                ui.sound.bang.play();
                 var randomColor = Math.floor(Math.random()*6);
                 ui.explosion[j].leadSprite.forEach((sprite) => {
                     sprite.setAlpha();
@@ -294,9 +305,11 @@ class Rockets extends Phaser.Scene {
                 if (i == state.correctAnswer) {
                     ui.rocket[i].launch();
                     state.correctAnswer = state.nextQuestion();
-                    if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
-                        state.round[state.currentRound].audio[state.correctAnswer].play();
-                    }
+                    setTimeout(() => {
+                        if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
+                            state.round[state.currentRound].audio[state.correctAnswer].play();
+                        }
+                    }, 1000);
                     if (state.correctAnswer === null) {
                         setTimeout(state.nextRound, 3000);
                     }
@@ -333,11 +346,13 @@ class Rockets extends Phaser.Scene {
                 rocket.spark.start();
                 setTimeout(() => {
                     rocket.launched = true;
+                    ui.sound.takeoff.play();
                 }, 200)
             }
             rocket.fail = () => {
                 rocket.spark.start();
                 setTimeout(() => {
+                    ui.sound.wrong.play();
                     rocket.failed = true;
                     rocket.spark.stop();
                 }, 200)
@@ -389,7 +404,7 @@ class Rockets extends Phaser.Scene {
         user.lives = 6;
         user.score = 0;
         ui.scoreText = this.add.text(1685, 565, "0", ubuntuFont).setOrigin(0, 0.5)
-        ui.message = gameEndDialog('Rockets', this);
+        ui.message = gameEndDialog('GameScene', this);
     }
 
     update() {
@@ -479,7 +494,7 @@ class StartScene extends Phaser.Scene {
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('Rockets');
+            this.scene.start('GameScene');
         });
     }
 }

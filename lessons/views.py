@@ -10,8 +10,9 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
 import pytz
-from .models import Lesson, Slide, LearningEvent, Section, Class, Ke
+from .models import LearningEvent, Section, Class, Ke
 from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool, UpdateNicknameForm
+from .coursecontent import getLessons, getSlides
 
 def home(request):
 
@@ -54,10 +55,14 @@ def index(request):
         if first_locked_lesson <= request.user.profile.active_lesson:
             nextLessonLocked = True
 
+    lessons = getLessons()
+    for lesson in lessons:
+        lesson["coins"] = returnCoins(request.user, lesson["number"])
+
     context = {
         'title': 'Introduction to Chinese',
         'role': request.user.profile.role,
-        'lessons': Lesson.objects.all(),
+        'lessons': lessons,
         'activeLesson': request.user.profile.active_lesson,
         'activeSlide': request.user.profile.active_slide,
         'percentComplete': getPercentComplete(request.user),
@@ -71,22 +76,16 @@ def slide(request, lessonid, slideid):
 
     """Lesson content pages"""
 
+    lessons = getLessons()
+    slides = getSlides()
+
     # Find the current lesson and slide
 
-    current_lesson = Lesson.objects.get(lesson_order=lessonid)
-    current_lesson.number = current_lesson.lesson_order
-    current_lesson_slides = Slide.objects.filter(lesson=current_lesson.pk)
-    current_slide = Slide.objects.filter(lesson=current_lesson.pk)[int(slideid)-1]
-    current_slide.number = int(slideid)
-
-    counter = 1
-    for _slide in current_lesson_slides:
-        _slide.position = counter
-        counter += 1
+    current_lesson = lessons[int(lessonid)-1]
 
     # Determine if this is the final slide or not
 
-    if current_slide.number == len(Slide.objects.filter(lesson=current_lesson.pk)):
+    if int(slideid) == len(slides): #len(Slide.objects.filter(lesson=current_lesson.pk)):
         is_final_slide = True
     else:
         is_final_slide = False
@@ -98,19 +97,19 @@ def slide(request, lessonid, slideid):
     if request.user.profile.role == "student":
         first_locked_lesson = firstLockedLesson(request.user)
 
-        if current_lesson.number == request.user.profile.active_lesson:
-            if current_slide.number == request.user.profile.active_slide:
+        if current_lesson["number"] == request.user.profile.active_lesson:
+            if int(slideid) == request.user.profile.active_slide:
                 next_slide_is_available = False
-            if first_locked_lesson == current_lesson.number + 1 and is_final_slide:
+            if first_locked_lesson == current_lesson["number"] + 1 and is_final_slide:
                 next_slide_is_available = False
                 can_unlock_next_slide = False
 
-    # default content for empty slides -- DEVELOPMENT ONLY
+    # URL content for slides
 
-    if current_slide.content_url:
-        url = current_slide.content_url
+    if int(slideid) == 2:
+        url = "https://www.youtube.com/embed/v=tgbNymZ7vqY" # change to a list of URLs later
     else:
-        url = "../../../games/4/" + str(current_lesson.number) + "/" # 1 = dragon boat, 2 = falling tones, 3 = rockets, 4 = characters, 5 = quiz
+        url = "../../../games/" + slideid + "/" + str(current_lesson["number"]) + "/"
 
     # Create new learning event for a logged in student viewing the slide
 
@@ -118,47 +117,44 @@ def slide(request, lessonid, slideid):
         learning_event = LearningEvent.objects.create(
             user=request.user,
             action="viewed",
-            element_name=" ".join(["Lesson", str(current_lesson.number), "Slide", slideid]),
-            slide=current_slide.number,
-            lesson=current_lesson.number
+            element_name=" ".join(["Lesson", str(current_lesson["number"]), "Slide", slideid]),
+            slide=int(slideid),
+            lesson=current_lesson["number"]
         )
         learning_event.save()
 
     # if slide is a video slide, make the next slide available, and advance the student progress
 
     if request.user.profile.role == 'student':
-        if current_slide.content_type == "video":
+        if int(slideid) == 2: # if this is the video slide
             next_slide_is_available = True
-            if current_lesson.number == request.user.profile.active_lesson:
-                if current_slide.number == request.user.profile.active_slide:
+            if current_lesson["number"] == request.user.profile.active_lesson:
+                if int(slideid) == request.user.profile.active_slide:
                     next_slide = request.user.profile.active_slide + 1
-                    if is_final_slide:
-                        next_slide = 1
-                        request.user.profile.active_lesson += 1
                     request.user.profile.active_slide = next_slide
                     request.user.profile.save()
 
-
     # catch students typing in URL of unlocked lessons -> return to dashboard
+
     redirect_to_dashboard = False
     if request.user.profile.role == 'student':
-        if current_lesson.number > request.user.profile.active_lesson:
+        if current_lesson["number"] > request.user.profile.active_lesson:
             redirect_to_dashboard = True
-        elif current_lesson.number == request.user.profile.active_lesson:
-            if current_slide.number > request.user.profile.active_slide:
+        elif current_lesson["number"] == request.user.profile.active_lesson:
+            if int(slideid) > request.user.profile.active_slide:
                 redirect_to_dashboard = True
 
     context = {
-        'slides': current_lesson_slides,
-        'current_slide': current_slide,
+        'slides': slides,
+        'current_slide': slides[int(slideid) - 1],
         'lesson': current_lesson,
-        'lesson_number': current_lesson.number,
+        'lesson_number': current_lesson["number"],
         'active_lesson': request.user.profile.active_lesson,
         'active_slide': request.user.profile.active_slide,
-        'next_lesson_number': current_lesson.number + 1,
-        'previous_slide_number': current_slide.number - 1,
-        'current_slide_number': current_slide.number,
-        'next_slide_number': current_slide.number + 1,
+        'next_lesson_number': current_lesson["number"] + 1,
+        'previous_slide_number': int(slideid) - 1,
+        'current_slide_number': int(slideid),
+        'next_slide_number': int(slideid) + 1,
         'is_final_slide': is_final_slide,
         'next_slide_is_available': next_slide_is_available,
         'can_unlock_next_slide': can_unlock_next_slide,
@@ -184,7 +180,7 @@ def gameOver(request):
             element_name=request.POST.get('element_name'),
             lesson=request.POST.get('lesson'),
             score=request.POST.get('score'),
-            award=request.POST.get('award')
+            coins=request.POST.get('coins')
         )
         learning_event.save()
 
@@ -195,11 +191,8 @@ def updateProgress(request):
     """this responds to the AJAX request for enabling the next lesson"""
 
     next_slide = request.user.profile.active_slide + 1
-    current_lesson = request.user.profile.active_lesson
 
-    current_lesson = Lesson.objects.get(lesson_order=current_lesson)
-
-    if next_slide > len(Slide.objects.filter(lesson=current_lesson.pk)):
+    if next_slide > 10:
         next_slide = 1
         request.user.profile.active_lesson += 1
 
@@ -209,6 +202,48 @@ def updateProgress(request):
 
     return HttpResponse('')
 
+def returnCoins(user, lesson=0):
+
+    """returns the number of coins a user has. If the lesson argument is given,
+    it returns the number of coins from a specified lesson"""
+
+    if lesson == 0:
+        coins = (user.profile.active_lesson - 1) * 10
+        coins += user.profile.active_slide - 1
+        game_coins = {
+            "Dragon Boat Race": [0] * 10,
+            "Falling Tones": [0] * 10,
+            "Fireworks": [0] * 10,
+            "Blockzi": [0] * 10,
+            "Quiz Time": [0] * 10
+        }
+        for game in LearningEvent.objects.filter(user=user, action="completed", coins__gt=1):
+            if game_coins[game.element_name][game.lesson] < game.coins - 1:
+                game_coins[game.element_name][game.lesson] = game.coins - 1
+        for key in game_coins:
+            coins += sum(game_coins[key])
+    else:
+        if user.profile.active_lesson > lesson:
+            coins = 10
+        elif user.profile.active_lesson < lesson:
+            coins = 0
+        else:
+            coins = user.profile.active_slide - 1
+        game_coins = {
+            "Dragon Boat Race": 0,
+            "Falling Tones": 0,
+            "Fireworks": 0,
+            "Blockzi": 0,
+            "Quiz Time": 0
+        }
+        for game in LearningEvent.objects.filter(user=user, action="completed", lesson=lesson, coins__gt=1):
+            if game_coins[game.element_name] < game.coins - 1:
+                game_coins[game.element_name] = game.coins - 1
+        for key in game_coins:
+            coins += game_coins[key]
+
+    return coins
+
 @login_required
 def dashboard(request):
 
@@ -216,23 +251,27 @@ def dashboard(request):
 
     if request.user.profile.role == 'student':
 
+        lessons = getLessons()
+        slides = getSlides()
+
         active_lesson_number = request.user.profile.active_lesson
         active_slide = request.user.profile.active_slide
-        active_lesson = Lesson.objects.get(lesson_order=active_lesson_number)
+        active_lesson = lessons[active_lesson_number-1]
         first_locked_lesson = firstLockedLesson(request.user)
         lesson_locked = False
 
-        if active_slide == len(Slide.objects.filter(lesson=active_lesson.pk)) and first_locked_lesson == active_lesson_number + 1:
+        if active_slide == len(slides) and first_locked_lesson == active_lesson_number + 1:
             lesson_locked = True
             active_slide = 1
-            active_lesson = Lesson.objects.get(lesson_order=active_lesson_number-1)
+            active_lesson = lessons[active_lesson_number-2] # needs checking
 
         context = {
             'lesson': active_lesson,
             'activeSlide': active_slide,
             'percentComplete': getPercentComplete(request.user),
             'courseProgress': getCourseProgress(request.user),
-            'lesson_locked' : lesson_locked
+            'lesson_locked' : lesson_locked,
+            'coins': returnCoins(request.user)
         }
 
         return render(request, 'lessons/dashboard.html', context)
@@ -605,10 +644,13 @@ def getCourseProgress(user):
     """returns the user's course progress as a percentage"""
 
     active_slide = user.profile.active_slide
-    active_lesson = Lesson.objects.get(lesson_order=user.profile.active_lesson)
+    #active_lesson = user.profile.active_lesson # Lesson.objects.get(lesson_order=user.profile.active_lesson)
 
-    slides_in_course = len(Slide.objects.all())
-    slide_count = len(Slide.objects.filter(lesson__lt=active_lesson.lesson_order)) + (active_slide - 1)
+    slides_in_course = 100 # this is for a 10 lesson course
+    slide_count = 10 * (user.profile.active_lesson - 1) + (active_slide - 1)
+
+    # len(Slide.objects.filter(lesson__lt=active_lesson.lesson_order)) + (active_slide - 1)
+
     fraction = slide_count / slides_in_course
 
     course_progress = int(fraction * 100)
@@ -620,9 +662,9 @@ def getPercentComplete(user):
     """returns the user's lesson progress as a percentage"""
 
     active_slide = user.profile.active_slide
-    active_lesson = Lesson.objects.get(lesson_order=user.profile.active_lesson)
+    # active_lesson = user.profile.active_lesson # Lesson.objects.get(lesson_order=user.profile.active_lesson)
 
-    fraction = (active_slide - 1) / len(Slide.objects.filter(lesson=active_lesson.pk))
+    fraction = (active_slide - 1) / 10 # len(Slide.objects.filter(lesson=active_lesson.pk))
 
     percent_complete = int(fraction * 100)
 

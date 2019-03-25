@@ -190,3 +190,16 @@ img.avatarchoice:hover {
 .chart {
     width: 400px;
 }
+
+.verybig {
+    font-size: 70px;
+}
+
+.littlecoin {
+    width: 50px;
+    height: 50px;
+}
+
+.cointext {
+    font-size: 30px;
+}

@@ -1,6 +1,6 @@
-class Characters extends Phaser.Scene {
+class GameScene extends Phaser.Scene {
     constructor() {
-        super({key:"Characters"});
+        super({key:"GameScene"});
     }
 
     preload() {
@@ -34,10 +34,30 @@ class Characters extends Phaser.Scene {
             ]
         }
         myLoad(loadConfig, this);
+        var soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: [
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"},
+                {type: "sound", name: "wrong", file: "wrong.ogg"},
+                {type: "sound", name: "powerup", file: "getpowerup.ogg"},
+                {type: "sound", name: "clear", file: "powerup.ogg"},
+                {type: "sound", name: "deploy", file: "success.ogg"},
+                {type: "sound", name: "impact", file: "impact.ogg"},
+            ]
+        }
+        myLoad(soundLoadConfig, this);
     }
 
     create() {
         initialize();
+
+        ui.sound = {
+            wrong: this.sound.add('wrong'),
+            powerup: this.sound.add('powerup'),
+            deploy: this.sound.add('deploy'),
+            impact: this.sound.add('impact'),
+            clear: this.sound.add('clear')
+        }
 
         ui.data = [
             {
@@ -190,6 +210,7 @@ class Characters extends Phaser.Scene {
         }
 
         ui.addPowerUp = (column) => {
+            ui.sound.powerup.play()
             user.power = 0
             setTimeout(() => {
                 ui.powerUp.update(user.power);
@@ -214,6 +235,7 @@ class Characters extends Phaser.Scene {
         ui.exploding = false;
 
         ui.deployPowerUp = (powerUp) => {
+            ui.sound.deploy.play();
             ui.exploding = true;
             var velocities = [
                 [0,400],
@@ -283,6 +305,7 @@ class Characters extends Phaser.Scene {
                         });
                     });
                     if (!moreOutThere) {
+                        ui.sound.clear.play()
                         user.score += 5;
                         ui.scoreText.text = user.score;
                         ui.nextround.dialog.setVisible(true);
@@ -301,6 +324,7 @@ class Characters extends Phaser.Scene {
                         }, 2000)
                     }
                 } else {
+                    ui.sound.wrong.play();
                     block.locked = true;
                     block.blockText.text = "";
                     block.setTexture('stone');
@@ -318,6 +342,7 @@ class Characters extends Phaser.Scene {
         }
 
         ui.removeBlock = (block) => {
+            ui.sound.impact.play()
             ui.blocksOnScreen--;
             block.disableBody(true, true);
             block.setVisible(false);
@@ -355,10 +380,10 @@ class Characters extends Phaser.Scene {
             var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
-                element_name: "characters",
+                element_name: "Blockzi",
                 score: user.score,
                 lesson: importData.lesson,
-                award: coins.toString() + " coins"
+                coins: coins
             });
         }
 
@@ -370,7 +395,7 @@ class Characters extends Phaser.Scene {
         user.lives = 6;
         user.score = 0;
         user.power = 0;
-        ui.message = gameEndDialog('Characters', this);
+        ui.message = gameEndDialog('GameScene', this);
 
         ui.startCounter = 0;
         ui.starting = setInterval(() => {
@@ -562,7 +587,7 @@ class StartScene extends Phaser.Scene {
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('Characters');
+            this.scene.start('GameScene');
         });
     }
 }
