@@ -57,4 +57,7 @@ def games(request, gameid, lessonid):
         'file_name': file_name
     }
 
-    return render(request, 'games/games.html', context)
+    if current_game == "Stroke Order":
+        return render(request, 'games/strokeorder.html', context)
+    else:
+        return render(request, 'games/games.html', context)
