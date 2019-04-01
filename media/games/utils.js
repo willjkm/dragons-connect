@@ -19,6 +19,11 @@ var cards;
 var ui = {};
 var state = {};
 
+state.loadMyFonts = new Promise(function(resolve, reject) {
+    WebFont.load({google: {families: ['Carter One', 'ABeeZee', 'Ubuntu', 'Ubuntu Mono', 'Cabin Sketch', 'Noto Sans SC']}})
+    resolve('done!');
+})
+
 WebFont.load({google: {families: ['Carter One', 'ABeeZee', 'Ubuntu', 'Ubuntu Mono', 'Cabin Sketch', 'Noto Sans SC']}});
 
 defaultFont = {
@@ -105,6 +110,12 @@ var themeFont = {
     fill: '#111'
 }
 
+var themeFontWhite = {
+    fontFamily: 'Carter One',
+    fontSize: '60px',
+    fill: '#FFF'
+}
+
 var barFont = {
     fontFamily: 'Carter One',
     fontSize: '60px',
@@ -175,10 +186,13 @@ function myLoad(config, game) {
         if (config == "buttons") {
             game.load.image('unclicked', '../../../media/images/unclicked.png')
             game.load.image('l_unclicked', '../../../media/images/l_unclicked.png')
+            game.load.image('m_unclicked', '../../../media/images/m_unclicked.png')
             game.load.image('hover', '../../../media/images/hover.png')
             game.load.image('l_hover', '../../../media/images/l_hover.png')
+            game.load.image('m_hover', '../../../media/images/m_hover.png')
             game.load.image('mousedown', '../../../media/images/mousedown.png')
             game.load.image('l_mousedown', '../../../media/images/l_mousedown.png')
+            game.load.image('m_mousedown', '../../../media/images/m_mousedown.png')
             game.load.image('false', '../../../media/images/false.png')
             game.load.image('l_false', '../../../media/images/l_false.png')
             game.load.image('correct', '../../../media/images/correct.png')

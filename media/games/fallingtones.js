@@ -41,7 +41,8 @@ class GameScene extends Phaser.Scene {
         ui.sound = {
             pop: this.sound.add('pop'),
             raiseWall: this.sound.add('raiseWall'),
-            correct: this.sound.add('correct')
+            correct: this.sound.add('correct'),
+            sparkle: this.sound.add('sparkle')
         }
 
         ui.cams = addCameras(this);
@@ -217,14 +218,16 @@ class GameScene extends Phaser.Scene {
             if (coins > 3) {
                 coins = 3;
             }
-            ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
-            ui.cams.msgCam.setVisible(true);
-            ui.message.flyIn();
-            ui.cams.dim([this.cameras.main]);        
+            // ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
+            // ui.cams.msgCam.setVisible(true);
+            // ui.message.flyIn();
+            // ui.cams.dim([this.cameras.main]);        
 
-            if (coins > 0) {
-                ui.message.sparkle(coins);
-            }
+            // if (coins > 0) {
+            //     ui.message.sparkle(coins);
+            // }
+
+            endActivity(5, this, coins);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -338,8 +341,10 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "splashscreen.jpg"},
+                {type: "image", name: "splash", file: "ft_newsplash.jpg"},
                 {type: "image", name: "loading", file: "loading2.jpg"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "ft0", file: "ft0.jpg"},
                 {type: "image", name: "ft1", file: "ft1.jpg"},
                 {type: "image", name: "ft2", file: "ft2.jpg"},
@@ -361,9 +366,20 @@ class StartScene extends Phaser.Scene {
             user.topScore = importData.top_score;
         }
         this.add.image(0,0, 'splash').setOrigin(0,0);
-        this.add.text(595, 438, user.topScore.toString(), sketchyFont);
-        var startButton = addButton('small', 290, 300, "Start Game", this);
-        var instructions = addButton('small', 510, 300, "Instructions", this);
+        this.add.text(130, 190, 'top score: ' + user.topScore.toString(), sketchyFont);
+
+        var myCoins = [
+            this.add.image(250, 310, 'coin_disabled').setScale(0.8),
+            this.add.image(400, 310, 'coin_disabled').setScale(0.8),
+            this.add.image(550, 310, 'coin_disabled').setScale(0.8)
+        ]
+
+        for (let i=0;i<importData.coins;i++) {
+            myCoins[i].setTexture('coin');
+        }
+
+        var startButton = addButton('small', 350, 450, "Start Game", this);
+        var instructions = addButton('small', 580, 450, "Instructions", this);
         instructions.button.on('pointerdown', () => {
             runInstructions('fallingTones', this);
         });

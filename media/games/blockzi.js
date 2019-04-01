@@ -5,10 +5,12 @@ class GameScene extends Phaser.Scene {
 
     preload() {
         this.add.image(0,0, 'loading').setOrigin(0,0);
+        this.add.text(400, 300, "Loading", themeFont).setOrigin(0.5, 0.5);
+
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "background", file: "background_ch.jpg"},
+                {type: "image", name: "background", file: "blockzi_new.jpg"},
                 {type: "image", name: "message_frame", file: "gameoverbackground2.png"},
                 {type: "image", name: "bar", file: "bar.png"},
                 {type: "image", name: "b1", file: "b1.png"},
@@ -56,36 +58,19 @@ class GameScene extends Phaser.Scene {
             powerup: this.sound.add('powerup'),
             deploy: this.sound.add('deploy'),
             impact: this.sound.add('impact'),
-            clear: this.sound.add('clear')
+            clear: this.sound.add('clear'),
+            sparkle: this.sound.add('sparkle')
         }
 
-        ui.data = [
-            {
-                character: "一",
-                pinyin: "diàn",
-                english: "one"
-            },
-            {
-                character: "二",
-                pinyin: "yuán",
-                english: "two"
-            },
-            {
-                character: "三",
-                pinyin: "xué",
-                english: "three"
-            },
-            {
-                character: "四",
-                pinyin: "gōng",
-                english: "four"
-            },
-            {
-                character: "五",
-                pinyin: "shāng",
-                english: "five"
+        ui.allCharacters = getCharacterData()
+
+        ui.data = []
+
+        ui.allCharacters.forEach((vocab) => {
+            if (vocab.lesson == importData.lesson) {
+                ui.data.push(vocab);
             }
-        ]
+        })
 
         ui.getVocab = () => {
             var choice = Math.floor(Math.random()*ui.data.length);
@@ -155,7 +140,15 @@ class GameScene extends Phaser.Scene {
             return nextQuestion;
         }
 
-        ui.scoreText = this.add.text(675, 280, "0", darkFont).setOrigin(0.5, 0.5),
+        ui.timer = 60
+        ui.newScore = 240
+        ui.scoreText = this.add.text(675, 280, ui.newScore.toString(), darkFont).setOrigin(0.5, 0.5),
+        ui.displayCoins = [
+            this.add.image(610,325, 'coin').setScale(0.4),
+            this.add.image(675,325, 'coin').setScale(0.4),
+            this.add.image(740,325, 'coin').setScale(0.4),
+        ]
+        ui.coinsToWin = 3;
 
         ui.powerUp = this.add.image(675,480, 'power0').setScale(0.4);
         ui.powerUp.update = (power) => {
@@ -275,6 +268,7 @@ class GameScene extends Phaser.Scene {
             })
             if (availableColumns.length == 0) {
                 clearInterval(ui.playInterval);
+                ui.coinsToWin = 0;
                 state.gameOver();
             } else {
                 var column = availableColumns[Math.floor(Math.random()*availableColumns.length)]
@@ -291,7 +285,7 @@ class GameScene extends Phaser.Scene {
                     if (user.power == 6) {
                         ui.addPowerUp(ui.chooseColumn());
                     }
-                    ui.scoreText.text = user.score;
+                    // ui.scoreText.text = user.score;
                     ui.removeBlock(block);
                     // if the player got all of the prompt blocks, present "Clear" message and move to next prompt
                     var moreOutThere = false;
@@ -320,7 +314,7 @@ class GameScene extends Phaser.Scene {
                             ui.nextround.dialog.setVisible(false);
                             ui.nextround.text.setVisible(false);
                             ui.exploding = false;
-                            ui.bar.rect.width = 160;
+                            // ui.bar.rect.width = 160;
                         }, 2000)
                     }
                 } else {
@@ -357,19 +351,27 @@ class GameScene extends Phaser.Scene {
 
         state.gameOver = () => {
             state.phase = "gameover";
+            user.score = ui.newScore
             clearInterval(ui.playInterval);
-            var coins = Math.floor(user.score / 30);
-            if (coins > 3) {
-                coins = 3;
-            }
-            ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
-            ui.cams.msgCam.setVisible(true);
-            ui.message.flyIn();
-            ui.cams.dim([this.cameras.main]);        
+            clearInterval(ui.timerInterval);
 
-            if (coins > 0) {
-                ui.message.sparkle(coins);
-            }
+            // var coins = Math.floor(user.score / 30);
+            // if (coins > 3) {
+            //     coins = 3;
+            // }
+            // ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
+            // ui.cams.msgCam.setVisible(true);
+            // ui.message.flyIn();
+            // ui.cams.dim([this.cameras.main]);        
+
+            // if (coins > 0) {
+            //     ui.message.sparkle(coins);
+            // }
+
+            ui.nextround.dialog.setVisible(false);
+            ui.nextround.text.setVisible(false);
+
+            endActivity(9, this, ui.coinsToWin);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -383,7 +385,7 @@ class GameScene extends Phaser.Scene {
                 element_name: "Blockzi",
                 score: user.score,
                 lesson: importData.lesson,
-                coins: coins
+                coins: ui.coinsToWin
             });
         }
 
@@ -446,6 +448,19 @@ class GameScene extends Phaser.Scene {
                         ui.addBlock(column);
                     }
                 },2000)
+                ui.timerInterval = setInterval(() => {
+                    ui.timer--;
+                    ui.newScore--;
+                    ui.scoreText.setText(ui.newScore.toString())
+                    if (ui.timer == 0) {
+                        ui.timer = 60;
+                        ui.displayCoins[3-ui.coinsToWin].setTexture('coin_disabled');
+                        ui.coinsToWin--;
+                        if (ui.coinsToWin == 0) {
+                            endActivity(9, this, 0);
+                        }
+                    }
+                }, 1000)
                 ui.addPowerUp(ui.chooseColumn()); //DEBUG
                 state.phase = "play"    ;
             }
@@ -555,8 +570,10 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "block_splash.jpg"},
-                {type: "image", name: "loading", file: "loading_ch.jpg"},
+                {type: "image", name: "splash", file: "blockzi_splash.jpg"},
+                {type: "image", name: "loading", file: "blockzi_splash.jpg"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "bz0", file: "bz0.jpg"},
                 {type: "image", name: "bz1", file: "bz1.jpg"},
                 {type: "image", name: "bz2", file: "bz2.jpg"},
@@ -578,7 +595,17 @@ class StartScene extends Phaser.Scene {
             user.topScore = importData.top_score;
         }
 
-        this.add.text(400, 330, "Top score: " + user.topScore.toString(), newFontLarger).setOrigin(0.5,0.5);
+        this.add.text(400, 180, "Top score: " + user.topScore.toString(), newFontLarger).setOrigin(0.5,0.5);
+
+        var myCoins = [
+            this.add.image(270, 280, 'coin_disabled').setScale(0.8),
+            this.add.image(400, 280, 'coin_disabled').setScale(0.8),
+            this.add.image(530, 280, 'coin_disabled').setScale(0.8)
+        ]
+
+        for (let i=0;i<importData.coins;i++) {
+            myCoins[i].setTexture('coin');
+        }
 
         var startButton = addButton('small', 290, 420, "Start Game", this);
         var instructions = addButton('small', 510, 420, "Instructions", this);

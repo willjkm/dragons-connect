@@ -4,7 +4,17 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.add.image(0,0, 'loading').setOrigin(0,0);
+        this.add.image(0,0, 'splash').setOrigin(0,0);
+        this.add.text(600, 400, "Loading", themeFont).setOrigin(0.5, 0.5);
+        ui.loadingStar = this.add.image(600, 480, 'loadingstar');
+        this.tweens.add({
+            targets: ui.loadingStar,
+            angle: 360,
+            ease: 'Power1',
+            duration: 1300,
+            repeat: -1
+        });
+
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
@@ -25,24 +35,76 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "progressGrey", file: "progress_grey.png"},
                 {type: "image", name: "progressGreen", file: "progress_green.png"},
                 {type: "image", name: "audioIcon", file: "audio_icon.png"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
+                {type: "image", name: "spark", file: "spark.png"}
             ]
         }
         myLoad(loadConfig, this);
+        
+        var myDict = getDictionaryData();
+
+        var soundsToLoad = [];
+
+        myDict.forEach((obj) => {
+            soundsToLoad.push({
+                type: "sound",
+                name: obj.pinyin,
+                file: obj.soundfile
+            })
+        })
+        
+        var soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: soundsToLoad
+        }
+        myLoad(soundLoadConfig, this);
+
+
+        var dialogData = getDialogData();
+        var moreSoundsToLoad = [];
+
+        var counter = 1
+        dialogData.forEach((obj) => {
+            if (obj.lesson == importData.lesson) {
+                moreSoundsToLoad.push({
+                    type: "sound",
+                    name: 'line-'+ (counter).toString(),
+                    file: obj.soundfile    
+                })
+                counter++;
+            }
+        })
+
+        var soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: moreSoundsToLoad
+        }
+        myLoad(soundLoadConfig, this);
     }
 
     create() {
+        this.tweens.killTweensOf(ui.loadingStar);
+        ui.loadingStar.setVisible(false);
+
         this.add.image(0,0, 'background').setOrigin(0,0);
-        var currentLesson = 4;
+        var currentLesson = importData.lesson;
         var currentLine = 0;
         var vocabData = getDictionaryData();
         var dialogData = getDialogData();
+        
         var lines = [];
+
         ui.displayMode = "characters";
 
         dialogData.forEach((line) => {
-            if (line.Lesson == currentLesson) {
+            if (line.lesson == currentLesson) {
                 lines.push(line);
             }
+        })
+
+        lines.forEach((line, index) => {
+            line.audio = this.sound.add('line-'+ (index+1).toString());
         })
 
         // parse Chinese, return an array of objects: either vocab item or punctuation.
@@ -110,8 +172,14 @@ class GameScene extends Phaser.Scene {
         
         ui.displayList = [];
 
+        var firstTime = true;
+
         var displaySentence = () => {
-            
+            if (!firstTime) {
+                lines[currentLine].audio.play();
+            }
+            firstTime = false;
+
             if (currentLine == 0) {
                 ui.leftArrow.setVisible(false);
             }
@@ -120,7 +188,7 @@ class GameScene extends Phaser.Scene {
                 ui.leftArrow.setVisible(true);
             }
 
-            ui.circle.setTexture(lines[currentLine].Speaker);
+            ui.circle.setTexture(lines[currentLine].speaker);
 
             ui.progress[currentLine].setTexture('progressGreen');
             if (currentLine < lines.length - 1) {
@@ -134,7 +202,7 @@ class GameScene extends Phaser.Scene {
                 ui.displayList = [];
             }
             
-            ui.displayList = parseLine(lines[currentLine].Chinese);
+            ui.displayList = parseLine(lines[currentLine].chinese);
 
             var cursor = 130;
             var punctuation = ["!","?",".",","]
@@ -158,7 +226,8 @@ class GameScene extends Phaser.Scene {
                         "character": this.add.text(width, 130, vocab.character, chineseFont).setVisible(false),
                         "pinyin": this.add.text(width + characterWidth + 5, 135, vocab.pinyin, ubuntuGrey).setVisible(false),
                         "english": this.add.text(width, 170, vocab.english, ubuntuRed).setVisible(false),
-                        "notes":this.add.text(width, 230, vocab.notes, smallFont).setWordWrapWidth(335, true).setVisible(false)
+                        "notes": this.add.text(width, 230, vocab.notes, smallFont).setWordWrapWidth(335, true).setVisible(false),
+                        "sound": this.sound.add(vocab.pinyin)
                     }
                     vocab.displayText.on('pointerover', () => {
                         vocab.displayText.setColor('#FFF');
@@ -175,6 +244,9 @@ class GameScene extends Phaser.Scene {
                         vocab.dictionary.pinyin.setVisible(false);
                         vocab.dictionary.english.setVisible(false);
                         vocab.dictionary.notes.setVisible(false);
+                    });
+                    vocab.displayText.on('pointerdown', () => {
+                        vocab.dictionary.sound.play();
                     });
                 }
             }
@@ -248,7 +320,7 @@ class GameScene extends Phaser.Scene {
         })
         ui.leftArrow.on('pointerdown', () => {
             currentLine--;
-            ui.english.setText(lines[currentLine].English);
+            ui.english.setText(lines[currentLine].english);
             displaySentence();
         })
 
@@ -261,8 +333,12 @@ class GameScene extends Phaser.Scene {
 
         ui.rightArrow.on('pointerdown', () => {
             currentLine++;
-            ui.english.setText(lines[currentLine].English);
-            displaySentence();
+            if (currentLine == lines.length) {
+                endActivity(3, this);
+            } else {
+                ui.english.setText(lines[currentLine].english);
+                displaySentence();
+            }
         })
 
         ui.fadeIn = (obj) => {
@@ -342,7 +418,7 @@ class GameScene extends Phaser.Scene {
             ui.pinyinToggle.toggle();
         })
 
-        ui.english = this.add.text(400,455, lines[currentLine].English, ubuntuGrey).setOrigin(0.5,0.5).setAlpha(0)
+        ui.english = this.add.text(400,455, lines[currentLine].english, ubuntuGrey).setOrigin(0.5,0.5).setAlpha(0)
 
         ui.englishToggle = {
             "grey": this.add.image(400, 510, 'toggleGrey').setOrigin(0,0).setInteractive(),
@@ -396,6 +472,12 @@ class GameScene extends Phaser.Scene {
             ui.audio.circle.setTexture('emptyCircle');
         });
 
+        ui.audio.circle.on('pointerdown', () => {
+            lines[currentLine].audio.play();
+        });
+
+
+
         ui.circle = this.add.sprite(175, 175, 'emptyCircle')
         
         ui.progress = []
@@ -411,7 +493,9 @@ class GameScene extends Phaser.Scene {
         }
 
         displaySentence();
-
+        setTimeout(() => {
+            displaySentence()
+        }, 500);
     }
 
     update() {
@@ -427,8 +511,8 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "grammar_splash.jpg"},
-                {type: "image", name: "loading", file: "grammar_splash.jpg"},
+                {type: "image", name: "splash", file: "grammar_newsplash.jpg"},
+                {type: "image", name: "loadingstar", file: "loadingstar.png"},
             ]
         }
         
@@ -437,12 +521,14 @@ class StartScene extends Phaser.Scene {
     }
 
     create() {
+        this.add.text(0, -100, "Null", ubuntuRed); // loading font early
         this.add.image(0,0, 'splash').setOrigin(0,0);
 
-        var startButton = addButton('small', 290, 420, "Start", this);
-
+        var startButton
+        
+        startButton = addButton('small', 600, 450, "Start", this);
         startButton.button.on('pointerdown', () => {
             this.scene.start('GameScene');
-        });
+        });        
     }
 }

@@ -38,21 +38,10 @@ class GameScene extends Phaser.Scene {
             ]
         }
         myLoad(loadConfig, this);
+
         var soundLoadConfig = {
             mediaURL: "../../../media/sounds/",
             loadObjects: [
-                {type: "sound", name: "ma1", file: "ma1.ogg"},
-                {type: "sound", name: "ma2", file: "ma2.ogg"},
-                {type: "sound", name: "ma3", file: "ma3.ogg"},
-                {type: "sound", name: "ma4", file: "ma4.ogg"},
-                {type: "sound", name: "ge1", file: "ge1.ogg"},
-                {type: "sound", name: "ge2", file: "ge2.ogg"},
-                {type: "sound", name: "ge3", file: "ge3.ogg"},
-                {type: "sound", name: "ge4", file: "ge4.ogg"},
-                {type: "sound", name: "fei1", file: "fei1.ogg"},
-                {type: "sound", name: "fei2", file: "fei2.ogg"},
-                {type: "sound", name: "fei3", file: "fei3.ogg"},
-                {type: "sound", name: "fei4", file: "fei4.ogg"},
                 {type: "sound", name: "sparkle", file: "sparkle.ogg"},
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
                 {type: "sound", name: "takeoff", file: "firework_takeoff.ogg"},
@@ -61,42 +50,79 @@ class GameScene extends Phaser.Scene {
         }
         myLoad(soundLoadConfig, this);
 
+        var allRounds = getFireworksData();
+
+        state.soundFileList = getPinyinSoundFiles();
+
+        state.round = [];
+
+        allRounds.forEach((round) => {
+            round.pinyin = round.sounds
+            if (round.lesson == importData.lesson) {
+                console.log(round);
+                state.round.push(round);
+            }
+        })
+
+        while (state.round.length < 4) {
+            let num = Math.floor(Math.random()*(((importData.lesson-1)*2)+2))
+            if (state.round.indexOf(allRounds[num]) == -1) {
+                console.log(allRounds[num]);
+                state.round.push(allRounds[num]);
+            }
+        }
+
+        var soundsToLoad = [];
+
+        state.round.forEach((r) => {
+            for (let i=0;i<4;i++) {
+                state.soundFileList.forEach((obj) => {
+                    if (obj.pinyin == r.sounds[i]) {
+                        soundsToLoad.push({
+                            type: "sound",
+                            name: obj.file,
+                            file: obj.file
+                        })                        
+                    }
+                })
+            }
+        });
+
+        soundLoadConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: soundsToLoad
+        }
+        myLoad(soundLoadConfig, this);
     }
 
     create() {
         initialize();
 
+        ui.inputAllowed = true;
+
         ui.sound = {
             wrong: this.sound.add('wrong'),
             takeoff: this.sound.add('takeoff'),
-            bang: this.sound.add('bang')
+            bang: this.sound.add('bang'),
+            sparkle: this.sound.add('sparkle')
         }
 
-        state.round = [
-            {
-                key: ['ma1', 'ma2', 'ma3', 'ma4'],
-                pinyin: ['mā', 'má', 'mǎ', 'mà']
-            },
-            {
-                key: ['ge1', 'ge2', 'ge3', 'ge4'],
-                pinyin: ['gē', 'gé', 'gě', 'gè']
-            },
-            {
-                key: ['fei1', 'fei2', 'fei3', 'fei4'],
-                pinyin: ['fēi', 'féi', 'fěi', 'fèi']
-            }
-        ]
-        
         state.round.forEach((r) => {
-            r.audio = ["","","",""]
+            r.audio = ["","","",""];
             for (let i=0;i<4;i++) {
-                r.audio[i] = this.sound.add(r.key[i])
+                let fileName;
+                state.soundFileList.forEach((obj) => {
+                    if (obj.pinyin == r.sounds[i]) {
+                        fileName = obj.file;
+                    }
+                })
+                r.audio[i] = this.sound.add(fileName);
             }
-        })
+        });
 
-        state.totalRounds = 3
-        state.currentRound = 0
-        state.correctAnswer = Math.floor(Math.random()*4)
+        state.totalRounds = 4;
+        state.currentRound = 0;
+        state.correctAnswer = Math.floor(Math.random()*4);
 
         state.nextQuestion = () => {
             var suitableRockets = [];
@@ -139,13 +165,18 @@ class GameScene extends Phaser.Scene {
                 coins = 3;
             }
             ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
-            ui.cams.msgCam.setVisible(true);
-            ui.message.flyIn();
-            ui.cams.dim([this.cameras.main]);        
+            // ui.cams.msgCam.setVisible(true);
+            // ui.message.flyIn();
+            // ui.cams.dim([this.cameras.main]);        
 
-            if (coins > 0) {
-                ui.message.sparkle(coins);
-            }
+            // if (coins > 0) {
+            //     ui.message.sparkle(coins);
+            // }
+
+            this.cameras.remove(ui.foregroundCamera);
+            ui.housing.setVisible(false);
+
+            endActivity(7, this, coins);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -169,7 +200,7 @@ class GameScene extends Phaser.Scene {
         ui.removeAnimations = () => {};
 
         ui.background = this.add.image(0,0, 'background').setOrigin(0,0);
-        this.add.sprite(-130,800,"housing").setOrigin(0,0);
+        ui.housing = this.add.sprite(-130,800,"housing").setOrigin(0,0);
 
         ui.trailblazer = ["","","",""]
         ui.explosion = ["","","",""]
@@ -300,29 +331,35 @@ class GameScene extends Phaser.Scene {
         }
 
         ui.rocket.processInput = (i) => {
-            if (ui.rocket[i].available) {
-                ui.rocket[i].available = false;
-                if (i == state.correctAnswer) {
-                    ui.rocket[i].launch();
-                    state.correctAnswer = state.nextQuestion();
-                    setTimeout(() => {
-                        if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
-                            state.round[state.currentRound].audio[state.correctAnswer].play();
+            if (ui.inputAllowed) {
+                if (ui.rocket[i].available) {
+                    ui.inputAllowed = false;
+                    setTimeout (() => {
+                        ui.inputAllowed = true;
+                    }, 1500)
+                    ui.rocket[i].available = false;
+                    if (i == state.correctAnswer) {
+                        ui.rocket[i].launch();
+                        state.correctAnswer = state.nextQuestion();
+                        setTimeout(() => {
+                            if (state.round[state.currentRound].audio[state.correctAnswer] !== undefined) {
+                                state.round[state.currentRound].audio[state.correctAnswer].play();
+                            }
+                        }, 1000);
+                        if (state.correctAnswer === null) {
+                            setTimeout(state.nextRound, 3000);
                         }
-                    }, 1000);
-                    if (state.correctAnswer === null) {
-                        setTimeout(state.nextRound, 3000);
-                    }
-                    user.score += 10;
-                    ui.scoreText.setText(user.score.toString());
-                } else {
-                    ui.rocket[i].fail();    
-                    user.lives -= 1
-                    if (user.lives == 0) {
-                        state.gameOver()
+                        user.score += 10;
+                        ui.scoreText.setText(user.score.toString());
                     } else {
-                        ui.moon.setTexture(ui.moonTextures[6-user.lives])
-                    }
+                        ui.rocket[i].fail();    
+                        user.lives -= 1
+                        if (user.lives == 0) {
+                            state.gameOver()
+                        } else {
+                            ui.moon.setTexture(ui.moonTextures[6-user.lives])
+                        }
+                    }    
                 }    
             }
         }
@@ -462,8 +499,10 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "splashscreen_f.jpg"},
+                {type: "image", name: "splash", file: "rockets_newsplash.jpg"},
                 {type: "image", name: "loading", file: "loading_f.jpg"},
+                {type: "image", name: "coin", file: "coin.png"},
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "fw0", file: "fw0.jpg"},
                 {type: "image", name: "fw1", file: "fw1.jpg"},
                 {type: "image", name: "fw2", file: "fw2.jpg"},
@@ -485,10 +524,20 @@ class StartScene extends Phaser.Scene {
             user.topScore = importData.top_score;
         }
 
-        this.add.text(400, 300, "Top score: " + user.topScore.toString(), defaultFont).setOrigin(0.5,0.5);
+        this.add.text(400, 200, "Top score: " + user.topScore.toString(), defaultFont).setOrigin(0.5,0.5);
 
-        var startButton = addButton('small', 290, 420, "Start Game", this);
-        var instructions = addButton('small', 510, 420, "Instructions", this);
+        var myCoins = [
+            this.add.image(210, 350, 'coin_disabled'),
+            this.add.image(400, 350, 'coin_disabled'),
+            this.add.image(590, 350, 'coin_disabled')
+        ]
+
+        for (let i=0;i<importData.coins;i++) {
+            myCoins[i].setTexture('coin');
+        }
+
+        var startButton = addButton('small', 290, 520, "Start Game", this);
+        var instructions = addButton('small', 510, 520, "Instructions", this);
         instructions.button.on('pointerdown', () => {
             runInstructions('rockets', this);
         });

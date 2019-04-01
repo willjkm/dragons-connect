@@ -97,6 +97,10 @@ def getSlides():
         {
             "title": "Quiz Time",
             "file_name": "quiztime.js"
+        },
+        {
+            "title": "Stroke Order Ending",
+            "file_name": "strokeorderending.js"
         }
     ]
 

@@ -66,7 +66,8 @@ def index(request):
         'activeLesson': request.user.profile.active_lesson,
         'activeSlide': request.user.profile.active_slide,
         'percentComplete': getPercentComplete(request.user),
-        'nextLessonLocked': nextLessonLocked
+        'nextLessonLocked': nextLessonLocked,
+        'coins': returnCoins(request.user)
     }
 
     return render(request, 'lessons/index.html', context)
@@ -85,7 +86,7 @@ def slide(request, lessonid, slideid):
 
     # Determine if this is the final slide or not
 
-    if int(slideid) == len(slides): #len(Slide.objects.filter(lesson=current_lesson.pk)):
+    if int(slideid) == 10: #len(Slide.objects.filter(lesson=current_lesson.pk)):
         is_final_slide = True
     else:
         is_final_slide = False
@@ -145,7 +146,7 @@ def slide(request, lessonid, slideid):
                 redirect_to_dashboard = True
 
     context = {
-        'slides': slides,
+        'slides': slides[:-1],
         'current_slide': slides[int(slideid) - 1],
         'lesson': current_lesson,
         'lesson_number': current_lesson["number"],
@@ -159,7 +160,8 @@ def slide(request, lessonid, slideid):
         'next_slide_is_available': next_slide_is_available,
         'can_unlock_next_slide': can_unlock_next_slide,
         'role': request.user.profile.role,
-        'url': url
+        'url': url,
+        'coins': returnCoins(request.user)
     }
 
     if redirect_to_dashboard:
@@ -492,7 +494,8 @@ def updateProfile(request):
 
         context = {
             'user': request.user,
-            'form': form
+            'form': form,
+            'coins': returnCoins(request.user)
         }
 
         return render(request, 'lessons/updateprofile.html', context)

@@ -150,14 +150,19 @@ function getQuestion() {
 function getAnswers() {
     if (quiz.mode == 'multiple choice') {
         var answerList = [];
+        var idList = [];
         answerList.push(cards.question);
+        idList.push(cards.question.id);
         while (answerList.length < quiz.numOfAnswers) {
             if (!cards.answerDeck.length) {
                 cards.answerDeck = newAnswerDeck(quiz.currentLesson);
             }
             if (cards.answerDeck[0].id !== cards.question.id) {
-                if (!answerList.includes(cards.answerDeck[0])) {
-                    answerList.push(cards.answerDeck[0])
+                if (idList.indexOf(cards.answerDeck[0].id == -1)) {
+                    console.log(cards.answerDeck[0]);
+                    answerList.push(cards.answerDeck[0]);
+                    console.log(answerList);
+                    idList.push(cards.answerDeck[0].id);        
                 }
             }
             cards.answerDeck.shift();
@@ -358,6 +363,24 @@ var addButton = (size, x, y, displayText, game) => {
         result.button.on('pointerdown', () => {
             result.button.setTexture('l_mousedown');
         });
+    } else if (size == 'magenta') {
+        var result = {
+            button: game.add.sprite(x, y, 'm_unclicked').setScale(0.5,0.5).setInteractive(),
+            displayText: game.add.text(x, y, displayText, defaultFont).setOrigin(0.5,0.5)
+        };
+        result.button.on('pointerover', () => {
+            if (result.button.texture.key == 'm_unclicked') {
+                result.button.setTexture('m_hover');
+            }
+        });
+        result.button.on('pointerout', () => {
+            if (result.button.texture.key == 'm_hover') {
+                result.button.setTexture('m_unclicked');
+            }
+        });
+        result.button.on('pointerdown', () => {
+            result.button.setTexture('m_mousedown');
+        });
     }
     return result;
 }
@@ -432,6 +455,9 @@ var gameEndDialog = (sceneName, game) => {
     }
 
     result.sparkle = (coins) => {
+
+        window.parent.enableNextSlide()
+    
         var counter = 0;
         var sparkleSound = game.sound.add('sparkle');
         game.time.addEvent({
@@ -447,7 +473,12 @@ var gameEndDialog = (sceneName, game) => {
                     } 
                     if (counter == coins) {
                         result.spark.stop();
-                    }    
+                    }
+                    console.log(counter, importData.coins);
+                    if (counter > importData.coins) {
+                        let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
+                        window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();                
+                    }
                 }
                 counter += 1;
             },
@@ -471,4 +502,211 @@ var addCameras = (game) => {
         },
     };
     return result;
+}
+
+var endActivity = (slide, game, coins=null) => {
+
+    var nextText = [
+        "Watch a cartoon to learn spoken Chinese",
+        "",
+        "Practise your vocabulary in the Dragon Boat Race",
+        "Play Falling Tones to match characters with their tones",
+        "Learn to pronounce Chinese pinyin",
+        "Practise your listening skills in the Fireworks game",
+        "Learn to write Chinese characters in the right way",
+        "Practise recognizing characters in the Blockzi game",
+        "It's quiz time! See what you remember from this unit",
+        "",
+    ]
+
+    ui.endScene = {
+        background: game.add.rectangle(400, 300, 800, 600, 0xfde2a8).setAlpha(0),
+        title: game.add.text(-300, 75, "Great work!", themeFontWhite).setOrigin(0.5, 0.5).setStroke('#111', 8),
+        coinText: game.add.text(400, 140, "You earned a coin!", themeFont).setOrigin(0.5, 0.5).setAlpha(0),
+        coin: game.add.image(400, 250, 'coin_disabled').setAlpha(0),
+        spark: game.add.particles('spark').createEmitter({
+            x: 400,
+            y: 250,
+            speed: { min: -200, max: 200 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'SCREEN',
+            lifespan: 600,
+            gravityY: 0
+        }).stop(),
+        nextUpText: game.add.text(400, 350, "Next up", themeFont).setOrigin(0.5, 0.5).setAlpha(0),
+        descriptionText: game.add.text(400, 410, nextText[slide - 1], ubuntuDark).setOrigin(0.5, 0.5).setWordWrapWidth(600, true).setAlpha(0),
+        button: addButton('small', 400, 525, "Continue", game)
+    }
+
+    ui.endScene.button.button.setAlpha(0);
+    ui.endScene.button.displayText.setAlpha(0);
+
+
+    let fadeIn = (obj) => {
+        game.tweens.add({
+            targets: obj,
+            alpha: 1,
+            ease: 'Power1',
+            duration: 400
+        })    
+    }
+    let flyIn = (obj, destination) => {
+        game.tweens.add({
+            targets: obj,
+            x: destination[0],
+            y: destination[1],
+            ease: 'Power1',
+            duration: 400
+        })    
+    }
+
+    let updateNavbarCoins = () => {
+        if (window.parent.document.getElementById('nav-coins')) {
+            let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
+            window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();
+        }
+        window.parent.enableNextSlide()
+    }
+
+    gameList = [4, 5, 7, 9, 10]
+
+    if (gameList.indexOf(slide) !== -1) {
+        ui.endScene.coin = [
+            game.add.image(210, 250, 'coin_disabled').setAlpha(0),
+            game.add.image(400, 250, 'coin_disabled').setAlpha(0),
+            game.add.image(590, 250, 'coin_disabled').setAlpha(0)
+        ]
+        ui.endScene.spark = game.add.particles('spark').createEmitter({
+            x: 210,
+            y: 250,
+            speed: { min: -200, max: 200 },
+            angle: { min: 0, max: 360 },
+            scale: { start: 1, end: 0 },
+            blendMode: 'SCREEN',
+            lifespan: 600,
+            gravityY: 0
+        }).stop();
+        if (coins > 0) {
+            ui.endScene.button.button.on('pointerdown', () => {
+                window.parent.goToNextSlide()
+            });
+        
+            if (coins > 1) {
+                ui.endScene.coinText.setText('You earned ' + coins + ' coins!')
+            }
+            fadeIn(ui.endScene.background);
+            setTimeout(() => {
+                flyIn(ui.endScene.title, [400, 75]);
+                setTimeout(() => {
+                    fadeIn(ui.endScene.coinText);
+                    fadeIn([
+                        ui.endScene.coin[0],
+                        ui.endScene.coin[1],
+                        ui.endScene.coin[2],
+                    ]);
+                    let counter = 0
+                    game.time.addEvent({
+                        delay: 600,
+                        callback: () => {
+                            if (counter == 0) {
+                                ui.endScene.spark.start();
+                            } else {
+                                ui.sound.sparkle.play();
+                                ui.endScene.coin[counter-1].setTexture('coin');
+                                if (ui.endScene.coin[counter]) {
+                                    ui.endScene.spark.setPosition(ui.endScene.coin[counter].x, ui.endScene.coin[counter].y);
+                                } 
+                                if (counter == coins) {
+                                    ui.endScene.spark.stop();
+                                }
+                                if (counter > importData.coins) {
+                                    if (window.parent.document.getElementById('nav-coins')) {
+                                        let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
+                                        window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();
+                                    }
+                                }
+                            }
+                            counter += 1;
+                        },
+                        callbackScope: game,
+                        repeat: coins
+                    });                    
+                    setTimeout(() => {
+                        fadeIn([
+                            ui.endScene.nextUpText,
+                            ui.endScene.descriptionText,
+                            ui.endScene.button.button,
+                            ui.endScene.button.displayText,
+                        ])
+                    }, 400)
+                }, 400)
+            }, 400)
+        } else {
+            ui.endScene.button.button.on('pointerdown', () => {
+                ui.removeAnimations();
+                game.scene.restart('GameScene');
+            });
+            ui.endScene.title.setText('Game Over')
+            ui.endScene.coinText.setText('')
+            ui.endScene.nextUpText.setText('')
+            ui.endScene.descriptionText.setText("Good try! You didn't win any coins this time. Try again and see if you can win a coin next time.")
+            ui.endScene.button.displayText.setText('Replay');
+
+            fadeIn(ui.endScene.background);
+            setTimeout(() => {
+                flyIn(ui.endScene.title, [400, 75]);
+                setTimeout(() => {
+                    fadeIn(ui.endScene.coinText);
+                    fadeIn([
+                        ui.endScene.coin[0],
+                        ui.endScene.coin[1],
+                        ui.endScene.coin[2],
+                    ]);
+                    setTimeout(() => {
+                        fadeIn([
+                            ui.endScene.descriptionText,
+                            ui.endScene.button.button,
+                            ui.endScene.button.displayText,
+                        ])
+                    }, 400)
+                }, 400)
+            }, 400)
+        }
+
+
+    } else {
+
+        ui.endScene.button.button.on('pointerdown', () => {
+            window.parent.goToNextSlide()
+        });
+    
+        fadeIn(ui.endScene.background);
+        setTimeout(() => {
+            flyIn(ui.endScene.title, [400, 75]);
+            setTimeout(() => {
+                if (importData.coins) {
+                    ui.endScene.coin.setTexture('coin').setY(230);
+                    fadeIn(ui.endScene.coin);
+                } else {
+                    fadeIn(ui.endScene.coinText);
+                    fadeIn(ui.endScene.coin);
+                    ui.endScene.spark.start();
+                    setTimeout(() => {
+                        ui.endScene.spark.stop();
+                        ui.endScene.coin.setTexture('coin');
+                        updateNavbarCoins();
+                    }, 600)
+                }
+                setTimeout(() => {
+                    fadeIn([
+                        ui.endScene.nextUpText,
+                        ui.endScene.descriptionText,
+                        ui.endScene.button.button,
+                        ui.endScene.button.displayText,
+                    ])
+                }, 400)
+            }, 400)
+        }, 400)
+    }
 }

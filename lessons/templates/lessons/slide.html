@@ -32,15 +32,7 @@
 
     <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0" scrolling="no"></iframe>
 
-    <!-- <p>{{ current_slide.bodyText }}</p> -->
-
     {% if role == 'student' %}
-        {% if can_unlock_next_slide %}
-            {% if current_slide.content_type == "game" %}
-                <!-- <button type="button" class="btn btn-success" id="progressbutton">I'm ready</button> -->
-            {% endif %}
-        {% endif %}
-        <!-- <hr> -->
 
         {% if current_slide_number > 1 %}
             <a class="btn btn-primary mb-4" href="/lessons/{{ lesson_number }}/slide/{{ previous_slide_number }}" role="button">Previous slide</a>
@@ -108,20 +100,18 @@
     }
 
     function enableNextSlide() {
-        if(document.getElementById("continuebutton").disabled) {
-            document.getElementById("continuebutton").disabled = false;
+        {% if can_unlock_next_slide %}
+            if (document.getElementById("continuebutton").disabled) {
+                document.getElementById("continuebutton").disabled = false;
+            
+                var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
         
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-     
-            $.post('../../ajax/updateprogress/', {
-                csrfmiddlewaretoken: CSRFtoken
-            });
-        }
+                $.post('../../ajax/updateprogress/', {
+                    csrfmiddlewaretoken: CSRFtoken
+                });
+            }
+        {% endif %}
     }
-
-    //document.getElementById("progressbutton").addEventListener("click", function() {
-    //    enableNextSlide();
-    //})
 
     window.addEventListener('keydown', function(e) {
         if (e.keyCode == 32 && e.target == document.body) {

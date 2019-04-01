@@ -24,6 +24,9 @@
               </button>
               <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav ml-auto">
+                    {% if coins %}
+                        <span class="nav-item nav-link"><img src="{% static 'lessons/coin.png' %}" alt="coins" width="35" height="35"> x <span id="nav-coins">{{ coins }}</span></span>
+                    {% endif %}
                     <a class="nav-item nav-link" href="/dashboard/updateprofile/">profile</a>
                     {% if user.is_authenticated %}
                         <a class="nav-item nav-link" href="#">logged in as <div class="username">{{ user.profile.nickname }}</div></a>

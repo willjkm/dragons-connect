@@ -15,7 +15,7 @@ def games(request, gameid, lessonid):
 
     # Load all the coin and score data for the GAMES, not the ACTIVITIES (these do not have past game data)
 
-    game_list = [3, 4, 6, 8, 9] # these slides are the games
+    game_list = [4, 5, 7, 9, 10] # these slides are the games
 
     if int(gameid) in game_list:
 
@@ -45,8 +45,13 @@ def games(request, gameid, lessonid):
             top_score = top_score / 100 # converting back to milliseconds
     else:
         top_score = 0
-        coins = 0
-
+        if request.user.profile.active_lesson > int(lessonid):
+            coins = 1
+        else:
+            if request.user.profile.active_slide > int(gameid):
+                coins = 1
+            else:
+                coins = 0
 
     context = {
         'role': request.user.profile.role,

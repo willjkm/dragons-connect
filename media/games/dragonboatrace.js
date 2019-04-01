@@ -100,7 +100,8 @@ class GameScene extends Phaser.Scene {
             correct: this.sound.add('correct'),
             wrong: this.sound.add('wrong'),
             countdown: this.sound.add('countdown'),
-            countdown_high: this.sound.add('countdown_high')
+            countdown_high: this.sound.add('countdown_high'),
+            sparkle: this.sound.add('sparkle')
         }
 
         // initialize game state
@@ -303,11 +304,11 @@ class GameScene extends Phaser.Scene {
 
             // update the game over message text
 
-            var finalScore = ui.timer.displayText[0].text;
+            user.finalScore = ui.timer.displayText[0].text;
             ui.message.displayText[0].text = "You came " + ui.timer.displayText[1].text + "!";
-            ui.message.displayText[1].text = "Time: " + finalScore + "s";
+            ui.message.displayText[1].text = "Time: " + user.finalScore + "s";
 
-            if (Number(user.topScore) > Number(finalScore)) {
+            if (Number(user.topScore) > Number(user.finalScore)) {
                 ui.message.displayText[2].text = "New Record!";
                 ui.message.displayText[2].setStyle({fontSize:'30px', color: '#ee7777', fontFamily: 'Carter One'}).setRotation(-0.5).setX(1300).setY(1370);
             } else if (user.topScore == "0") {
@@ -316,19 +317,25 @@ class GameScene extends Phaser.Scene {
                 ui.message.displayText[2].text = "Personal best: " + user.topScore + "s";
             }
 
-            ui.message.flyIn();
-            ui.cams.dim([ui.raceCam, this.cameras.main]);        
+            // ui.message.flyIn();
+            // ui.cams.dim([ui.raceCam, this.cameras.main]);        
 
-            if (coins > 0) {
-                ui.message.sparkle(coins);
-            }
+            // if (coins > 0) {
+            //     ui.message.sparkle(coins);
+            // }
+
+            this.cameras.remove(ui.raceCam);
+            this.cameras.remove(ui.cams.msgCam);
+            this.cameras.main.setSize(800,600).setPosition(0,0).setScroll(0,0);
+
+            endActivity(4, this, coins);
 
             // update user top score and coins
 
-            if (Number(user.topScore) > Number(finalScore)) {
-                user.topScore = finalScore;
+            if (Number(user.topScore) > Number(user.finalScore)) {
+                user.topScore = user.finalScore;
             } else if (user.topScore == 0) {
-                user.topScore = finalScore;
+                user.topScore = user.finalScore;
             }
 
             if (user.coins < coins) {
@@ -341,7 +348,7 @@ class GameScene extends Phaser.Scene {
             $.post('../../../lessons/ajax/gameover/', {
                 csrfmiddlewaretoken: CSRFtoken,
                 element_name: "Dragon Boat Race",
-                score: Math.floor(finalScore * 100),
+                score: Math.floor(user.finalScore * 100),
                 lesson: importData.lesson,
                 coins: coins
             });
@@ -401,7 +408,7 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "splash.jpg"},
+                {type: "image", name: "splash", file: "dragonboatrace_newsplash.jpg"},
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "loading", file: "loading.jpg"},
@@ -427,8 +434,21 @@ class StartScene extends Phaser.Scene {
 
         gui.cams = addCameras(this);
 
-        var startButton = addButton('small', 290, 250, "Start Game", this);
-        var instructions = addButton('small', 510, 250, "Instructions", this);
+        var startButton = addButton('small', 290, 500, "Start Game", this);
+        var instructions = addButton('small', 510, 500, "Instructions", this);
+
+        var myCoins = [
+            this.add.image(210, 250, 'coin_disabled'),
+            this.add.image(400, 250, 'coin_disabled'),
+            this.add.image(590, 250, 'coin_disabled')
+        ]
+        if (importData.top_score > 0) {
+            this.add.text(400, 390, 'Best time: '+importData.top_score+'s', themeFont).setOrigin(0.5, 0.5);
+        }
+
+        for (let i=0;i<importData.coins;i++) {
+            myCoins[i].setTexture('coin');
+        }
 
         instructions.button.on('pointerdown', () => {
             runInstructions('race', this);
