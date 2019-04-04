@@ -53,6 +53,8 @@ class GameScene extends Phaser.Scene {
     create() {
         initialize();
 
+        ui.perfect = true;
+
         ui.sound = {
             wrong: this.sound.add('wrong'),
             powerup: this.sound.add('powerup'),
@@ -141,7 +143,7 @@ class GameScene extends Phaser.Scene {
         }
 
         ui.timer = 60
-        ui.newScore = 240
+        ui.newScore = 180
         ui.scoreText = this.add.text(675, 280, ui.newScore.toString(), darkFont).setOrigin(0.5, 0.5),
         ui.displayCoins = [
             this.add.image(610,325, 'coin').setScale(0.4),
@@ -279,7 +281,7 @@ class GameScene extends Phaser.Scene {
         ui.processInput = (block) => {
             if (!block.locked) {
                 if (block.vocab == ui.prompt.vocab) {
-                    user.score += 10;
+                    //user.score += 10;
                     user.power += 1;
                     ui.powerUp.update(user.power);
                     if (user.power == 6) {
@@ -300,8 +302,8 @@ class GameScene extends Phaser.Scene {
                     });
                     if (!moreOutThere) {
                         ui.sound.clear.play()
-                        user.score += 5;
-                        ui.scoreText.text = user.score;
+                        //user.score += 5;
+                        //ui.scoreText.text = user.score;
                         ui.nextround.dialog.setVisible(true);
                         ui.nextround.text.setVisible(true);                        
                         ui.exploding = true;
@@ -318,16 +320,17 @@ class GameScene extends Phaser.Scene {
                         }, 2000)
                     }
                 } else {
+                    ui.perfect = false;
                     ui.sound.wrong.play();
                     block.locked = true;
                     block.blockText.text = "";
                     block.setTexture('stone');
                     user.power = 0;
-                    user.score -= 5;
+                    //user.score -= 5;
                     if (user.score < 0) {
                         user.score = 0;
                     }
-                    ui.scoreText.text = user.score;
+                    //ui.scoreText.text = user.score;
                     ui.powerUp.update(user.power);
                     var column = ui.chooseColumn();
                     ui.addBlock(column);
@@ -350,6 +353,7 @@ class GameScene extends Phaser.Scene {
         }
 
         state.gameOver = () => {
+            console.log('ending game!!!')
             state.phase = "gameover";
             user.score = ui.newScore
             clearInterval(ui.playInterval);
@@ -371,7 +375,6 @@ class GameScene extends Phaser.Scene {
             ui.nextround.dialog.setVisible(false);
             ui.nextround.text.setVisible(false);
 
-            endActivity(9, this, ui.coinsToWin);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -379,14 +382,31 @@ class GameScene extends Phaser.Scene {
 
             // AJAX POST score to database
 
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "Blockzi",
-                score: user.score,
-                lesson: importData.lesson,
-                coins: ui.coinsToWin
-            });
+            // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            // $.post('../../../lessons/ajax/gameover/', {
+            //     csrfmiddlewaretoken: CSRFtoken,
+            //     element_name: "Blockzi",
+            //     score: user.score,
+            //     lesson: importData.lesson,
+            //     coins: ui.coinsToWin
+            // });
+
+            // special award: finishing with no mistakes
+
+            
+            var award = [];
+            if (ui.coinsToWin > 0) {
+                if (ui.perfect) {                    
+                    award.push("41");
+                    // $.post('../../../lessons/ajax/specialaward/', {
+                    //     csrfmiddlewaretoken: CSRFtoken,
+                    //     element_name: "41",
+                    //     lesson: importData.lesson,
+                    // });    
+                }
+            }
+            endActivity(9, this, ui.coinsToWin, user.score, "Blockzi", award);
+
         }
 
 
@@ -457,7 +477,7 @@ class GameScene extends Phaser.Scene {
                         ui.displayCoins[3-ui.coinsToWin].setTexture('coin_disabled');
                         ui.coinsToWin--;
                         if (ui.coinsToWin == 0) {
-                            endActivity(9, this, 0);
+                            state.gameOver();
                         }
                     }
                 }, 1000)
@@ -493,7 +513,7 @@ class GameScene extends Phaser.Scene {
                 //ui.bar.rect.width -= 0.4;
             }
             if (ui.blocksOnScreen < 3) {
-                user.score += 100;
+                //user.score += 100;
                 state.gameOver();
             }
         }

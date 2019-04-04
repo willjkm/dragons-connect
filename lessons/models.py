@@ -3,6 +3,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.signals import user_logged_in
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from adminsortable.models import SortableMixin
@@ -152,6 +153,22 @@ class Profile(models.Model):
         null=True
     )
     avatar = models.PositiveIntegerField(null=True, default=1)
+
+class Login(models.Model):
+
+    """keeping track of when users log in"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return " ".join([str(self.user), "logged in at", str(self.datetime)])
+
+"""the following @receiver sections create new Logins when users login"""
+
+@receiver(user_logged_in)
+def user_logged_in_callback(sender, request, user, **kwargs):
+    Login.objects.create(user=user)
 
 """the following @receiver sections link the saving of the user profile with the user model"""
 

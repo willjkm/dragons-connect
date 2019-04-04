@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from lessons.models import LearningEvent
 from lessons.coursecontent import getSlides
+from lessons.badges import getBadges
 
 
 def games(request, gameid, lessonid):
@@ -53,13 +54,16 @@ def games(request, gameid, lessonid):
             else:
                 coins = 0
 
+    badges = getBadges(request.user)
+
     context = {
         'role': request.user.profile.role,
         'user': request.user,
         'lesson': lessonid,
         'top_score': top_score,
         'coins': coins,
-        'file_name': file_name
+        'file_name': file_name,
+        'badges': badges
     }
 
     if current_game == "Stroke Order":

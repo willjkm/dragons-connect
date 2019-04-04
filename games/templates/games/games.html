@@ -29,6 +29,8 @@
             scene_name: '{{ scene_name }}'
         }
 
+        var badges = {{ badges|safe }}
+
         // Prevents spacebar from scrolling the page (e.g. during text input in a game)
 
         window.addEventListener('keydown', function(e) {

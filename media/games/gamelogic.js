@@ -159,9 +159,7 @@ function getAnswers() {
             }
             if (cards.answerDeck[0].id !== cards.question.id) {
                 if (idList.indexOf(cards.answerDeck[0].id == -1)) {
-                    console.log(cards.answerDeck[0]);
                     answerList.push(cards.answerDeck[0]);
-                    console.log(answerList);
                     idList.push(cards.answerDeck[0].id);        
                 }
             }
@@ -474,7 +472,6 @@ var gameEndDialog = (sceneName, game) => {
                     if (counter == coins) {
                         result.spark.stop();
                     }
-                    console.log(counter, importData.coins);
                     if (counter > importData.coins) {
                         let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
                         window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();                
@@ -504,7 +501,11 @@ var addCameras = (game) => {
     return result;
 }
 
-var endActivity = (slide, game, coins=null) => {
+var endActivity = (slide, game, coins=null, score=null, element_name=null, award=null) => {
+
+    if (coins > 0) {
+        window.parent.enableNextSlide()
+    }
 
     var nextText = [
         "Watch a cartoon to learn spoken Chinese",
@@ -543,7 +544,7 @@ var endActivity = (slide, game, coins=null) => {
     ui.endScene.button.displayText.setAlpha(0);
 
 
-    let fadeIn = (obj) => {
+    var fadeIn = (obj) => {
         game.tweens.add({
             targets: obj,
             alpha: 1,
@@ -551,6 +552,16 @@ var endActivity = (slide, game, coins=null) => {
             duration: 400
         })    
     }
+
+    var fadeOut = (obj) => {
+        game.tweens.add({
+            targets: obj,
+            alpha: 0,
+            ease: 'Power1',
+            duration: 400
+        })    
+    }
+
     let flyIn = (obj, destination) => {
         game.tweens.add({
             targets: obj,
@@ -566,72 +577,228 @@ var endActivity = (slide, game, coins=null) => {
             let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
             window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();
         }
-        window.parent.enableNextSlide()
     }
 
-    gameList = [4, 5, 7, 9, 10]
+    loadBadges = () => {
+        serverResponse = $.get('../../../lessons/ajax/getbadges/', {
+            csrfmiddlewaretoken: CSRFtoken,
+        }).done(() => {
+            
+            var oldBadges = [];        
+            badges.forEach((badge) => {
+                oldBadges.push(badge.name)
+            })
+            
+            var badgeList = [];
+            serverResponse.responseJSON.badges.forEach((badge) => {
+                if (oldBadges.indexOf(badge.name) == -1) {
+                    badgeList.push(badge);
+                    game.load.image(badge.file.toString(), '../../../media/images/' + badge.file.toString());
+                }
+            });
+    
+            game.load.start();
+    
+            animateEnding(badgeList);
+        });
+    }
 
-    if (gameList.indexOf(slide) !== -1) {
-        ui.endScene.coin = [
-            game.add.image(210, 250, 'coin_disabled').setAlpha(0),
-            game.add.image(400, 250, 'coin_disabled').setAlpha(0),
-            game.add.image(590, 250, 'coin_disabled').setAlpha(0)
-        ]
-        ui.endScene.spark = game.add.particles('spark').createEmitter({
-            x: 210,
-            y: 250,
-            speed: { min: -200, max: 200 },
-            angle: { min: 0, max: 360 },
-            scale: { start: 1, end: 0 },
-            blendMode: 'SCREEN',
-            lifespan: 600,
-            gravityY: 0
-        }).stop();
-        if (coins > 0) {
+    var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+
+    var gameList = [4, 5, 7, 9, 10]
+
+    if (element_name === null) {
+        loadBadges();
+    } else {
+        $.post('../../../lessons/ajax/gameover/', {
+            csrfmiddlewaretoken: CSRFtoken,
+            element_name: element_name,
+            score: score,
+            lesson: importData.lesson,
+            coins: coins
+        }).done(() => {
+            if (award.length == 0) {
+                loadBadges();
+            } else if (award.length == 1) {
+                $.post('../../../lessons/ajax/specialaward/', {
+                    csrfmiddlewaretoken: CSRFtoken,
+                    element_name: award[0],
+                    lesson: importData.lesson,
+                }).done(() => {
+                    loadBadges();
+                });
+            } else if (award.length == 2) {
+                $.post('../../../lessons/ajax/specialaward/', {
+                    csrfmiddlewaretoken: CSRFtoken,
+                    element_name: award[0],
+                    lesson: importData.lesson,
+                }).done(() => {
+                    $.post('../../../lessons/ajax/specialaward/', {
+                        csrfmiddlewaretoken: CSRFtoken,
+                        element_name: award[1],
+                        lesson: importData.lesson,
+                    }).done(() => {
+                        loadBadges();
+                    });
+                });
+            }
+        });
+    }
+
+    var animateEnding = (badgeList) => {
+
+        gameList = [4, 5, 7, 9, 10]
+
+        if (gameList.indexOf(slide) !== -1) {
+            ui.endScene.coin = [
+                game.add.image(210, 250, 'coin_disabled').setAlpha(0),
+                game.add.image(400, 250, 'coin_disabled').setAlpha(0),
+                game.add.image(590, 250, 'coin_disabled').setAlpha(0)
+            ]
+            ui.endScene.spark = game.add.particles('spark').createEmitter({
+                x: 210,
+                y: 250,
+                speed: { min: -200, max: 200 },
+                angle: { min: 0, max: 360 },
+                scale: { start: 1, end: 0 },
+                blendMode: 'SCREEN',
+                lifespan: 600,
+                gravityY: 0
+            }).stop();
+            if (coins > 0) {
+                ui.endScene.button.button.on('pointerdown', () => {
+                    if (badgeList.length > 0) {
+                        fadeOut([
+                            ui.endScene.nextUpText,
+                            ui.endScene.descriptionText,
+                            ui.endScene.coin[0],
+                            ui.endScene.coin[1],
+                            ui.endScene.coin[2],
+                            ui.endScene.coinText,
+                        ]);
+                        animateBadge(badgeList);
+                    } else {
+                        window.parent.goToNextSlide()
+                    }
+                });
+            
+                if (coins > 1) {
+                    ui.endScene.coinText.setText('You earned ' + coins + ' coins!')
+                }
+                fadeIn(ui.endScene.background);
+                setTimeout(() => {
+                    flyIn(ui.endScene.title, [400, 75]);
+                    setTimeout(() => {
+                        fadeIn(ui.endScene.coinText);
+                        fadeIn([
+                            ui.endScene.coin[0],
+                            ui.endScene.coin[1],
+                            ui.endScene.coin[2],
+                        ]);
+                        let counter = 0
+                        game.time.addEvent({
+                            delay: 600,
+                            callback: () => {
+                                if (counter == 0) {
+                                    ui.endScene.spark.start();
+                                } else {
+                                    ui.sound.sparkle.play();
+                                    ui.endScene.coin[counter-1].setTexture('coin');
+                                    if (ui.endScene.coin[counter]) {
+                                        ui.endScene.spark.setPosition(ui.endScene.coin[counter].x, ui.endScene.coin[counter].y);
+                                    } 
+                                    if (counter == coins) {
+                                        ui.endScene.spark.stop();
+                                    }
+                                    if (counter > importData.coins) {
+                                        if (window.parent.document.getElementById('nav-coins')) {
+                                            let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
+                                            window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();
+                                        }
+                                    }
+                                }
+                                counter += 1;
+                            },
+                            callbackScope: game,
+                            repeat: coins
+                        });                    
+                        setTimeout(() => {
+                            fadeIn([
+                                ui.endScene.nextUpText,
+                                ui.endScene.descriptionText,
+                                ui.endScene.button.button,
+                                ui.endScene.button.displayText,
+                            ])
+                        }, 400)
+                    }, 400)
+                }, 400)
+            } else {
+                ui.endScene.button.button.on('pointerdown', () => {
+                    ui.removeAnimations();
+                    game.scene.restart('GameScene');
+                });
+                ui.endScene.title.setText('Game Over')
+                ui.endScene.coinText.setText('')
+                ui.endScene.nextUpText.setText('')
+                ui.endScene.descriptionText.setText("Good try! You didn't win any coins this time. Try again and see if you can win a coin next time.")
+                ui.endScene.button.displayText.setText('Replay');
+
+                fadeIn(ui.endScene.background);
+                setTimeout(() => {
+                    flyIn(ui.endScene.title, [400, 75]);
+                    setTimeout(() => {
+                        fadeIn(ui.endScene.coinText);
+                        fadeIn([
+                            ui.endScene.coin[0],
+                            ui.endScene.coin[1],
+                            ui.endScene.coin[2],
+                        ]);
+                        setTimeout(() => {
+                            fadeIn([
+                                ui.endScene.descriptionText,
+                                ui.endScene.button.button,
+                                ui.endScene.button.displayText,
+                            ])
+                        }, 400)
+                    }, 400)
+                }, 400)
+            }
+
+
+        } else {
+            window.parent.enableNextSlide()
+
             ui.endScene.button.button.on('pointerdown', () => {
-                window.parent.goToNextSlide()
+                if (badgeList.length > 0) {
+                    fadeOut([
+                        ui.endScene.nextUpText,
+                        ui.endScene.descriptionText,
+                        ui.endScene.coin,
+                        ui.endScene.coinText,
+                    ]);
+                    animateBadge(badgeList);
+                } else {
+                    window.parent.goToNextSlide()
+                }
             });
         
-            if (coins > 1) {
-                ui.endScene.coinText.setText('You earned ' + coins + ' coins!')
-            }
             fadeIn(ui.endScene.background);
             setTimeout(() => {
                 flyIn(ui.endScene.title, [400, 75]);
                 setTimeout(() => {
-                    fadeIn(ui.endScene.coinText);
-                    fadeIn([
-                        ui.endScene.coin[0],
-                        ui.endScene.coin[1],
-                        ui.endScene.coin[2],
-                    ]);
-                    let counter = 0
-                    game.time.addEvent({
-                        delay: 600,
-                        callback: () => {
-                            if (counter == 0) {
-                                ui.endScene.spark.start();
-                            } else {
-                                ui.sound.sparkle.play();
-                                ui.endScene.coin[counter-1].setTexture('coin');
-                                if (ui.endScene.coin[counter]) {
-                                    ui.endScene.spark.setPosition(ui.endScene.coin[counter].x, ui.endScene.coin[counter].y);
-                                } 
-                                if (counter == coins) {
-                                    ui.endScene.spark.stop();
-                                }
-                                if (counter > importData.coins) {
-                                    if (window.parent.document.getElementById('nav-coins')) {
-                                        let newCoins = Number(window.parent.document.getElementById('nav-coins').innerHTML) + 1;
-                                        window.parent.document.getElementById('nav-coins').innerHTML = newCoins.toString();
-                                    }
-                                }
-                            }
-                            counter += 1;
-                        },
-                        callbackScope: game,
-                        repeat: coins
-                    });                    
+                    if (importData.coins) {
+                        ui.endScene.coin.setTexture('coin').setY(230);
+                        fadeIn(ui.endScene.coin);
+                    } else {
+                        fadeIn(ui.endScene.coinText);
+                        fadeIn(ui.endScene.coin);
+                        ui.endScene.spark.start();
+                        setTimeout(() => {
+                            ui.endScene.spark.stop();
+                            ui.endScene.coin.setTexture('coin');
+                            updateNavbarCoins();
+                        }, 600)
+                    }
                     setTimeout(() => {
                         fadeIn([
                             ui.endScene.nextUpText,
@@ -642,71 +809,46 @@ var endActivity = (slide, game, coins=null) => {
                     }, 400)
                 }, 400)
             }, 400)
-        } else {
-            ui.endScene.button.button.on('pointerdown', () => {
-                ui.removeAnimations();
-                game.scene.restart('GameScene');
-            });
-            ui.endScene.title.setText('Game Over')
-            ui.endScene.coinText.setText('')
-            ui.endScene.nextUpText.setText('')
-            ui.endScene.descriptionText.setText("Good try! You didn't win any coins this time. Try again and see if you can win a coin next time.")
-            ui.endScene.button.displayText.setText('Replay');
-
-            fadeIn(ui.endScene.background);
-            setTimeout(() => {
-                flyIn(ui.endScene.title, [400, 75]);
-                setTimeout(() => {
-                    fadeIn(ui.endScene.coinText);
-                    fadeIn([
-                        ui.endScene.coin[0],
-                        ui.endScene.coin[1],
-                        ui.endScene.coin[2],
-                    ]);
-                    setTimeout(() => {
-                        fadeIn([
-                            ui.endScene.descriptionText,
-                            ui.endScene.button.button,
-                            ui.endScene.button.displayText,
-                        ])
-                    }, 400)
-                }, 400)
-            }, 400)
         }
+    }
 
-
-    } else {
-
-        ui.endScene.button.button.on('pointerdown', () => {
-            window.parent.goToNextSlide()
-        });
+    var animateBadge = (bList) => {
+        
+        ui.endScene.title.setText("New Badges")
+        ui.endScene.button.button.setAlpha(0);
+        ui.endScene.button.displayText.setAlpha(0);
     
-        fadeIn(ui.endScene.background);
-        setTimeout(() => {
-            flyIn(ui.endScene.title, [400, 75]);
-            setTimeout(() => {
-                if (importData.coins) {
-                    ui.endScene.coin.setTexture('coin').setY(230);
-                    fadeIn(ui.endScene.coin);
-                } else {
-                    fadeIn(ui.endScene.coinText);
-                    fadeIn(ui.endScene.coin);
-                    ui.endScene.spark.start();
-                    setTimeout(() => {
-                        ui.endScene.spark.stop();
-                        ui.endScene.coin.setTexture('coin');
-                        updateNavbarCoins();
-                    }, 600)
-                }
-                setTimeout(() => {
-                    fadeIn([
-                        ui.endScene.nextUpText,
-                        ui.endScene.descriptionText,
-                        ui.endScene.button.button,
-                        ui.endScene.button.displayText,
-                    ])
-                }, 400)
-            }, 400)
-        }, 400)
+        bList.forEach((badge) => {
+            badge.title =  game.add.text(400, 140, badge.name, themeFont).setOrigin(0.5, 0.5).setAlpha(0);
+            badge.image = game.add.image(400, 300, badge.file.toString()).setAlpha(0);
+            badge.displayText = game.add.text(400, 410, badge.description, ubuntuDark).setOrigin(0.5, 0.5).setWordWrapWidth(600, true).setAlpha(0);
+        });
+
+        var showBadge = (badge) => {
+            fadeIn([
+                badge.title,
+                badge.image,
+                badge.displayText
+            ]);
+        };
+
+        var counter = 0
+
+        showBadge(bList[0])
+
+        var myNewButton = addButton('small', 400, 525, "Next", game)
+
+        myNewButton.button.on('pointerdown', () => {
+            counter++;
+            if (counter == bList.length) {
+                window.parent.goToNextSlide();
+            } else {
+                console.log(bList[counter-1])
+                bList[counter - 1].title.setVisible(false);
+                bList[counter - 1].image.setVisible(false);
+                bList[counter - 1].displayText.setVisible(false);
+                showBadge(bList[counter])
+            }
+        })
     }
 }

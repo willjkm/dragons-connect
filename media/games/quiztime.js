@@ -61,6 +61,7 @@ class GameScene extends Phaser.Scene {
             wrong: this.sound.add('wrong'),
             click: this.sound.add('click'),
             next_question: this.sound.add('next_question'),
+            sparkle: this.sound.add('sparkle'),
         }
 
         user.score = 90; // start at 90 and 10 points off for every incorrect answer
@@ -335,12 +336,12 @@ class GameScene extends Phaser.Scene {
             }
             ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
             ui.cams.msgCam.setVisible(true);
-            ui.message.flyIn();
-            ui.cams.dim([this.cameras.main]);        
+            // ui.message.flyIn();
+            // ui.cams.dim([this.cameras.main]);        
 
-            if (coins > 0) {
-                ui.message.sparkle(coins);
-            }
+            // if (coins > 0) {
+            //     ui.message.sparkle(coins);
+            // }
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -348,14 +349,17 @@ class GameScene extends Phaser.Scene {
 
             // AJAX POST score to database
 
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "Quiz Time",
-                score: user.score,
-                lesson: importData.lesson,
-                coins: coins
-            });
+            // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            // $.post('../../../lessons/ajax/gameover/', {
+            //     csrfmiddlewaretoken: CSRFtoken,
+            //     element_name: "Quiz Time",
+            //     score: user.score,
+            //     lesson: importData.lesson,
+            //     coins: coins
+            // });
+
+            endActivity(10, this, coins, user.score, "Quiz Time", []);
+
         }
 
         ui.message = gameEndDialog('GameScene', this);

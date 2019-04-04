@@ -46,6 +46,8 @@ class GameScene extends Phaser.Scene {
 
         // create animations
 
+        ui.perfect = true; // tracks if the user completes the game with no errors
+
         var animationFrames = [];
 
         for (let i = 1; i < 21; i++) {
@@ -169,6 +171,7 @@ class GameScene extends Phaser.Scene {
                         ui.energy.boost += 15;
                         ui.dboat.anims.play('paddle', true);
                     } else {
+                        ui.perfect = false;
                         ui.sound.wrong.play()
                         ui.energy.boost -= 10;
                     }    
@@ -328,7 +331,6 @@ class GameScene extends Phaser.Scene {
             this.cameras.remove(ui.cams.msgCam);
             this.cameras.main.setSize(800,600).setPosition(0,0).setScroll(0,0);
 
-            endActivity(4, this, coins);
 
             // update user top score and coins
 
@@ -344,14 +346,32 @@ class GameScene extends Phaser.Scene {
 
             // AJAX POST score to database
 
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "Dragon Boat Race",
-                score: Math.floor(user.finalScore * 100),
-                lesson: importData.lesson,
-                coins: coins
-            });
+            // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            // $.post('../../../lessons/ajax/gameover/', {
+            //     csrfmiddlewaretoken: CSRFtoken,
+            //     element_name: "Dragon Boat Race",
+            //     score: Math.floor(user.finalScore * 100),
+            //     lesson: importData.lesson,
+            //     coins: coins
+            // });
+
+            // special award: finishing with no mistakes
+
+            var award = [];
+
+            if (coins > 0) {
+                if (ui.perfect) {
+                    award.push("7");
+                    // $.post('../../../lessons/ajax/specialaward/', {
+                    //     csrfmiddlewaretoken: CSRFtoken,
+                    //     element_name: "7",
+                    //     lesson: importData.lesson,
+                    // });    
+                }
+            }
+
+            endActivity(4, this, coins, Math.floor(user.finalScore * 100), "Dragon Boat Race", award);
+
         }
     }
 

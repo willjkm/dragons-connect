@@ -45,6 +45,10 @@ class GameScene extends Phaser.Scene {
             sparkle: this.sound.add('sparkle')
         }
 
+        ui.streak = 0; // tracks streak of correct answers for special award
+        ui.award1 = false;
+        ui.award2 = false;
+
         ui.cams = addCameras(this);
         ui.cams.msgCam.setVisible(false);
 
@@ -227,7 +231,6 @@ class GameScene extends Phaser.Scene {
             //     ui.message.sparkle(coins);
             // }
 
-            endActivity(5, this, coins);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -235,14 +238,39 @@ class GameScene extends Phaser.Scene {
 
             // AJAX POST score to database
 
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "Falling Tones",
-                score: user.score,
-                lesson: importData.lesson,
-                coins: coins
-            });
+            // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            // $.post('../../../lessons/ajax/gameover/', {
+            //     csrfmiddlewaretoken: CSRFtoken,
+            //     element_name: "Falling Tones",
+            //     score: user.score,
+            //     lesson: importData.lesson,
+            //     coins: coins
+            // });
+
+            // console.log(ui.award1, ui.award2);
+
+            var award = []
+
+            if (coins > 0) {
+                if (ui.award1) {
+                    award.push("16")
+                    // $.post('../../../lessons/ajax/specialaward/', {
+                    //     csrfmiddlewaretoken: CSRFtoken,
+                    //     element_name: "16",
+                    //     lesson: importData.lesson,
+                    // });    
+                }
+                if (ui.award2) {
+                    award.push("17")
+                    // $.post('../../../lessons/ajax/specialaward/', {
+                    //     csrfmiddlewaretoken: CSRFtoken,
+                    //     element_name: "17",
+                    //     lesson: importData.lesson,
+                    // });    
+                }
+            }
+
+            endActivity(5, this, coins, user.score, "Falling Tones", award);
         }
     }
 
@@ -271,6 +299,7 @@ class GameScene extends Phaser.Scene {
                 }
                 var correct = checkToneBucket(user.chosenBucket);
                 if (!correct) {
+                    ui.streak = 0;
                     if (ui.wallHeight > 110) {
                         ui.addHint(recentBubble.character, recentBubble.pinyin);
                         ui.raiseWall();
@@ -280,6 +309,13 @@ class GameScene extends Phaser.Scene {
                         state.gameOver();
                     }
                 } else {
+                    ui.streak++;
+                    if (ui.streak == 5) {
+                        ui.award1 = true
+                    }
+                    if (ui.streak == 10) {
+                        ui.award2 = true
+                    }
                     ui.sound.correct.play();
                     user.score += 10;
                     if (user.score % 30 == 0) {

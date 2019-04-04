@@ -92,7 +92,11 @@
 {% block javascript %}
 <script>
     function goToNextSlide() {
-        window.location.href='/lessons/{{ lesson_number }}/slide/{{ next_slide_number }}';
+        {% if next_slide_number < 11 %}
+            window.location.href='/lessons/{{ lesson_number }}/slide/{{ next_slide_number }}';
+        {% else %}
+            window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
+        {% endif %}
     }
 
     function startNextLesson() {

@@ -71,21 +71,17 @@ body {
                     </div>
                 </div>
             </div>
-            <img class="belt" src="/media/images/redbelt.png">
-            <h4 class="cointext" style="text-align: center;">I am a <strong>red belt</strong></h4>
-            <p class="cointext" style="text-align: center;">24 coins until next belt</p>
+            <img class="belt" src="/media/images/belt-{{ beltNumber }}.png">
+            <h4 class="cointext" style="text-align: center;">I am a <strong>{{ beltName }} belt</strong></h4>
+            <p class="cointext" style="text-align: center;">{{ remainingCoins }} coins until next belt</p>
             <h2 class="mt-4" style="text-align: center;">Recent Badges</h2>
             <div class="container">
                 <div class="row my-4 mx-2">
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/badge1.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/badge4.png">
-                    </div>
-                    <div class="col">
-                        <img class="mybadge" src="/media/images/badge2.png">
-                    </div>
+                    {% for badge in badges %}
+                        <div class="col">
+                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}">
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
             <a class="btn btn-outline-success mx-4 mb-4" href="#" role="button">See all badges</a>

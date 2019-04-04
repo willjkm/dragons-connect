@@ -1,11 +1,12 @@
 """Views organizes and provides data for HTTP requests"""
 
+from math import floor
 from datetime import datetime, timedelta
 import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -13,6 +14,7 @@ import pytz
 from .models import LearningEvent, Section, Class, Ke
 from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool, UpdateNicknameForm
 from .coursecontent import getLessons, getSlides
+from .badges import getBadges, returnCoins
 
 def home(request):
 
@@ -188,6 +190,33 @@ def gameOver(request):
 
     return HttpResponse('')
 
+def specialAward(request):
+
+    """this processes the special info submitted by the game when gameover"""
+
+    role = request.user.profile.role
+
+    if request.user.is_authenticated and role == "student":
+        learning_event = LearningEvent.objects.create(
+            user=request.user,
+            action="awarded",
+            element_name=request.POST.get('element_name'),
+            lesson=request.POST.get('lesson'),
+        )
+        learning_event.save()
+
+    return HttpResponse('')
+
+def returnBadgesToGame(request):
+
+    """this responds to a game request for user badges"""
+
+    # badges = json.JSONEncoder().encode(getBadges(request.user))
+
+    badges = getBadges(request.user)
+
+    return JsonResponse({"badges": badges}, safe=False)
+
 
 def updateProgress(request):
     """this responds to the AJAX request for enabling the next lesson"""
@@ -203,48 +232,6 @@ def updateProgress(request):
     request.user.profile.save()
 
     return HttpResponse('')
-
-def returnCoins(user, lesson=0):
-
-    """returns the number of coins a user has. If the lesson argument is given,
-    it returns the number of coins from a specified lesson"""
-
-    if lesson == 0:
-        coins = (user.profile.active_lesson - 1) * 10
-        coins += user.profile.active_slide - 1
-        game_coins = {
-            "Dragon Boat Race": [0] * 10,
-            "Falling Tones": [0] * 10,
-            "Fireworks": [0] * 10,
-            "Blockzi": [0] * 10,
-            "Quiz Time": [0] * 10
-        }
-        for game in LearningEvent.objects.filter(user=user, action="completed", coins__gt=1):
-            if game_coins[game.element_name][game.lesson] < game.coins - 1:
-                game_coins[game.element_name][game.lesson] = game.coins - 1
-        for key in game_coins:
-            coins += sum(game_coins[key])
-    else:
-        if user.profile.active_lesson > lesson:
-            coins = 10
-        elif user.profile.active_lesson < lesson:
-            coins = 0
-        else:
-            coins = user.profile.active_slide - 1
-        game_coins = {
-            "Dragon Boat Race": 0,
-            "Falling Tones": 0,
-            "Fireworks": 0,
-            "Blockzi": 0,
-            "Quiz Time": 0
-        }
-        for game in LearningEvent.objects.filter(user=user, action="completed", lesson=lesson, coins__gt=1):
-            if game_coins[game.element_name] < game.coins - 1:
-                game_coins[game.element_name] = game.coins - 1
-        for key in game_coins:
-            coins += game_coins[key]
-
-    return coins
 
 @login_required
 def dashboard(request):
@@ -267,13 +254,30 @@ def dashboard(request):
             active_slide = 1
             active_lesson = lessons[active_lesson_number-2] # needs checking
 
+        coins = returnCoins(request.user)
+
+        beltNumber = int(floor(coins/10))
+
+        belts = ["white", "bordered white", "yellow", "bordered yellow", "gold", "bordered gold", "green", "bordered green",
+                 "blue", "bordered blue", "purple", "bordered purple", "brown", "bordered brown", "red", "black"]
+
+        beltName = belts[beltNumber]
+
+        remainingCoins = 10 - (coins % 10)
+
+        badges = getBadges(request.user)
+
         context = {
             'lesson': active_lesson,
             'activeSlide': active_slide,
             'percentComplete': getPercentComplete(request.user),
             'courseProgress': getCourseProgress(request.user),
             'lesson_locked' : lesson_locked,
-            'coins': returnCoins(request.user)
+            'coins': coins,
+            'beltNumber': beltNumber,
+            'beltName': beltName,
+            'remainingCoins': remainingCoins,
+            'badges': badges
         }
 
         return render(request, 'lessons/dashboard.html', context)

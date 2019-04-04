@@ -160,7 +160,10 @@ class GameScene extends Phaser.Scene {
         }
 
         state.gameOver = () => {
-            var coins = Math.floor(user.score / 30);
+
+            var livesToCoins = [0, 1, 1, 2, 2, 3, 3]
+
+            var coins = livesToCoins[user.lives]
             if (coins > 3) {
                 coins = 3;
             }
@@ -176,7 +179,6 @@ class GameScene extends Phaser.Scene {
             this.cameras.remove(ui.foregroundCamera);
             ui.housing.setVisible(false);
 
-            endActivity(7, this, coins);
 
             if (user.topScore < user.score) {
                 user.topScore = user.score;
@@ -184,14 +186,29 @@ class GameScene extends Phaser.Scene {
 
             // AJAX POST score to database
 
-            var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-            $.post('../../../lessons/ajax/gameover/', {
-                csrfmiddlewaretoken: CSRFtoken,
-                element_name: "Fireworks",
-                score: user.score,
-                lesson: importData.lesson,
-                coins: coins
-            });
+            // var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
+            // $.post('../../../lessons/ajax/gameover/', {
+            //     csrfmiddlewaretoken: CSRFtoken,
+            //     element_name: "Fireworks",
+            //     score: user.score,
+            //     lesson: importData.lesson,
+            //     coins: coins
+            // });
+
+            // special award: blue moon
+
+            var award = [];
+            if (coins > 0) {
+                if (ui.blueMoon) {
+                    // $.post('../../../lessons/ajax/specialaward/', {
+                    //     csrfmiddlewaretoken: CSRFtoken,
+                    //     element_name: "29",
+                    //     lesson: importData.lesson,
+                    // });
+                    award.push("29")
+                }
+            }
+            endActivity(7, this, coins, user.score, "Fireworks", award);
         }
 
         ui.cams = addCameras(this);
@@ -401,7 +418,13 @@ class GameScene extends Phaser.Scene {
 
 
         ui.moonTextures = ['moon1','moon2','moon3','moon4','moon5','moon6']
-        ui.moon = this.add.image(600,50, 'moon1').setOrigin(0,0).setScale(0.5).setBlendMode('SCREEN');
+        ui.moon = this.add.sprite(600,50, 'moon1').setOrigin(0,0).setScale(0.5).setBlendMode('SCREEN').setInteractive();
+        ui.blueMoon = false;
+        ui.moon.on('pointerdown', () => {
+            ui.blueMoon = true;
+            ui.moon.setTint('0x5555ff')
+        })
+
         ui.listenAgain = this.add.sprite(20,10, 'listenagain').setOrigin(0,0).setInteractive();
         ui.listenAgain.on('pointerover', () => {
             if (ui.listenAgain.texture.key == 'listenagain') {
