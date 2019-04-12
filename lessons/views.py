@@ -2,6 +2,8 @@
 
 from math import floor
 from datetime import datetime, timedelta
+from random import shuffle
+from statistics import mean
 import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -11,10 +13,10 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
 import pytz
-from .models import LearningEvent, Section, Class, Ke
+from .models import LearningEvent, Section, Class, Ke, Login
 from .forms import CreateWeeklyScheduleForm, UpdateKeForm, CreateCustomScheduleForm, UnlockLessonForm, CreateStudentsTool, UpdateNicknameForm
 from .coursecontent import getLessons, getSlides
-from .badges import getBadges, returnCoins
+from .badges import getBadges, returnCoins, badgeData
 
 def home(request):
 
@@ -213,9 +215,9 @@ def returnBadgesToGame(request):
 
     # badges = json.JSONEncoder().encode(getBadges(request.user))
 
-    badges = getBadges(request.user)
+    myBadges = getBadges(request.user)
 
-    return JsonResponse({"badges": badges}, safe=False)
+    return JsonResponse({"badges": myBadges}, safe=False)
 
 
 def updateProgress(request):
@@ -265,7 +267,18 @@ def dashboard(request):
 
         remainingCoins = 10 - (coins % 10)
 
-        badges = getBadges(request.user)
+        myBadges = getBadges(request.user)
+
+        badgesWon = len(myBadges)
+
+        if badgesWon > 6:
+            arr = [b for b in range(badgesWon)]
+            shuffle(arr)
+            badgesToShow = []
+            for a in range(6):
+                badgesToShow.append(myBadges[arr[a]])
+        else:
+            badgesToShow = myBadges
 
         context = {
             'lesson': active_lesson,
@@ -277,7 +290,8 @@ def dashboard(request):
             'beltNumber': beltNumber,
             'beltName': beltName,
             'remainingCoins': remainingCoins,
-            'badges': badges
+            'badges': badgesToShow,
+            'badgesWon': badgesWon
         }
 
         return render(request, 'lessons/dashboard.html', context)
@@ -316,6 +330,35 @@ def dashboard(request):
         }
         return render(request, 'lessons/teacher_dashboard.html', context)
 
+@login_required
+def badges(request):
+
+    """user badges page"""
+
+    myBadges = getBadges(request.user)
+    allBadges = badgeData()
+
+    badgeNames = []
+
+    for badge in myBadges:
+        badgeNames.append(badge["name"])
+
+    counter = 1
+    for badge in allBadges:
+        if badge["name"] in badgeNames:
+            badge["file"] = "badge-" + str(counter) + ".png"
+            badge["disabled"] = 0
+        else:
+            badge["file"] = "badge-" + str(counter) + "-d.png"
+            badge["disabled"] = 1
+        counter += 1
+
+    context = {
+        'badges': allBadges,
+        'coins': returnCoins(request.user)
+    }
+
+    return render(request, 'lessons/badges.html', context)
 
 @login_required
 def overview(request, classid):
@@ -442,25 +485,98 @@ def details(request, userid):
     """displays detailed student report"""
 
     student = User.objects.get(pk=userid)
-    section = str(student.profile.section)
-    course_completion = getCourseProgress(student)
-    return_page = student.profile.section.section_class.pk
-    activity = LearningEvent.objects.filter(user=student).order_by('action_datetime').reverse()
+    section = student.profile.section
+    peers = User.objects.filter(profile__section=section)
 
-    datecounter = None
-    for event in activity:
-        event.display_date = event.action_datetime.date().strftime('%d %b %Y')
-        event.display_time = event.action_datetime.time().strftime('%H:%M')
-        if event.action_datetime.date() != datecounter:
-            event.firstinlist = True
-            datecounter = event.action_datetime.date()
+    def peerAverage(fn):
+        values = []
+        for peer in peers:
+            values.append(fn(peer))
+        return floor(mean(values))
+
+    charts = []
+
+    charts.append({
+        "id": "courseCompletion",
+        "description": "The percentage of the course that the student has completed.",
+        "title": "Course Completion",
+        "student_value": getCourseProgress(student),
+        "peers_value": peerAverage(getCourseProgress)
+    })
+
+    charts.append({
+        "id": "coinsObtained",
+        "description": "The number of coins that the student has obtained.",
+        "title": "Coins",
+        "student_value": returnCoins(student),
+        "peers_value": peerAverage(returnCoins)
+    })
+
+    def returnLoginDays(user):
+        logins = Login.objects.filter(user=user)
+        myDays = []
+        for login in logins:
+            loginDate = login.datetime.date()
+            if myDays.count(loginDate) == 0:
+                myDays.append(loginDate)
+        return len(myDays)
+
+    charts.append({
+        "id": "loginDays",
+        "description": "The number of individual days on which the student has logged in.",
+        "title": "Login Days",
+        "student_value": returnLoginDays(student),
+        "peers_value": peerAverage(returnLoginDays)
+    })
+
+    def returnGameSessions(user):
+        events = LearningEvent.objects.filter(user=user, action="completed")
+        return events.count()
+
+    charts.append({
+        "id": "completedGames",
+        "description": "The number of game instances which the student has completed with at least one coin.",
+        "title": "Completed Games",
+        "student_value": returnGameSessions(student),
+        "peers_value": peerAverage(returnGameSessions)
+    })
+
+    def returnSlideViews(user):
+        events = LearningEvent.objects.filter(user=user, action="viewed")
+        return events.count()
+
+    charts.append({
+        "id": "slideViews",
+        "description": "The total number of times the student has viewed course slides.",
+        "title": "Slide Views",
+        "student_value": returnSlideViews(student),
+        "peers_value": peerAverage(returnSlideViews)
+    })
+
+    myBadges = getBadges(student)
+
+    # course_completion = getCourseProgress(student)
+    # course_completion_peers = []
+    # for peer in peers:
+    #     course_completion_peers.append(getCourseProgress(peer))
+    # averageProgress = mean(course_completion_peers)
+    # activity = LearningEvent.objects.filter(user=student).order_by('action_datetime').reverse()
+    # datecounter = None
+    # for event in activity:
+    #     event.display_date = event.action_datetime.date().strftime('%d %b %Y')
+    #     event.display_time = event.action_datetime.time().strftime('%H:%M')
+    #     if event.action_datetime.date() != datecounter:
+    #         event.firstinlist = True
+    #         datecounter = event.action_datetime.date()
+
+    return_page = student.profile.section.section_class.pk
 
     context = {
         'student': student,
-        'section': section,
-        'course_completion': course_completion,
-        'activity': activity,
-        'return_page': return_page
+        'section': str(section),
+        'charts': charts,
+        'return_page': return_page,
+        'badges': myBadges
         }
 
     return render(request, 'lessons/details.html', context)

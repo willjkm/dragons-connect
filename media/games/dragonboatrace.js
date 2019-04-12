@@ -160,21 +160,33 @@ class GameScene extends Phaser.Scene {
             buttonLocations: [[155, 470],[155, 545],[455, 470],[455, 545]]
         };
 
+        ui.inputAllowed = true;
+
         for (let i = 0; i < quiz.numOfAnswers; i++) {
             ui.answer.buttons.push(addButton(
                 'big', ui.answer.buttonLocations[i][0], ui.answer.buttonLocations[i][1], cards.answers[i][quiz.answerFormat], this));
             ui.answer.buttons[i].button.on('pointerdown', function () {
                 if (state.phase == "race") {
-                    state.check = checkUserInput(i);
-                    if (state.check) {
-                        ui.sound.correct.play()
-                        ui.energy.boost += 15;
-                        ui.dboat.anims.play('paddle', true);
-                    } else {
-                        ui.perfect = false;
-                        ui.sound.wrong.play()
-                        ui.energy.boost -= 10;
-                    }    
+                    if (ui.inputAllowed) {
+                        state.check = checkUserInput(i);
+                        if (state.check) {
+                            ui.sound.correct.play()
+                            ui.energy.boost += 15;
+                            ui.dboat.anims.play('paddle', true);
+                            ui.inputAllowed = false;
+                            setTimeout(() => {
+                                ui.inputAllowed = true;
+                            }, 500)
+                        } else {
+                            ui.perfect = false;
+                            ui.sound.wrong.play()
+                            ui.energy.boost -= 10;
+                            ui.inputAllowed = false;
+                            setTimeout(() => {
+                                ui.inputAllowed = true;
+                            }, 500)
+                        }        
+                    }
                 }
             });
         }

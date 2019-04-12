@@ -28,7 +28,12 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "labelShanghai", file: "label-shanghai.png"},
                 {type: "image", name: "labelHongkong", file: "label-hongkong.png"},
                 {type: "image", name: "labelTaipei", file: "label-taipei.png"},
-                {type: "image", name: "Beijing", file: "Beijing.png"},
+                {type: "image", name: "beijing", file: "beijing.png"},
+                {type: "image", name: "xian", file: "xian.png"},
+                {type: "image", name: "shanghai", file: "shanghai.png"},
+                {type: "image", name: "chengdu", file: "chengdu.png"},
+                {type: "image", name: "taipei", file: "taipei.png"},
+                {type: "image", name: "hongkong", file: "hongkong.png"},
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "spark", file: "spark.png"}
@@ -127,33 +132,33 @@ class GameScene extends Phaser.Scene {
             scrolls: [
                 {
                     title: "Xi'an",
-                    pic: "",
-                    blurb: ""
+                    pic: "xian",
+                    blurb: "Home of the famous Terracotta Army, made over 2000 years ago. More than 8000 soldiers, 130 chariots, and 670 horses have been uncovered!"
                 },
                 {
                     title: "Beijing",
-                    pic: "Beijing",
-                    blurb: "Beijing is the Capital City of China. It was home to the Olympic Games in 2008. Here you can see the Forbidden City, the Temple of Heaven, and the Summer Palace."
+                    pic: "beijing",
+                    blurb: "China's capital city, Beijing will be the first city in the world to host both the summer (2008) and winter (2022) Olympic Games."
                 },
                 {
                     title: "Chengdu",
-                    pic: "",
-                    blurb: ""
+                    pic: "chengdu",
+                    blurb: "Famous for its spicy food (such as hot pot) and for being the home of the giant pandas."
                 },
                 {
                     title: "Shanghai",
-                    pic: "",
-                    blurb: ""
+                    pic: "shanghai",
+                    blurb: "China's largets city, Shanghai has the world's longest metro system—400 miles of track and 393 stations!"
                 },
                 {
                     title: "Hong Kong",
-                    pic: "",
-                    blurb: ""
+                    pic: "hongkong",
+                    blurb: "Hong Kong means 'Fragrant Harbour.' The city is built on 263 islands, and is home to a thriving film industry."
                 },
                 {
                     title: "Taipei",
-                    pic: "",
-                    blurb: ""
+                    pic: "taipei",
+                    blurb: "Taipei is famous for its amazing night markets, where you can drink pearl bubble tea and enjoy tasty snacks like mango shaved ice."
                 },
             ]
         };
@@ -231,8 +236,8 @@ class GameScene extends Phaser.Scene {
             bottom: this.add.image(400, 88-150, 'roll'),
             button: addButton('mini', 400, 490, "OK", this),
             title: this.add.text(400, 100, levelData.scrolls[0].title, themeFont).setOrigin(0.5, 0.5).setAlpha(0),
-            pic: this.add.sprite(400, 245, levelData.scrolls[0].pic).setOrigin(0.5, 0.5).setScale(0.3).setAlpha(0),
-            blurb: this.add.text(400, 370, levelData.scrolls[0].blurb, smallFont).setOrigin(0.5, 0).setAlpha(0).setWordWrapWidth(475, true)
+            pic: this.add.sprite(400, 245, levelData.scrolls[0].pic).setOrigin(0.5, 0.5).setScale(0.9).setAlpha(0),
+            blurb: this.add.text(400, 370, levelData.scrolls[0].blurb, smallFont).setOrigin(0.5, 0).setAlpha(0).setWordWrapWidth(470, true)
         }
 
         ui.scroll.button.button.on('pointerdown', () => {
@@ -317,7 +322,7 @@ class GameScene extends Phaser.Scene {
                     endGame = false;
                 }
             })
-            if (!endGame) { // debug. Change to if it IS end game!!!
+            if (endGame) { // debug. Change to if it IS end game!!!
                 endActivity(1, this);
             }
             ui.scroll.button.button.setInteractive(false);

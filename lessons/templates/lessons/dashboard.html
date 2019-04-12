@@ -55,7 +55,7 @@ body {
         </div>
         <div class="card my-4">
             <h2 class="card-title m-4" style="text-align: center;">Live Classroom</h2>
-            <a class="btn btn-primary btn-huge mx-4 mb-4" href="" role="button">Enter Live Class</a>
+            <a class="btn btn-primary btn-huge mx-4 mb-4" href="#" role="button">Enter Live Class</a>
         </div>
     </div>
     <div class="col-lg mt-4">
@@ -74,7 +74,10 @@ body {
             <img class="belt" src="/media/images/belt-{{ beltNumber }}.png">
             <h4 class="cointext" style="text-align: center;">I am a <strong>{{ beltName }} belt</strong></h4>
             <p class="cointext" style="text-align: center;">{{ remainingCoins }} coins until next belt</p>
-            <h2 class="mt-4" style="text-align: center;">Recent Badges</h2>
+            <h2 class="mt-4" style="text-align: center;">My Badges</h2>
+            <div>
+                <h4 style="text-align: center;">I have {{ badgesWon }}/50 badges</h4>
+            </div>
             <div class="container">
                 <div class="row my-4 mx-2">
                     {% for badge in badges %}
@@ -84,7 +87,7 @@ body {
                     {% endfor %}
                 </div>
             </div>
-            <a class="btn btn-outline-success mx-4 mb-4" href="#" role="button">See all badges</a>
+            <a class="btn btn-outline-success mx-4 mb-4" href="/lessons/badges" role="button">See all badges</a>
         </div>
     </div>
 </div>

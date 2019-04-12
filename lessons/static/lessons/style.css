@@ -17,6 +17,10 @@ p {
     font-family: 'Ubuntu';
 }
 
+.myGrey {
+    color: #888;
+}
+
 .navbar a {
     color: #111;
     font-size: 20px;

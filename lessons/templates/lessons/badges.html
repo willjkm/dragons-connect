@@ -1,0 +1,56 @@
+
+{% extends 'base.html' %}
+
+{% block custom_style %}
+<style>
+body {
+    background-color: #ee2024;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <h1 class="text-center pt-5">All Badges</h1>
+    <div class="card m-4 px-4 pb-4">
+        <div class="m-4">
+            <a class="btn btn-primary btn-huge" href="../../dashboard" role="button">Back to Dashboard</a>
+        </div>
+        <div class="container">
+            {% for badge in badges %}
+                <div class="row my-4">
+                    <div class="col-md-auto">
+                        {% if badge.disabled %}
+                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}" style="opacity: 0.5;">
+                        {% else %}
+                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}">
+                        {% endif %}
+                    </div>
+                    <div class="col">
+                        {% if badge.disabled %}
+                            <div>
+                                <h2 class="myGrey">{{ badge.name }}</h2>
+                            </div>
+                            <div>
+                                <h4 class="myGrey">{{ badge.description }}</h4>
+                            </div>
+                        {% else %}
+                            <div>
+                                <h2>{{ badge.name }}</h2>
+                            </div>
+                            <div>
+                                <h4>{{ badge.description }}</h4>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="m-4">
+            <a class="btn btn-primary btn-huge" href="../" role="button">Back to Dashboard</a>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+{% endblock %}

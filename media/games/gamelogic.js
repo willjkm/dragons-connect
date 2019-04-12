@@ -132,6 +132,8 @@ var initialize = () => {
         completedPile: [],
     };
 
+    cards.recentQuestion = "";
+
     cards.question = getQuestion();
     cards.answers = getAnswers();
 
@@ -144,23 +146,31 @@ var initialize = () => {
 }
 
 function getQuestion() {
-    return cards.quizDeck.pop();
+    let q = cards.quizDeck.pop();
+    if (q == cards.recentQuestion) {
+        q = cards.quizDeck.pop();
+    }
+    cards.recentQuestion = q;
+    return q;
 }
 
 function getAnswers() {
     if (quiz.mode == 'multiple choice') {
         var answerList = [];
-        var idList = [];
         answerList.push(cards.question);
-        idList.push(cards.question.id);
         while (answerList.length < quiz.numOfAnswers) {
             if (!cards.answerDeck.length) {
                 cards.answerDeck = newAnswerDeck(quiz.currentLesson);
             }
-            if (cards.answerDeck[0].id !== cards.question.id) {
-                if (idList.indexOf(cards.answerDeck[0].id == -1)) {
+            if (cards.answerDeck[0].english !== cards.question.english) {
+                var dupe = false;
+                answerList.forEach((ans) => {
+                    if (cards.answerDeck[0].id == ans.id) {
+                        dupe = true;
+                    }
+                })
+                if (!dupe) {
                     answerList.push(cards.answerDeck[0]);
-                    idList.push(cards.answerDeck[0].id);        
                 }
             }
             cards.answerDeck.shift();
