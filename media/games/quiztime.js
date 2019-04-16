@@ -40,8 +40,6 @@ class GameScene extends Phaser.Scene {
         var soundLoadConfig = {
             mediaURL: "../../../media/sounds/",
             loadObjects: [
-                {type: "sound", name: "fei2", file: "fei2.ogg"},
-                {type: "sound", name: "fei4", file: "fei4.ogg"},
                 {type: "sound", name: "sparkle", file: "sparkle.ogg"},
                 {type: "sound", name: "correct", file: "correct.ogg"},
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
@@ -51,6 +49,26 @@ class GameScene extends Phaser.Scene {
             ]
         }
         myLoad(soundLoadConfig, this);
+
+        var soundsToLoad = [];
+        var data = getQuizData()
+        data.forEach((element) => {
+            if (element.sound !== undefined) {
+                if (element.lesson == importData.lesson) {
+                    console.log(element.sound);
+                    soundsToLoad.push({
+                        type: "sound",
+                        name: element.sound,
+                        file: element.sound + ".ogg"
+                    });    
+                }
+            }
+        });
+        var anotherSoundConfig = {
+            mediaURL: "../../../media/sounds/",
+            loadObjects: soundsToLoad
+        }
+        myLoad(anotherSoundConfig, this);
 
     }
 

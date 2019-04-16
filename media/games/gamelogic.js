@@ -527,7 +527,7 @@ var endActivity = (slide, game, coins=null, score=null, element_name=null, award
         "Learn to write Chinese characters in the right way",
         "Practise recognizing characters in the Blockzi game",
         "It's quiz time! See what you remember from this unit",
-        "",
+        "Keep going strong with the next lesson.",
     ]
 
     ui.endScene = {

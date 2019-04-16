@@ -4,7 +4,7 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.add.image(0,0, 'loading').setOrigin(0,0);
+        this.add.image(0,0, 'splash').setOrigin(0,0);
         ui.loadingStar = this.add.image(600, 470, 'loadingstar');
         this.tweens.add({
             targets: ui.loadingStar,
@@ -17,29 +17,24 @@ class GameScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "background", file: "china-map.jpg"},
                 {type: "image", name: "scroll", file: "scroll.png"},
                 {type: "image", name: "roll", file: "roll.png"},
-                {type: "image", name: "cityDot", file: "city-dot.png"},
-                {type: "image", name: "cityDotHover", file: "city-dot-h.png"},
-                {type: "image", name: "labelXian", file: "label-xian.png"},
-                {type: "image", name: "labelBeijing", file: "label-beijing.png"},
-                {type: "image", name: "labelChengdu", file: "label-chengdu.png"},
-                {type: "image", name: "labelShanghai", file: "label-shanghai.png"},
-                {type: "image", name: "labelHongkong", file: "label-hongkong.png"},
-                {type: "image", name: "labelTaipei", file: "label-taipei.png"},
-                {type: "image", name: "beijing", file: "beijing.png"},
-                {type: "image", name: "xian", file: "xian.png"},
-                {type: "image", name: "shanghai", file: "shanghai.png"},
-                {type: "image", name: "chengdu", file: "chengdu.png"},
-                {type: "image", name: "taipei", file: "taipei.png"},
-                {type: "image", name: "hongkong", file: "hongkong.png"},
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "spark", file: "spark.png"}
             ]
         }
         myLoad(loadConfig, this);
+
+        ui.data = getCultureData();
+
+        var levelConfig = {
+            mediaURL: "../../../media/images/",
+            loadObjects: ui.data[importData.lesson-1].assets
+        }
+        myLoad(levelConfig, this);
+
+
         var soundLoadConfig = {
             mediaURL: "../../../media/sounds/",
             loadObjects: [
@@ -64,104 +59,17 @@ class GameScene extends Phaser.Scene {
             start: this.sound.add('start'),
         }
 
-        var levelData = {
-            targets: [
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [461, 337]
-                },
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [553, 251]
-                },
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [391, 401]
-                },
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [629, 370]
-                },
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [552, 521]
-                },
-                {
-                    texture: 'cityDot',
-                    hoverTexture: 'cityDotHover',
-                    location: [650, 463]
-                }
-            ],
-            labels: [
-                {
-                    texture: 'labelXian',
-                    origin: [80, 50],
-                    destination: [412, 348]
-                },
-                {
-                    texture: 'labelBeijing',
-                    origin: [190, 50],
-                    destination: [601, 264]
-                },
-                {
-                    texture: 'labelChengdu',
-                    origin: [300, 50],
-                    destination: [343, 414]
-                },
-                {
-                    texture: 'labelShanghai',
-                    origin: [410, 50],
-                    destination: [678, 383]
-                },
-                {
-                    texture: 'labelHongkong',
-                    origin: [520, 50],
-                    destination: [502, 534]
-                },
-                {
-                    texture: 'labelTaipei',
-                    origin: [630, 50],
-                    destination: [699, 451]
-                }
-            ],
-            scrolls: [
-                {
-                    title: "Xi'an",
-                    pic: "xian",
-                    blurb: "Home of the famous Terracotta Army, made over 2000 years ago. More than 8000 soldiers, 130 chariots, and 670 horses have been uncovered!"
-                },
-                {
-                    title: "Beijing",
-                    pic: "beijing",
-                    blurb: "China's capital city, Beijing will be the first city in the world to host both the summer (2008) and winter (2022) Olympic Games."
-                },
-                {
-                    title: "Chengdu",
-                    pic: "chengdu",
-                    blurb: "Famous for its spicy food (such as hot pot) and for being the home of the giant pandas."
-                },
-                {
-                    title: "Shanghai",
-                    pic: "shanghai",
-                    blurb: "China's largets city, Shanghai has the world's longest metro system—400 miles of track and 393 stations!"
-                },
-                {
-                    title: "Hong Kong",
-                    pic: "hongkong",
-                    blurb: "Hong Kong means 'Fragrant Harbour.' The city is built on 263 islands, and is home to a thriving film industry."
-                },
-                {
-                    title: "Taipei",
-                    pic: "taipei",
-                    blurb: "Taipei is famous for its amazing night markets, where you can drink pearl bubble tea and enjoy tasty snacks like mango shaved ice."
-                },
+        if (importData.lesson == 5) {
+            ui.music = [
+                this.sound.add('sheng'),
+                this.sound.add('suona'),
+                this.sound.add('erhu'),
+                this.sound.add('pipa'),
+                this.sound.add('guzheng')
             ]
-        };
+        }
+
+        var levelData = ui.data[importData.lesson-1];
 
         ui.target = [];
 
@@ -179,32 +87,69 @@ class GameScene extends Phaser.Scene {
             l.origin = levelData.labels[index].origin;
             l.destination = levelData.labels[index].destination;
             l.complete = false;
-        })
+        });
 
         ui.target.forEach((t, index) => {
             t.counter = 2;
             t.selected = false;
             t.originalTexture = levelData.targets[index].texture;
             t.hoverTexture = levelData.targets[index].hoverTexture;
-        })
+        });
 
 
-        ui.overlapCheck = []
+        ui.overlapCheck = [];
+
+        ui.labelCenter = [];
+
+        if (levelData.config.type == "blocks") {
+            ui.label.forEach((l) => {
+                ui.labelCenter.push(this.physics.add.sprite(l.x, l.y, "spark").setScale(0.1).setVisible(false))
+            })
+            ui.labelCenter.forEach((l) => {
+                ui.target.forEach((t) => {
+                    ui.overlapCheck.push(this.physics.add.overlap(l, t, () => {
+                        t.setTexture(t.hoverTexture);
+                        t.counter = 2;
+                        t.selected = true;
+                    }));
+                });
+            });
+        }
 
         ui.label.forEach((l, index) => {
-            ui.target.forEach((t) => {
-                ui.overlapCheck.push(this.physics.add.overlap(l, t, () => {
-                    t.setTexture(t.hoverTexture);
-                    t.counter = 2;
-                    t.selected = true;
-                }))    
-            })
+            if (levelData.config.type == "dots") {
+                ui.target.forEach((t) => {
+                    ui.overlapCheck.push(this.physics.add.overlap(l, t, () => {
+                        t.setTexture(t.hoverTexture);
+                        t.counter = 2;
+                        t.selected = true;
+                    }));
+                });
+            }
             l.on('dragend', () => {
                 if (ui.target[index].selected) {
                     ui.move(l, [l.destination[0], l.destination[1]]);
                     l.complete = true;
-                    ui.openScroll(index);
-                    ui.sound.correct.play();
+                    if (!disableScroll) {
+                        ui.openScroll(index);
+                    } else {
+                        let endGame = true;
+                        ui.label.forEach((l) => {
+                            this.input.setDraggable(l, false)
+                            if (!l.complete) {
+                                this.input.setDraggable(l);
+                                endGame = false;
+                            }
+                        });
+                        if (endGame) { 
+                            endActivity(1, this);
+                        }
+                    }
+                    if (importData.lesson !== 5) {
+                        ui.sound.correct.play();
+                    } else {
+                        ui.music[index].play();
+                    }
                 } else {
                     ui.move(l, [l.origin[0], l.origin[1]]);
                     ui.sound.wrong.play();
@@ -227,7 +172,11 @@ class GameScene extends Phaser.Scene {
             });
         };
 
-        ui.instructions = this.add.text(180, 500, "Put the city labels in the correct place.", ubuntuDark).setWordWrapWidth(200, true).setAlpha(0).setOrigin(0.5,0.5);
+        ui.instructions = this.add.text(
+            levelData.config.inst_location[0],
+            levelData.config.inst_location[1],
+            levelData.config.instructions, ubuntuDark).setWordWrapWidth(
+                levelData.config.inst_wordWrap, true).setAlpha(0).setOrigin(0.5,0.5);
 
         ui.scroll = {
             dimmer: this.add.rectangle(400, 300, 800, 600, 0x000000).setAlpha(0),
@@ -253,6 +202,11 @@ class GameScene extends Phaser.Scene {
         ui.shape.fillRect(140, 50-500, 510, 20+500);
         ui.mask = ui.shape.createGeometryMask();
         ui.scroll.back.setMask(ui.mask);
+
+        var disableScroll = false;
+        if (importData.lesson == 4) {
+            disableScroll = true;
+        }
 
         ui.openScroll = (index) => {
             ui.label.forEach((l) => {
@@ -315,6 +269,7 @@ class GameScene extends Phaser.Scene {
         
 
         ui.closeScroll = () => {
+            this.sound.stopAll();
             let endGame = true;
             ui.label.forEach((l) => {
                 if (!l.complete) {
@@ -322,7 +277,7 @@ class GameScene extends Phaser.Scene {
                     endGame = false;
                 }
             })
-            if (endGame) { // debug. Change to if it IS end game!!!
+            if (endGame) { 
                 endActivity(1, this);
             }
             ui.scroll.button.button.setInteractive(false);
@@ -377,7 +332,11 @@ class GameScene extends Phaser.Scene {
             }, 300)
         }
 
-        ui.scrambleButton = addButton('magenta', 180, 500, "Ready!", this);
+        ui.scrambleButton = addButton(
+            'magenta',
+            levelData.config.button_location[0],
+            levelData.config.button_location[1],
+            "Ready!", this);
 
         ui.scrambleButton.button.on('pointerdown', () => {
             ui.sound.start.play();
@@ -404,11 +363,27 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-        
-        // ui.label.forEach((l, index) => {
-        //     ui.debugtext[index].setText(l.x.toString()+", "+l.y.toString());
-        // })
-        {}
+        ui.labelCenter.forEach((l, index) => {
+            l.x = ui.label[index].x;
+            l.y = ui.label[index].y;
+        });
+
+        let haveSelection = false
+        ui.target.forEach((t, index) => {
+            if (t.selected) {
+                if (haveSelection) {
+                    if (!ui.label[index].complete) {
+                        t.selected = false;
+                        t.setTexture(t.originalTexture);    
+                    }
+                } else {
+                    if (!ui.label[index].complete) {
+                        haveSelection = true;
+                    }
+                }
+            }
+        });
+
         ui.target.forEach((t) => {
             t.counter--;
             if (t.counter < 0) {
@@ -430,7 +405,7 @@ class StartScene extends Phaser.Scene {
         var loadConfig = {
             mediaURL: "../../../media/images/",
             loadObjects: [
-                {type: "image", name: "splash", file: "culture_splash_1.jpg"},
+                {type: "image", name: "splash", file: "culture_splash_" + importData.lesson + ".jpg"},
                 {type: "image", name: "loading", file: "culture_loading_1.jpg"},
                 {type: "image", name: "loadingstar", file: "loadingstar.png"},
             ]

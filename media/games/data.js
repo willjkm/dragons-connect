@@ -1,355 +1,481 @@
 function getData () {
     var vocabData = [
-        {
-          "id": 1,
-          "character": "你",
-          "pinyin": "nǐ",
-          "english": "you",
-          "lesson": 1
-        },
-        {
-          "id": 2,
-          "character": "好",
-          "pinyin": "hǎo",
-          "english": "good",
-          "lesson": 1
-        },
-        {
-          "id": 3,
-          "character": "你好",
-          "pinyin": "nǐ hǎo",
-          "english": "hello",
-          "lesson": 1
-        },
-        {
-          "id": 4,
-          "character": "吗",
-          "pinyin": "ma",
-          "english": "question word",
-          "lesson": 1
-        },
-        {
-          "id": 5,
-          "character": "我",
-          "pinyin": "wǒ",
-          "english": "I",
-          "lesson": 1
-        },
-        {
-          "id": 6,
-          "character": "很",
-          "pinyin": "hěn",
-          "english": "very",
-          "lesson": 1
-        },
-        {
-          "id": 7,
-          "character": "再见",
-          "pinyin": "zàijiàn",
-          "english": "goodbye",
-          "lesson": 1
-        },
-        {
-          "id": 8,
-          "character": "谢谢",
-          "pinyin": "xièxie",
-          "english": "thank you",
-          "lesson": 1
-        },
-        {
-          "id": 9,
-          "character": "去",
-          "pinyin": "qù",
-          "english": "go",
-          "lesson": 2
-        },
-        {
-          "id": 10,
-          "character": "哪儿",
-          "pinyin": "nǎr",
-          "english": "where",
-          "lesson": 2
-        },
-        {
-          "id": 11,
-          "character": "商店",
-          "pinyin": "shāngdiàn",
-          "english": "shop",
-          "lesson": 2
-        },
-        {
-          "id": 12,
-          "character": "公园",
-          "pinyin": "gōngyuán",
-          "english": "park",
-          "lesson": 2
-        },
-        {
-          "id": 13,
-          "character": "学校",
-          "pinyin": "xuéxiào",
-          "english": "school",
-          "lesson": 2
-        },
-        {
-          "id": 14,
-          "character": "咖啡馆",
-          "pinyin": "kāfēiguǎn",
-          "english": "cafe",
-          "lesson": 2
-        },
-        {
-          "id": 15,
-          "character": "回",
-          "pinyin": "huí",
-          "english": "return",
-          "lesson": 2
-        },
-        {
-          "id": 16,
-          "character": "家",
-          "pinyin": "jiā",
-          "english": "home",
-          "lesson": 2
-        },
-        {
-          "id": 17,
-          "character": "有",
-          "pinyin": "yǒu",
-          "english": "have",
-          "lesson": 3
-        },
-        {
-          "id": 18,
-          "character": "书",
-          "pinyin": "shū",
-          "english": "book",
-          "lesson": 3
-        },
-        {
-          "id": 19,
-          "character": "笔",
-          "pinyin": "bǐ",
-          "english": "pen",
-          "lesson": 3
-        },
-        {
-          "id": 20,
-          "character": "水",
-          "pinyin": "shuǐ",
-          "english": "water",
-          "lesson": 3
-        },
-        {
-          "id": 21,
-          "character": "手机",
-          "pinyin": "shǒujī",
-          "english": "mobile phone",
-          "lesson": 3
-        },
-        {
-          "id": 22,
-          "character": "没有",
-          "pinyin": "méiyǒu",
-          "english": "not have",
-          "lesson": 3
-        },
-        {
-          "id": 23,
-          "character": "一",
-          "pinyin": "yī",
-          "english": "one",
-          "lesson": 4
-        },
-        {
-          "id": 24,
-          "character": "二",
-          "pinyin": "èr",
-          "english": "two",
-          "lesson": 4
-        },
-        {
-          "id": 25,
-          "character": "三",
-          "pinyin": "sān",
-          "english": "three",
-          "lesson": 4
-        },
-        {
-          "id": 26,
-          "character": "四",
-          "pinyin": "sì",
-          "english": "four",
-          "lesson": 4
-        },
-        {
-          "id": 27,
-          "character": "五",
-          "pinyin": "wǔ",
-          "english": "five",
-          "lesson": 4
-        },
-        {
-          "id": 28,
-          "character": "六",
-          "pinyin": "liù",
-          "english": "six",
-          "lesson": 4
-        },
-        {
-          "id": 29,
-          "character": "七",
-          "pinyin": "qī",
-          "english": "seven",
-          "lesson": 4
-        },
-        {
-          "id": 30,
-          "character": "八",
-          "pinyin": "bā",
-          "english": "eight",
-          "lesson": 4
-        },
-        {
-          "id": 31,
-          "character": "九",
-          "pinyin": "jiǔ",
-          "english": "nine",
-          "lesson": 4
-        },
-        {
-          "id": 32,
-          "character": "十",
-          "pinyin": "shí",
-          "english": "ten",
-          "lesson": 4
-        },
-        {
-          "id": 33,
-          "character": "老师",
-          "pinyin": "lǎoshī",
-          "english": "teacher",
-          "lesson": 4
-        },
-        {
-          "id": 34,
-          "character": "球",
-          "pinyin": "qiú",
-          "english": "ball",
-          "lesson": 4
-        },
-        {
-          "id": 35,
-          "character": "你们",
-          "pinyin": "nǐmen",
-          "english": "you plural",
-          "lesson": 4
-        },
-        {
-          "id": 36,
-          "character": "我们",
-          "pinyin": "wǒmen",
-          "english": "we",
-          "lesson": 4
-        },
-        {
-          "id": 37,
-          "character": "他",
-          "pinyin": "tā",
-          "english": "he",
-          "lesson": 5
-        },
-        {
-          "id": 38,
-          "character": "她",
-          "pinyin": "tā",
-          "english": "she",
-          "lesson": 5
-        },
-        {
-          "id": 39,
-          "character": "是",
-          "pinyin": "shì",
-          "english": "to be",
-          "lesson": 5
-        },
-        {
-          "id": 40,
-          "character": "谁",
-          "pinyin": "shéi",
-          "english": "who",
-          "lesson": 5
-        },
-        {
-          "id": 41,
-          "character": "爸爸",
-          "pinyin": "bàba",
-          "english": "dad",
-          "lesson": 5
-        },
-        {
-          "id": 42,
-          "character": "妈妈",
-          "pinyin": "māma",
-          "english": "mum",
-          "lesson": 5
-        },
-        {
-          "id": 43,
-          "character": "王",
-          "pinyin": "wáng",
-          "english": "king",
-          "lesson": 5
-        },
-        {
-          "id": 44,
-          "character": "朋友",
-          "pinyin": "péngyou",
-          "english": "friend",
-          "lesson": 5
-        },
-        {
-          "id": 45,
-          "character": "这",
-          "pinyin": "zhè",
-          "english": "this",
-          "lesson": 5
-        },
-        {
-          "id": 46,
-          "character": "叫",
-          "pinyin": "jiào",
-          "english": "called",
-          "lesson": 6
-        },
-        {
-          "id": 47,
-          "character": "什么",
-          "pinyin": "shénme",
-          "english": "what",
-          "lesson": 6
-        },
-        {
-          "id": 48,
-          "character": "名字",
-          "pinyin": "míngzi",
-          "english": "name",
-          "lesson": 6
-        },
-        {
-          "id": 49,
-          "character": "几",
-          "pinyin": "jǐ",
-          "english": "how many",
-          "lesson": 6
-        },
-        {
-          "id": 50,
-          "character": "岁",
-          "pinyin": "suì",
-          "english": "years",
-          "lesson": 6
-        }
+      {
+        "id": 1,
+        "lesson": 1,
+        "character": "你好",
+        "pinyin": "nǐ hǎo",
+        "english": "hello"
+      },
+      {
+        "id": 2,
+        "lesson": 1,
+        "character": "你",
+        "pinyin": "nǐ",
+        "english": "you"
+      },
+      {
+        "id": 3,
+        "lesson": 1,
+        "character": "好",
+        "pinyin": "hǎo",
+        "english": "good"
+      },
+      {
+        "id": 4,
+        "lesson": 1,
+        "character": "我",
+        "pinyin": "wǒ",
+        "english": "me"
+      },
+      {
+        "id": 5,
+        "lesson": 1,
+        "character": "很",
+        "pinyin": "hěn",
+        "english": "very"
+      },
+      {
+        "id": 6,
+        "lesson": 1,
+        "character": "累",
+        "pinyin": "lèi",
+        "english": "tired"
+      },
+      {
+        "id": 7,
+        "lesson": 2,
+        "character": "生日",
+        "pinyin": "shēngrì",
+        "english": "birthday"
+      },
+      {
+        "id": 8,
+        "lesson": 2,
+        "character": "快乐",
+        "pinyin": "kuàilè",
+        "english": "happy"
+      },
+      {
+        "id": 9,
+        "lesson": 2,
+        "character": "谢谢",
+        "pinyin": "xièxie",
+        "english": "thank you"
+      },
+      {
+        "id": 10,
+        "lesson": 2,
+        "character": "不",
+        "pinyin": "bù",
+        "english": "not"
+      },
+      {
+        "id": 11,
+        "lesson": 2,
+        "character": "客气",
+        "pinyin": "kèqi",
+        "english": "polite"
+      },
+      {
+        "id": 12,
+        "lesson": 2,
+        "character": "再见",
+        "pinyin": "zàijiàn",
+        "english": "goodbye"
+      },
+      {
+        "id": 13,
+        "lesson": 3,
+        "character": "一",
+        "pinyin": "yī",
+        "english": "one"
+      },
+      {
+        "id": 14,
+        "lesson": 3,
+        "character": "二",
+        "pinyin": "èr",
+        "english": "two"
+      },
+      {
+        "id": 15,
+        "lesson": 3,
+        "character": "三",
+        "pinyin": "sān",
+        "english": "three"
+      },
+      {
+        "id": 16,
+        "lesson": 3,
+        "character": "四",
+        "pinyin": "sì",
+        "english": "four"
+      },
+      {
+        "id": 17,
+        "lesson": 3,
+        "character": "五",
+        "pinyin": "wǔ",
+        "english": "five"
+      },
+      {
+        "id": 18,
+        "lesson": 3,
+        "character": "六",
+        "pinyin": "liù",
+        "english": "six"
+      },
+      {
+        "id": 19,
+        "lesson": 3,
+        "character": "七",
+        "pinyin": "qī",
+        "english": "seven"
+      },
+      {
+        "id": 20,
+        "lesson": 3,
+        "character": "八",
+        "pinyin": "bā",
+        "english": "eight"
+      },
+      {
+        "id": 21,
+        "lesson": 3,
+        "character": "九",
+        "pinyin": "jiǔ",
+        "english": "nine"
+      },
+      {
+        "id": 22,
+        "lesson": 3,
+        "character": "十",
+        "pinyin": "shí",
+        "english": "ten"
+      },
+      {
+        "id": 23,
+        "lesson": 4,
+        "character": "去",
+        "pinyin": "qù",
+        "english": "go"
+      },
+      {
+        "id": 24,
+        "lesson": 4,
+        "character": "哪儿",
+        "pinyin": "nǎr",
+        "english": "where"
+      },
+      {
+        "id": 25,
+        "lesson": 4,
+        "character": "商店",
+        "pinyin": "shāngdiàn",
+        "english": "shop"
+      },
+      {
+        "id": 26,
+        "lesson": 4,
+        "character": "公园",
+        "pinyin": "gōngyuán",
+        "english": "public park"
+      },
+      {
+        "id": 27,
+        "lesson": 4,
+        "character": "回",
+        "pinyin": "huí",
+        "english": "return"
+      },
+      {
+        "id": 28,
+        "lesson": 4,
+        "character": "家",
+        "pinyin": "jiā",
+        "english": "home"
+      },
+      {
+        "id": 29,
+        "lesson": 5,
+        "character": "妈妈",
+        "pinyin": "māma",
+        "english": "mother"
+      },
+      {
+        "id": 30,
+        "lesson": 5,
+        "character": "有",
+        "pinyin": "yǒu",
+        "english": "have"
+      },
+      {
+        "id": 31,
+        "lesson": 5,
+        "character": "手机",
+        "pinyin": "shǒujī",
+        "english": "mobile phone"
+      },
+      {
+        "id": 32,
+        "lesson": 5,
+        "character": "钱",
+        "pinyin": "qián",
+        "english": "money"
+      },
+      {
+        "id": 33,
+        "lesson": 5,
+        "character": "水",
+        "pinyin": "shuǐ",
+        "english": "water"
+      },
+      {
+        "id": 34,
+        "lesson": 5,
+        "character": "没",
+        "pinyin": "méi",
+        "english": "not have"
+      },
+      {
+        "id": 35,
+        "lesson": 5,
+        "character": "太好了",
+        "pinyin": "tài hǎo le",
+        "english": "fantastic"
+      },
+      {
+        "id": 36,
+        "lesson": 6,
+        "character": "球",
+        "pinyin": "qiú",
+        "english": "ball"
+      },
+      {
+        "id": 37,
+        "lesson": 6,
+        "character": "你们",
+        "pinyin": "nǐmen",
+        "english": "you plural"
+      },
+      {
+        "id": 38,
+        "lesson": 6,
+        "character": "我们",
+        "pinyin": "wǒmen",
+        "english": "we"
+      },
+      {
+        "id": 39,
+        "lesson": 6,
+        "character": "走",
+        "pinyin": "zǒu",
+        "english": "walk, leave"
+      },
+      {
+        "id": 40,
+        "lesson": 7,
+        "character": "这",
+        "pinyin": "zhè",
+        "english": "this"
+      },
+      {
+        "id": 41,
+        "lesson": 7,
+        "character": "是",
+        "pinyin": "shì",
+        "english": "is"
+      },
+      {
+        "id": 42,
+        "lesson": 7,
+        "character": "爸爸",
+        "pinyin": "bàba",
+        "english": "father"
+      },
+      {
+        "id": 43,
+        "lesson": 7,
+        "character": "她",
+        "pinyin": "tā",
+        "english": "she"
+      },
+      {
+        "id": 44,
+        "lesson": 7,
+        "character": "他",
+        "pinyin": "tā",
+        "english": "he"
+      },
+      {
+        "id": 45,
+        "lesson": 7,
+        "character": "叫",
+        "pinyin": "jiào",
+        "english": "called"
+      },
+      {
+        "id": 46,
+        "lesson": 7,
+        "character": "老师",
+        "pinyin": "lǎoshī",
+        "english": "teacher"
+      },
+      {
+        "id": 47,
+        "lesson": 7,
+        "character": "哥哥",
+        "pinyin": "gēge",
+        "english": "older brother"
+      },
+      {
+        "id": 48,
+        "lesson": 7,
+        "character": "姐姐",
+        "pinyin": "jiějie",
+        "english": "older sister"
+      },
+      {
+        "id": 49,
+        "lesson": 7,
+        "character": "朋友",
+        "pinyin": "péngyou",
+        "english": "friend"
+      },
+      {
+        "id": 50,
+        "lesson": 8,
+        "character": "吃",
+        "pinyin": "chī",
+        "english": "eat"
+      },
+      {
+        "id": 51,
+        "lesson": 8,
+        "character": "什么",
+        "pinyin": "shénme",
+        "english": "what"
+      },
+      {
+        "id": 52,
+        "lesson": 8,
+        "character": "面",
+        "pinyin": "miàn",
+        "english": "noodles"
+      },
+      {
+        "id": 53,
+        "lesson": 8,
+        "character": "喝",
+        "pinyin": "hē",
+        "english": "drink"
+      },
+      {
+        "id": 54,
+        "lesson": 8,
+        "character": "可乐",
+        "pinyin": "kělè",
+        "english": "cola"
+      },
+      {
+        "id": 55,
+        "lesson": 8,
+        "character": "米饭",
+        "pinyin": "mǐfàn",
+        "english": "rice"
+      },
+      {
+        "id": 56,
+        "lesson": 8,
+        "character": "茶",
+        "pinyin": "chá",
+        "english": "tea"
+      },
+      {
+        "id": 57,
+        "lesson": 9,
+        "character": "中国",
+        "pinyin": "Zhōngguó",
+        "english": "China"
+      },
+      {
+        "id": 58,
+        "lesson": 9,
+        "character": "北京",
+        "pinyin": "Běijīng",
+        "english": "Beijing"
+      },
+      {
+        "id": 59,
+        "lesson": 9,
+        "character": "岁",
+        "pinyin": "suì",
+        "english": "years old"
+      },
+      {
+        "id": 60,
+        "lesson": 9,
+        "character": "也",
+        "pinyin": "yě",
+        "english": "also"
+      },
+      {
+        "id": 61,
+        "lesson": 9,
+        "character": "住",
+        "pinyin": "zhù",
+        "english": "live"
+      },
+      {
+        "id": 62,
+        "lesson": 9,
+        "character": "在",
+        "pinyin": "zài",
+        "english": "at"
+      },
+      {
+        "id": 63,
+        "lesson": 9,
+        "character": "上海",
+        "pinyin": "Shànghǎi",
+        "english": "Shanghai"
+      },
+      {
+        "id": 64,
+        "lesson": 10,
+        "character": "做",
+        "pinyin": "zuò",
+        "english": "do"
+      },
+      {
+        "id": 65,
+        "lesson": 10,
+        "character": "看",
+        "pinyin": "kàn",
+        "english": "look"
+      },
+      {
+        "id": 66,
+        "lesson": 10,
+        "character": "书",
+        "pinyin": "shū",
+        "english": "book"
+      },
+      {
+        "id": 67,
+        "lesson": 10,
+        "character": "发",
+        "pinyin": "fā",
+        "english": "send"
+      },
+      {
+        "id": 68,
+        "lesson": 10,
+        "character": "短信",
+        "pinyin": "duǎnxìn",
+        "english": "text message"
+      }
     ];
     return vocabData;
 }
@@ -358,404 +484,544 @@ function getToneData () {
   var vocabData = [
     {
       "id": 1,
+      "lesson": 1,
       "character": "你",
       "pinyin": "ni",
-      "tone": 3,
-      "lesson": 1
+      "tone": 3
     },
     {
       "id": 2,
+      "lesson": 1,
       "character": "好",
       "pinyin": "hao",
-      "tone": 3,
-      "lesson": 1
+      "tone": 3
     },
     {
       "id": 3,
+      "lesson": 1,
       "character": "我",
       "pinyin": "wo",
-      "tone": 3,
-      "lesson": 1
+      "tone": 3
     },
     {
       "id": 4,
+      "lesson": 1,
       "character": "很",
       "pinyin": "hen",
-      "tone": 3,
-      "lesson": 1
+      "tone": 3
     },
     {
       "id": 5,
-      "character": "再",
-      "pinyin": "zai",
-      "tone": 4,
-      "lesson": 1
+      "lesson": 1,
+      "character": "累",
+      "pinyin": "lei",
+      "tone": 4
     },
     {
       "id": 6,
-      "character": "见",
-      "pinyin": "jian",
-      "tone": 4,
-      "lesson": 1
+      "lesson": 2,
+      "character": "生",
+      "pinyin": "sheng",
+      "tone": 1
     },
     {
       "id": 7,
-      "character": "谢",
-      "pinyin": "xie",
-      "tone": 4,
-      "lesson": 1
+      "lesson": 2,
+      "character": "日",
+      "pinyin": "ri",
+      "tone": 4
     },
     {
       "id": 8,
-      "character": "去",
-      "pinyin": "qu",
-      "tone": 4,
-      "lesson": 2
+      "lesson": 2,
+      "character": "快",
+      "pinyin": "kuai",
+      "tone": 4
     },
     {
       "id": 9,
-      "character": "哪",
-      "pinyin": "na",
-      "tone": 3,
-      "lesson": 2
+      "lesson": 2,
+      "character": "乐",
+      "pinyin": "le",
+      "tone": 4
     },
     {
       "id": 10,
-      "character": "商",
-      "pinyin": "shang",
-      "tone": 1,
-      "lesson": 2
+      "lesson": 2,
+      "character": "谢",
+      "pinyin": "xie",
+      "tone": 4
     },
     {
       "id": 11,
-      "character": "店",
-      "pinyin": "dian",
-      "tone": 4,
-      "lesson": 2
+      "lesson": 2,
+      "character": "不",
+      "pinyin": "bu",
+      "tone": 4
     },
     {
       "id": 12,
-      "character": "公",
-      "pinyin": "gong",
-      "tone": 1,
-      "lesson": 2
+      "lesson": 2,
+      "character": "客",
+      "pinyin": "ke",
+      "tone": 4
     },
     {
       "id": 13,
-      "character": "园",
-      "pinyin": "yuan",
-      "tone": 2,
-      "lesson": 2
+      "lesson": 2,
+      "character": "再",
+      "pinyin": "zai",
+      "tone": 4
     },
     {
       "id": 14,
-      "character": "学",
-      "pinyin": "xue",
-      "tone": 2,
-      "lesson": 2
+      "lesson": 2,
+      "character": "见",
+      "pinyin": "jian",
+      "tone": 4
     },
     {
       "id": 15,
-      "character": "校",
-      "pinyin": "xiao",
-      "tone": 4,
-      "lesson": 2
+      "lesson": 3,
+      "character": "一",
+      "pinyin": "yi",
+      "tone": 1
     },
     {
       "id": 16,
-      "character": "咖",
-      "pinyin": "ka",
-      "tone": 1,
-      "lesson": 2
+      "lesson": 3,
+      "character": "二",
+      "pinyin": "er",
+      "tone": 4
     },
     {
       "id": 17,
-      "character": "啡",
-      "pinyin": "fei",
-      "tone": 1,
-      "lesson": 2
+      "lesson": 3,
+      "character": "三",
+      "pinyin": "san",
+      "tone": 1
     },
     {
       "id": 18,
-      "character": "馆",
-      "pinyin": "guan",
-      "tone": 3,
-      "lesson": 2
+      "lesson": 3,
+      "character": "四",
+      "pinyin": "si",
+      "tone": 4
     },
     {
       "id": 19,
-      "character": "回",
-      "pinyin": "hui",
-      "tone": 2,
-      "lesson": 2
+      "lesson": 3,
+      "character": "五",
+      "pinyin": "wu",
+      "tone": 3
     },
     {
       "id": 20,
-      "character": "家",
-      "pinyin": "jia",
-      "tone": 1,
-      "lesson": 2
+      "lesson": 3,
+      "character": "六",
+      "pinyin": "liu",
+      "tone": 4
     },
     {
       "id": 21,
-      "character": "有",
-      "pinyin": "you",
-      "tone": 3,
-      "lesson": 3
+      "lesson": 3,
+      "character": "七",
+      "pinyin": "qi",
+      "tone": 1
     },
     {
       "id": 22,
-      "character": "书",
-      "pinyin": "shu",
-      "tone": 1,
-      "lesson": 3
+      "lesson": 3,
+      "character": "八",
+      "pinyin": "ba",
+      "tone": 1
     },
     {
       "id": 23,
-      "character": "笔",
-      "pinyin": "bi",
-      "tone": 3,
-      "lesson": 3
+      "lesson": 3,
+      "character": "九",
+      "pinyin": "jiu",
+      "tone": 3
     },
     {
       "id": 24,
-      "character": "水",
-      "pinyin": "shui",
-      "tone": 3,
-      "lesson": 3
+      "lesson": 3,
+      "character": "十",
+      "pinyin": "shi",
+      "tone": 2
     },
     {
       "id": 25,
-      "character": "手",
-      "pinyin": "shou",
-      "tone": 3,
-      "lesson": 3
+      "lesson": 4,
+      "character": "去",
+      "pinyin": "qu",
+      "tone": 4
     },
     {
       "id": 26,
-      "character": "机",
-      "pinyin": "ji",
-      "tone": 1,
-      "lesson": 3
+      "lesson": 4,
+      "character": "哪",
+      "pinyin": "na",
+      "tone": 3
     },
     {
       "id": 27,
-      "character": "没",
-      "pinyin": "mei",
-      "tone": 2,
-      "lesson": 3
+      "lesson": 4,
+      "character": "商",
+      "pinyin": "shang",
+      "tone": 1
     },
     {
       "id": 28,
-      "character": "有",
-      "pinyin": "you",
-      "tone": 3,
-      "lesson": 3
+      "lesson": 4,
+      "character": "店",
+      "pinyin": "dian",
+      "tone": 4
     },
     {
       "id": 29,
-      "character": "一",
-      "pinyin": "yi",
-      "tone": 1,
-      "lesson": 4
+      "lesson": 4,
+      "character": "公",
+      "pinyin": "gong",
+      "tone": 1
     },
     {
       "id": 30,
-      "character": "二",
-      "pinyin": "er",
-      "tone": 4,
-      "lesson": 4
+      "lesson": 4,
+      "character": "园",
+      "pinyin": "yuan",
+      "tone": 2
     },
     {
       "id": 31,
-      "character": "三",
-      "pinyin": "san",
-      "tone": 1,
-      "lesson": 4
+      "lesson": 4,
+      "character": "回",
+      "pinyin": "hui",
+      "tone": 2
     },
     {
       "id": 32,
-      "character": "四",
-      "pinyin": "si",
-      "tone": 4,
-      "lesson": 4
+      "lesson": 4,
+      "character": "家",
+      "pinyin": "jian",
+      "tone": 1
     },
     {
       "id": 33,
-      "character": "五",
-      "pinyin": "wu",
-      "tone": 3,
-      "lesson": 4
+      "lesson": 5,
+      "character": "妈",
+      "pinyin": "ma",
+      "tone": 1
     },
     {
       "id": 34,
-      "character": "六",
-      "pinyin": "liu",
-      "tone": 4,
-      "lesson": 4
+      "lesson": 5,
+      "character": "有",
+      "pinyin": "you",
+      "tone": 3
     },
     {
       "id": 35,
-      "character": "七",
-      "pinyin": "qi",
-      "tone": 1,
-      "lesson": 4
+      "lesson": 5,
+      "character": "手",
+      "pinyin": "shou",
+      "tone": 3
     },
     {
       "id": 36,
-      "character": "八",
-      "pinyin": "ba",
-      "tone": 1,
-      "lesson": 4
+      "lesson": 5,
+      "character": "机",
+      "pinyin": "ji",
+      "tone": 1
     },
     {
       "id": 37,
-      "character": "九",
-      "pinyin": "jiu",
-      "tone": 3,
-      "lesson": 4
+      "lesson": 5,
+      "character": "钱",
+      "pinyin": "qian",
+      "tone": 2
     },
     {
       "id": 38,
-      "character": "十",
-      "pinyin": "shi",
-      "tone": 2,
-      "lesson": 4
+      "lesson": 5,
+      "character": "水",
+      "pinyin": "shui",
+      "tone": 3
     },
     {
       "id": 39,
-      "character": "老",
-      "pinyin": "lao",
-      "tone": 3,
-      "lesson": 4
+      "lesson": 5,
+      "character": "没",
+      "pinyin": "mei",
+      "tone": 2
     },
     {
       "id": 40,
-      "character": "师",
-      "pinyin": "shi",
-      "tone": 1,
-      "lesson": 4
+      "lesson": 5,
+      "character": "太",
+      "pinyin": "tai",
+      "tone": 4
     },
     {
       "id": 41,
+      "lesson": 6,
       "character": "球",
       "pinyin": "qiu",
-      "tone": 2,
-      "lesson": 4
+      "tone": 2
     },
     {
       "id": 42,
-      "character": "他",
-      "pinyin": "ta",
-      "tone": 1,
-      "lesson": 5
+      "lesson": 6,
+      "character": "走",
+      "pinyin": "zou",
+      "tone": 3
     },
     {
       "id": 43,
-      "character": "她",
-      "pinyin": "ta",
-      "tone": 1,
-      "lesson": 5
+      "lesson": 7,
+      "character": "这",
+      "pinyin": "zhe",
+      "tone": 4
     },
     {
       "id": 44,
+      "lesson": 7,
       "character": "是",
       "pinyin": "shi",
-      "tone": 4,
-      "lesson": 5
+      "tone": 4
     },
     {
       "id": 45,
-      "character": "谁",
-      "pinyin": "shei",
-      "tone": 2,
-      "lesson": 5
+      "lesson": 7,
+      "character": "爸",
+      "pinyin": "ba",
+      "tone": 4
     },
     {
       "id": 46,
-      "character": "爸",
-      "pinyin": "ba",
-      "tone": 4,
-      "lesson": 5
+      "lesson": 7,
+      "character": "她",
+      "pinyin": "ta",
+      "tone": 1
     },
     {
       "id": 47,
-      "character": "妈",
-      "pinyin": "ma",
-      "tone": 1,
-      "lesson": 5
+      "lesson": 7,
+      "character": "他",
+      "pinyin": "ta",
+      "tone": 1
     },
     {
       "id": 48,
-      "character": "王",
-      "pinyin": "wang",
-      "tone": 2,
-      "lesson": 5
+      "lesson": 7,
+      "character": "叫",
+      "pinyin": "jiao",
+      "tone": 4
     },
     {
       "id": 49,
-      "character": "朋",
-      "pinyin": "peng",
-      "tone": 2,
-      "lesson": 5
+      "lesson": 7,
+      "character": "老",
+      "pinyin": "lao",
+      "tone": 3
     },
     {
       "id": 50,
-      "character": "友",
-      "pinyin": "you",
-      "tone": 3,
-      "lesson": 5
+      "lesson": 7,
+      "character": "师",
+      "pinyin": "shi",
+      "tone": 1
     },
     {
       "id": 51,
-      "character": "这",
-      "pinyin": "zhe",
-      "tone": 4,
-      "lesson": 5
+      "lesson": 7,
+      "character": "哥",
+      "pinyin": "ge",
+      "tone": 1
     },
     {
       "id": 52,
-      "character": "叫",
-      "pinyin": "jiao",
-      "tone": 4,
-      "lesson": 6
+      "lesson": 7,
+      "character": "姐",
+      "pinyin": "jie",
+      "tone": 3
     },
     {
       "id": 53,
-      "character": "什",
-      "pinyin": "shen",
-      "tone": 2,
-      "lesson": 6
+      "lesson": 7,
+      "character": "朋",
+      "pinyin": "peng",
+      "tone": 2
     },
     {
       "id": 54,
-      "character": "名",
-      "pinyin": "ming",
-      "tone": 2,
-      "lesson": 6
+      "lesson": 8,
+      "character": "吃",
+      "pinyin": "chi",
+      "tone": 1
     },
     {
       "id": 55,
-      "character": "字",
-      "pinyin": "zi",
-      "tone": 4,
-      "lesson": 6
+      "lesson": 8,
+      "character": "什",
+      "pinyin": "shen",
+      "tone": 2
     },
     {
       "id": 56,
-      "character": "几",
-      "pinyin": "ji",
-      "tone": 3,
-      "lesson": 6
+      "lesson": 8,
+      "character": "面",
+      "pinyin": "mian",
+      "tone": 4
     },
     {
       "id": 57,
+      "lesson": 8,
+      "character": "喝",
+      "pinyin": "he",
+      "tone": 1
+    },
+    {
+      "id": 58,
+      "lesson": 8,
+      "character": "可",
+      "pinyin": "ke",
+      "tone": 3
+    },
+    {
+      "id": 59,
+      "lesson": 8,
+      "character": "米",
+      "pinyin": "mi",
+      "tone": 3
+    },
+    {
+      "id": 60,
+      "lesson": 8,
+      "character": "饭",
+      "pinyin": "fan",
+      "tone": 4
+    },
+    {
+      "id": 61,
+      "lesson": 8,
+      "character": "茶",
+      "pinyin": "cha",
+      "tone": 2
+    },
+    {
+      "id": 62,
+      "lesson": 9,
+      "character": "中",
+      "pinyin": "zhong",
+      "tone": 1
+    },
+    {
+      "id": 63,
+      "lesson": 9,
+      "character": "国",
+      "pinyin": "guo",
+      "tone": 2
+    },
+    {
+      "id": 64,
+      "lesson": 9,
+      "character": "北",
+      "pinyin": "bei",
+      "tone": 3
+    },
+    {
+      "id": 65,
+      "lesson": 9,
+      "character": "京",
+      "pinyin": "jing",
+      "tone": 1
+    },
+    {
+      "id": 66,
+      "lesson": 9,
       "character": "岁",
       "pinyin": "sui",
-      "tone": 4,
-      "lesson": 6
+      "tone": 4
+    },
+    {
+      "id": 67,
+      "lesson": 9,
+      "character": "也",
+      "pinyin": "ye",
+      "tone": 3
+    },
+    {
+      "id": 68,
+      "lesson": 9,
+      "character": "住",
+      "pinyin": "zhu",
+      "tone": 4
+    },
+    {
+      "id": 69,
+      "lesson": 9,
+      "character": "在",
+      "pinyin": "zai",
+      "tone": 4
+    },
+    {
+      "id": 70,
+      "lesson": 9,
+      "character": "上",
+      "pinyin": "shang",
+      "tone": 4
+    },
+    {
+      "id": 71,
+      "lesson": 9,
+      "character": "海",
+      "pinyin": "hai",
+      "tone": 3
+    },
+    {
+      "id": 72,
+      "lesson": 10,
+      "character": "做",
+      "pinyin": "zuo",
+      "tone": 4
+    },
+    {
+      "id": 73,
+      "lesson": 10,
+      "character": "看",
+      "pinyin": "kan",
+      "tone": 4
+    },
+    {
+      "id": 74,
+      "lesson": 10,
+      "character": "书",
+      "pinyin": "shu",
+      "tone": 1
+    },
+    {
+      "id": 75,
+      "lesson": 10,
+      "character": "发",
+      "pinyin": "fa",
+      "tone": 1
+    },
+    {
+      "id": 76,
+      "lesson": 10,
+      "character": "短",
+      "pinyin": "duan",
+      "tone": 3
+    },
+    {
+      "id": 77,
+      "lesson": 10,
+      "character": "信",
+      "pinyin": "xin",
+      "tone": 4
     }
-   ];
+  ];
   return vocabData;
 }
 function getQuizData () {
@@ -765,64 +1031,49 @@ function getQuizData () {
       "category": 0,
       "question": "What is the capital of China?",
       "answer": "Beijing",
-      "wrong": ["Delhi", "Seoul", "New York", "London", "Paris"]
+      "wrong": ["Shanghai", "Chengdu", "Xi'an", "Taipei", "Hong Kong"]
     },
     {
       "lesson": 1,
       "category": 1,
-      "question": "Select the English word for 好.",
-      "answer": "good",
-      "wrong": ["bad", "very", "you", "me", "again", "see"]
-    },
-    {
-      "lesson": 1,
-      "category": 2,
-      "question": "Select the correct character for qiú.",
-      "answer": "球",
-      "wrong": ["那", "我", "好", "在"]
-    },
-    {
-      "lesson": 1,
-      "category": 3,
-      "question": "Which tone is 在 (zai)?",
-      "answer": "4th",
-      "wrong": ["1st", "2nd", "3rd"]
-    },
-    {
-      "lesson": 1,
-      "category": 4,
-      "question": "Select the English word for 山.",
-      "answer": "mountain",
-      "wrong": ["river", "three", "water", "sky", "China"]
-    },
-    {
-      "lesson": 1,
-      "category": 5,
-      "question": "Select the word you hear.",
-      "answer": "fèi",
-      "wrong": ["mǎ", "xì", "wén", "guāng", "rì"],
-      "sound": "fei4"
-    },
-    {
-      "lesson": 1,
-      "category": 0,
-      "question": "What is the economic capital of China?",
-      "answer": "Shanghai",
-      "wrong": ["Delhi", "Seoul", "New York", "London", "Paris"]
+      "question": "Select the English word for nǐ hǎo.",
+      "answer": "hello",
+      "wrong": ["you", "very", "good", "me", "how are you", "tired"]
     },
     {
       "lesson": 1,
       "category": 1,
-      "question": "Select the English word for 你.",
-      "answer": "you",
-      "wrong": ["bad", "very", "good", "me", "again", "see"]
+      "question": "Select the English word for hěn.",
+      "answer": "very",
+      "wrong": ["good", "hello", "tired", "you", "me"]
+    },
+    {
+      "lesson": 1,
+      "category": 1,
+      "question": "Select the English word for lèi.",
+      "answer": "tired",
+      "wrong": ["very", "me", "hello", "good", "you", "am"]
     },
     {
       "lesson": 1,
       "category": 2,
-      "question": "Select the correct character for nà.",
-      "answer": "那",
-      "wrong": ["球", "我", "好", "在"]
+      "question": "Select the pinyin word for 'me'.",
+      "answer": "wǒ",
+      "wrong": ["nǐ", "hǎo", "hěn", "lèi", "ma"]
+    },
+    {
+      "lesson": 1,
+      "category": 2,
+      "question": "Select the pinyin word for 'good'.",
+      "answer": "hǎo",
+      "wrong": ["nǐ", "wǒ", "hěn", "lèi", "ma"],
+    },
+    {
+      "lesson": 1,
+      "category": 2,
+      "question": "Select the pinyin word for 'you'.",
+      "answer": "nǐ",
+      "wrong": ["wǒ", "hěn", "lèi", "ma", "ne"]
     },
     {
       "lesson": 1,
@@ -833,18 +1084,372 @@ function getQuizData () {
     },
     {
       "lesson": 1,
+      "category": 3,
+      "question": "Which tone is 好 (hao)?",
+      "answer": "3rd",
+      "wrong": ["1st", "2nd", "4th"]
+    },
+    {
+      "lesson": 1,
       "category": 4,
-      "question": "Select the English word for 三.",
-      "answer": "three",
-      "wrong": ["river", "mountain", "water", "sky", "China"]
+      "question": "Select the correct character for 'three'.",
+      "answer": "三",
+      "wrong": ["一","二","四","五"]
+    },
+    {
+      "lesson": 1,
+      "category": 4,
+      "question": "Select the correct character for 'five'.",
+      "answer": "五",
+      "wrong": ["一","二","四","三"]
     },
     {
       "lesson": 1,
       "category": 5,
-      "question": "Select the word you hear.",
-      "answer": "féi",
-      "wrong": ["mǎ", "fèi", "wén", "guāng", "rì"],
-      "sound": "fei2"
+      "question": "Select the pinyin of the word you hear.",
+      "answer": "má",
+      "wrong": ["mā", "mǎ", "mà"],
+      "sound": "pinyin-7"
+    },
+    {
+      "lesson": 2,
+      "category": 0,
+      "question": "Which of these is NOT in the Chinese zodiac?",
+      "answer": "cat",
+      "wrong": ["dog", "pig", "rat", "dragon", "snake"]
+    },
+    {
+      "lesson": 2,
+      "category": 1,
+      "question": "Select the English word for shēngrì.",
+      "answer": "birthday",
+      "wrong": ["happy", "hello", "thank you", "goodbye"]
+    },
+    {
+      "lesson": 2,
+      "category": 1,
+      "question": "Select the English word for bù.",
+      "answer": "not",
+      "wrong": ["question", "polite", "hello", "birthday", "you"]
+    },
+    {
+      "lesson": 2,
+      "category": 1,
+      "question": "Select the English word for xièxie.",
+      "answer": "thank you",
+      "wrong": ["very", "is", "not", "goodbye", "yes"]
+    },
+    {
+      "lesson": 2,
+      "category": 2,
+      "question": "Select the pinyin word for 'happy'.",
+      "answer": "kuàilè",
+      "wrong": ["xièxie", "kèqi", "shēngrì", "lèi"]
+    },
+    {
+      "lesson": 2,
+      "category": 2,
+      "question": "Select the pinyin word for 'good bye'.",
+      "answer": "zàijiàn",
+      "wrong": ["xièxie", "shēngrì", "kuàilè", "nǐ hǎo"],
+    },
+    {
+      "lesson": 2,
+      "category": 2,
+      "question": "Select the pinyin word for 'polite'.",
+      "answer": "kèqi",
+      "wrong": ["xièxie", "shēngrì", "kuàilè", "zàijiàn", "bù"]
+    },
+    {
+      "lesson": 2,
+      "category": 3,
+      "question": "Which tone is 你 (ni)?",
+      "answer": "3rd",
+      "wrong": ["1st", "2nd", "4th"]
+    },
+    {
+      "lesson": 2,
+      "category": 3,
+      "question": "Which tone is 见 (jian)?",
+      "answer": "4th",
+      "wrong": ["1st", "2nd", "3rd"]
+    },
+    {
+      "lesson": 2,
+      "category": 4,
+      "question": "Select the correct character for 'seven'.",
+      "answer": "七",
+      "wrong": ["六","八","九","十"]
+    },
+    {
+      "lesson": 2,
+      "category": 4,
+      "question": "Select the correct character for 'nine'.",
+      "answer": "九",
+      "wrong": ["六","八","七","十"]
+    },
+    {
+      "lesson": 2,
+      "category": 5,
+      "question": "Select the pinyin of the word you hear.",
+      "answer": "cā",
+      "wrong": ["zā", "zhā", "sā"],
+      "sound": "pinyin-21"
+    },
+    {
+      "lesson": 3,
+      "category": 0,
+      "question": "Silk is made from ...",
+      "answer": "insects",
+      "wrong": ["worms", "trees", "grass", "cotton", "fur"]
+    },
+    {
+      "lesson": 3,
+      "category": 1,
+      "question": "Select the English word for wǔ.",
+      "answer": "five",
+      "wrong": ["three", "seven", "eight", "nine"]
+    },
+    {
+      "lesson": 3,
+      "category": 1,
+      "question": "Select the English word for jiǔ.",
+      "answer": "nine",
+      "wrong": ["four", "six", "eight", "seven", "ten"]
+    },
+    {
+      "lesson": 3,
+      "category": 1,
+      "question": "Select the English word for yī.",
+      "answer": "one",
+      "wrong": ["ten", "three", "nine", "eight", "four"]
+    },
+    {
+      "lesson": 3,
+      "category": 2,
+      "question": "Select the pinyin word for 'four'.",
+      "answer": "sì",
+      "wrong": ["yī", "èr", "sān", "wǔ"]
+    },
+    {
+      "lesson": 3,
+      "category": 2,
+      "question": "Select the pinyin word for 'eight'.",
+      "answer": "bā",
+      "wrong": ["liù", "qī", "jiǔ", "shí"],
+    },
+    {
+      "lesson": 3,
+      "category": 2,
+      "question": "Select the pinyin word for 'seven'.",
+      "answer": "qī",
+      "wrong": ["sì", "wǔ", "liù", "bā"]
+    },
+    {
+      "lesson": 3,
+      "category": 3,
+      "question": "Which tone is 六 (liu)?",
+      "answer": "4th",
+      "wrong": ["1st", "2nd", "3rd"]
+    },
+    {
+      "lesson": 3,
+      "category": 3,
+      "question": "Which tone is 十 (shi)?",
+      "answer": "2nd",
+      "wrong": ["1st", "4th", "3rd"]
+    },
+    {
+      "lesson": 3,
+      "category": 4,
+      "question": "Select the correct character for 'middle'.",
+      "answer": "中",
+      "wrong": ["人", "大", "小", "马"]
+    },
+    {
+      "lesson": 3,
+      "category": 4,
+      "question": "Select the correct character for 'big'.",
+      "answer": "马",
+      "wrong": ["人", "大", "小", "中"]
+    },
+    {
+      "lesson": 3,
+      "category": 5,
+      "question": "Select the pinyin of the word you hear.",
+      "answer": "xī",
+      "wrong": ["qī", "zī", "jī"],
+      "sound": "pinyin-31"
+    },
+    {
+      "lesson": 4,
+      "category": 0,
+      "question": "Jade is a type of ...",
+      "answer": "stone",
+      "wrong": ["silk", "metal", "diamond", "tea"]
+    },
+    {
+      "lesson": 4,
+      "category": 1,
+      "question": "Select the English word for huí.",
+      "answer": "return",
+      "wrong": ["park", "home", "where", "go"]
+    },
+    {
+      "lesson": 4,
+      "category": 1,
+      "question": "Select the English word for jiā.",
+      "answer": "home",
+      "wrong": ["where", "shop", "go", "return", "park"]
+    },
+    {
+      "lesson": 4,
+      "category": 1,
+      "question": "Select the English word for shāngdiàn.",
+      "answer": "shop",
+      "wrong": ["park", "where", "go", "park", "home"]
+    },
+    {
+      "lesson": 4,
+      "category": 2,
+      "question": "Select the pinyin word for 'park'.",
+      "answer": "gōngyuán",
+      "wrong": ["qù", "nǎr", "shāngdiàn", "huí", "jiā"]
+    },
+    {
+      "lesson": 4,
+      "category": 2,
+      "question": "Select the pinyin word for 'go'.",
+      "answer": "qù",
+      "wrong": ["nǎr", "shāngdiàn", "gōngyuán", "huí", "jiā"],
+    },
+    {
+      "lesson": 4,
+      "category": 2,
+      "question": "Select the pinyin word for 'where'.",
+      "answer": "nǎr",
+      "wrong": ["qù", "shāngdiàn", "gōngyuán", "huí", "jiā"]
+    },
+    {
+      "lesson": 4,
+      "category": 3,
+      "question": "Which tone is 去 (qu)?",
+      "answer": "4th",
+      "wrong": ["1st", "2nd", "3rd"]
+    },
+    {
+      "lesson": 4,
+      "category": 3,
+      "question": "Which tone is 回 (hui)?",
+      "answer": "2nd",
+      "wrong": ["1st", "4th", "3rd"]
+    },
+    {
+      "lesson": 4,
+      "category": 4,
+      "question": "Select the correct character for 'water'.",
+      "answer": "水",
+      "wrong": ["口", "木", "日", "月"]
+    },
+    {
+      "lesson": 4,
+      "category": 4,
+      "question": "Select the correct character for 'moon'.",
+      "answer": "月",
+      "wrong": ["口", "水", "木", "日"]
+    },
+    {
+      "lesson": 4,
+      "category": 5,
+      "question": "Select the pinyin of the word you hear.",
+      "answer": "kě",
+      "wrong": ["kē", "ké", "kè"],
+      "sound": "pinyin-42"
+    },
+    {
+      "lesson": 5,
+      "category": 0,
+      "question": "The erhu is most similar to a ...",
+      "answer": "violin",
+      "wrong": ["flute", "guitar", "oboe", "harp"]
+    },
+    {
+      "lesson": 5,
+      "category": 1,
+      "question": "Select the English word for māma.",
+      "answer": "mother",
+      "wrong": ["have", "phone", "money", "water"]
+    },
+    {
+      "lesson": 5,
+      "category": 1,
+      "question": "Select the English word for yǒu.",
+      "answer": "have",
+      "wrong": ["phone", "not have", "money", "water", "fantastic"]
+    },
+    {
+      "lesson": 5,
+      "category": 1,
+      "question": "Select the English word for shǒujī.",
+      "answer": "phone",
+      "wrong": ["mother", "have", "money", "water", "home"]
+    },
+    {
+      "lesson": 5,
+      "category": 2,
+      "question": "Select the pinyin word for 'money'.",
+      "answer": "qián",
+      "wrong": ["māma", "yǒu", "shǒujī", "shuǐ", "méi"]
+    },
+    {
+      "lesson": 5,
+      "category": 2,
+      "question": "Select the pinyin word for 'water'.",
+      "answer": "shuǐ",
+      "wrong": ["māma", "yǒu", "shǒujī", "qián", "méi"],
+    },
+    {
+      "lesson": 5,
+      "category": 2,
+      "question": "Select the pinyin word for 'not have'.",
+      "answer": "méi",
+      "wrong": ["māma", "yǒu", "shǒujī", "qián", "shuǐ"]
+    },
+    {
+      "lesson": 5,
+      "category": 3,
+      "question": "Which tone is 水 (shui)?",
+      "answer": "3rd",
+      "wrong": ["1st", "2nd", "4th"]
+    },
+    {
+      "lesson": 5,
+      "category": 3,
+      "question": "Which tone is 妈 (ma)?",
+      "answer": "1st",
+      "wrong": ["2nd", "4th", "3rd"]
+    },
+    {
+      "lesson": 5,
+      "category": 4,
+      "question": "Select the correct character for 'down'.",
+      "answer": "下",
+      "wrong": ["上", "山", "天", "土"]
+    },
+    {
+      "lesson": 5,
+      "category": 4,
+      "question": "Select the correct character for 'mountain'.",
+      "answer": "山",
+      "wrong": ["上", "下", "天", "土"]
+    },
+    {
+      "lesson": 5,
+      "category": 5,
+      "question": "Select the pinyin of the word you hear.",
+      "answer": "shī",
+      "wrong": ["zhī", "shē", "chē"],
+      "sound": "pinyin-54"
     }
   ]
   return quizData;
@@ -2308,217 +2913,217 @@ function getPinyinData () {
     {
       "lesson": 2,
       "title": "The C sound",
-      "blurb": "",
+      "blurb": "C sounds like 'ts', like in the word 'cats'.",
       "sounds": ["cā", "cán", "cǎi", "cè"]
     },
     {
       "lesson": 2,
       "title": "The Z sound",
-      "blurb": "",
+      "blurb": "Z sounds like 'dz', like the sound in the word 'lads'.",
       "sounds": ["zài", "zuò", "zǒu", "zǐ"]
     },
     {
       "lesson": 2,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["zǎi", "zài", "cǎi", "cài"]
     },
     {
       "lesson": 2,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["zhā", "zhá", "chā", "chá"]
     },
     {
       "lesson": 3,
       "title": "The X sound",
-      "blurb": "",
+      "blurb": "X sounds a bit like 'sh' in English, but is made using the teeth at the front of your mouth.",
       "sounds": ["xī", "xiè", "xìn", "xǔ"]
     },
     {
       "lesson": 3,
       "title": "The Q sound",
-      "blurb": "",
+      "blurb": "Q sounds a bit like 'ch' in English, but is made using the teeth at the front of your mouth.",
       "sounds": ["qī", "qián", "qiú", "qù"]
     },
     {
       "lesson": 3,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["xǐ", "xí", "qǐ", "qí"]
     },
     {
       "lesson": 3,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["xū", "xù", "qū", "qù"]
     },
     {
       "lesson": 4,
       "title": "The -e sound",
-      "blurb": "",
+      "blurb": "E is unlike any sound in English, but is close to the sound in the word 'her'.",
       "sounds": ["gē", "chē", "hē", "kě"]
     },
     {
       "lesson": 4,
       "title": "The -en sound",
-      "blurb": "",
+      "blurb": "En is unlike the English '-en' sound. Listen carefully and try to copy the sound.",
       "sounds": ["gēn", "hěn", "shén", "wèn"]
     },
     {
       "lesson": 4,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["chā", "chà", "chē", "chè"]
     },
     {
       "lesson": 4,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["shǎn", "shàn", "shěn", "shèn"]
     },
     {
       "lesson": 5,
       "title": "The -i sound",
-      "blurb": "",
+      "blurb": "The -i sound rhymes with the English word 'tea', except in special cases.",
       "sounds": ["bǐ", "mí", "nǐ", "qì"]
     },
     {
       "lesson": 5,
       "title": "The special -i sound",
-      "blurb": "",
+      "blurb": "After c, r, s, or z, -i is silent.",
       "sounds": ["shī", "sì", "chī", "zǐ"]
     },
     {
       "lesson": 5,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["zhī", "zhí", "jī", "jí"]
     },
     {
       "lesson": 5,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["sī", "sì", "xī", "xì"]
     },
     {
       "lesson": 6,
       "title": "The -ou sound",
-      "blurb": "",
+      "blurb": "The -ou sound is close to the English 'o' sound in 'old'.",
       "sounds": ["gǒu", "zhōu", "lóu", "tóu"]
     },
     {
       "lesson": 6,
       "title": "The -uo sound",
-      "blurb": "",
+      "blurb": "The -uo sound is pronounced just the same as Chinese 'wo' (me).",
       "sounds": ["luò", "guò", "shuō", "cuò"]
     },
     {
       "lesson": 6,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["tuō", "tuó", "tōu", "tóu"]
     },
     {
       "lesson": 6,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["guǒ", "guò", "gǒu", "gòu"]
     },
     {
       "lesson": 7,
       "title": "The Y sound",
-      "blurb": "",
+      "blurb": "'Yan' sounds like 'yen', and y is not pronounced in 'yu'.",
       "sounds": ["yán", "yuè", "yě", "yú"]
     },
     {
       "lesson": 7,
       "title": "The W sound",
-      "blurb": "",
+      "blurb": "'W' is not pronounced in 'wu'. This word sounds more like 'oo'.",
       "sounds": ["wā", "wú", "wān", "wèn"]
     },
     {
       "lesson": 7,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["yā", "yá", "yē", "yé"]
     },
     {
       "lesson": 7,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["wǔ", "wù", "yǔ", "yù"]
     },
     {
       "lesson": 8,
       "title": "The -u sound",
-      "blurb": "",
+      "blurb": "The -u sound is fairly similar to the vowel in English 'two'.",
       "sounds": ["bù", "tú", "chū", "gǔ"]
     },
     {
       "lesson": 8,
       "title": "The -ü sound",
-      "blurb": "",
+      "blurb": "The -ü sound is found in French 'tu'. It is made after j, q, x, and y.",
       "sounds": ["yú", "xú", "jù", "qù"]
     },
     {
       "lesson": 8,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["chū", "chù", "qū", "qù"]
     },
     {
       "lesson": 8,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["jú", "jǔ", "zhú", "zhǔ"]
     },
     {
       "lesson": 9,
       "title": "The -ui sound",
-      "blurb": "",
+      "blurb": "The -ui sound sounds a bit like English 'way'.",
       "sounds": ["duì", "huí", "shuǐ", "guì"]
     },
     {
       "lesson": 9,
       "title": "The -iu sound",
-      "blurb": "",
+      "blurb": "The -iu sound rhymes with Chinese 'you' (have).",
       "sounds": ["diū", "qiú", "jiǔ", "niú"]
     },
     {
       "lesson": 9,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["chuī", "chuí", "qiū", "qiú"]
     },
     {
       "lesson": 9,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["shuǐ", "shuì", "xiǔ", "xiù"]
     },
     {
       "lesson": 10,
       "title": "The Zh sound",
-      "blurb": "",
+      "blurb": "The Zh sound is pronounced similar to English 'j'.",
       "sounds": ["zhàn", "zhāng", "zhòng", "zhēng"]
     },
     {
       "lesson": 10,
       "title": "The R sound",
-      "blurb": "",
+      "blurb": "The R sound is pronounced similar to French 'je'.",
       "sounds": ["rè", "rì", "rén", "ràng"]
     },
     {
       "lesson": 10,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["rè", "rì", "zhè", "zhì"]
     },
     {
       "lesson": 10,
       "title": "Distinguish the sounds",
-      "blurb": "",
+      "blurb": "Can you hear the difference between these sounds?",
       "sounds": ["zhāng", "zhàng", "zhēng", "zhèng"]
     }
   ]
@@ -3544,5 +4149,819 @@ function getCharacterData() {
       "soundfile": "zi-40.ogg"
     }
    ];
+  return data;
+}
+
+function getCultureData() {
+  var data = [
+    {
+      config: {
+        instructions: "Put the city labels in the correct place.",
+        inst_location: [180, 500],
+        inst_wordWrap: 200,
+        type: "dots",
+        button_location: [180, 500]
+      },
+      assets: [
+        {type: "image", name: "background", file: "china-map.jpg"},
+        {type: "image", name: "cityDot", file: "city-dot.png"},
+        {type: "image", name: "cityDotHover", file: "city-dot-h.png"},
+        {type: "image", name: "labelXian", file: "label-xian.png"},
+        {type: "image", name: "labelBeijing", file: "label-beijing.png"},
+        {type: "image", name: "labelChengdu", file: "label-chengdu.png"},
+        {type: "image", name: "labelShanghai", file: "label-shanghai.png"},
+        {type: "image", name: "labelHongkong", file: "label-hongkong.png"},
+        {type: "image", name: "labelTaipei", file: "label-taipei.png"},
+        {type: "image", name: "beijing", file: "beijing.png"},
+        {type: "image", name: "xian", file: "xian.png"},
+        {type: "image", name: "shanghai", file: "shanghai.png"},
+        {type: "image", name: "chengdu", file: "chengdu.png"},
+        {type: "image", name: "taipei", file: "taipei.png"},
+        {type: "image", name: "hongkong", file: "hongkong.png"},
+      ],
+      targets: [
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [461, 337]
+        },
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [553, 251]
+        },
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [391, 401]
+        },
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [629, 370]
+        },
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [552, 521]
+        },
+        {
+          texture: 'cityDot',
+          hoverTexture: 'cityDotHover',
+          location: [650, 463]
+        }
+      ],
+      labels: [
+        {
+          texture: 'labelXian',
+          origin: [80, 50],
+          destination: [412, 348]
+        },
+        {
+          texture: 'labelBeijing',
+          origin: [190, 50],
+          destination: [601, 264]
+        },
+        {
+          texture: 'labelChengdu',
+          origin: [300, 50],
+          destination: [343, 414]
+        },
+        {
+          texture: 'labelShanghai',
+          origin: [410, 50],
+          destination: [678, 383]
+        },
+        {
+          texture: 'labelHongkong',
+          origin: [520, 50],
+          destination: [502, 534]
+        },
+        {
+          texture: 'labelTaipei',
+          origin: [630, 50],
+          destination: [699, 451]
+        }
+      ],
+      scrolls: [
+        {
+          title: "Xi'an",
+          pic: "xian",
+          blurb: "Home of the famous Terracotta Army, made over 2000 years ago. More than 8000 soldiers, 130 chariots, and 670 horses have been uncovered!"
+        },
+        {
+          title: "Beijing",
+          pic: "beijing",
+          blurb: "China's capital city, Beijing will be the first city in the world to host both the summer (2008) and winter (2022) Olympic Games."
+        },
+        {
+          title: "Chengdu",
+          pic: "chengdu",
+          blurb: "Famous for its spicy food (such as hot pot) and for being the home of the giant pandas."
+        },
+        {
+          title: "Shanghai",
+          pic: "shanghai",
+          blurb: "China's largets city, Shanghai has the world's longest metro system—400 miles of track and 393 stations!"
+        },
+        {
+          title: "Hong Kong",
+          pic: "hongkong",
+          blurb: "Hong Kong means 'Fragrant Harbour.' The city is built on 263 islands, and is home to a thriving film industry."
+        },
+        {
+          title: "Taipei",
+          pic: "taipei",
+          blurb: "Taipei is famous for its amazing night markets, where you can drink pearl bubble tea and enjoy tasty snacks like mango shaved ice."
+        },
+      ]
+    },
+    {
+      config: {
+        instructions: "",
+        inst_location: [500, 180],
+        inst_wordWrap: 200,
+        type: "blocks",
+        button_location: [400, 50]
+      },
+      assets: [
+        {type: "image", name: "background", file: "animals_background.jpg"},
+        {type: "image", name: "place1", file: "place1.png"},
+        {type: "image", name: "place2", file: "place2.png"},
+        {type: "image", name: "place3", file: "place3.png"},
+        {type: "image", name: "place4", file: "place4.png"},
+        {type: "image", name: "place5", file: "place5.png"},
+        {type: "image", name: "place6", file: "place6.png"},
+        {type: "image", name: "place7", file: "place7.png"},
+        {type: "image", name: "place8", file: "place8.png"},
+        {type: "image", name: "place9", file: "place9.png"},
+        {type: "image", name: "place10", file: "place10.png"},
+        {type: "image", name: "place11", file: "place11.png"},
+        {type: "image", name: "place12", file: "place12.png"},
+        {type: "image", name: "place_h", file: "place_h.png"},
+        {type: "image", name: "rat", file: "rat.png"},
+        {type: "image", name: "ox", file: "ox.png"},
+        {type: "image", name: "cock", file: "cock.png"},
+        {type: "image", name: "dog", file: "doy.png"},
+        {type: "image", name: "dragon", file: "dragon.png"},
+        {type: "image", name: "goat", file: "goat.png"},
+        {type: "image", name: "horse", file: "horse.png"},
+        {type: "image", name: "monkey", file: "monkey.png"},
+        {type: "image", name: "pig", file: "pig.png"},
+        {type: "image", name: "rabbit", file: "rabbit.png"},
+        {type: "image", name: "snake", file: "snake.png"},
+        {type: "image", name: "tiger", file: "tiger.png"},
+        {type: "image", name: "ratzi", file: "ratzi.png"},
+        {type: "image", name: "oxzi", file: "oxzi.png"},
+        {type: "image", name: "cockzi", file: "cockzi.png"},
+        {type: "image", name: "dogzi", file: "dogzi.png"},
+        {type: "image", name: "dragonzi", file: "dragonzi.png"},
+        {type: "image", name: "goatzi", file: "goatzi.png"},
+        {type: "image", name: "horsezi", file: "mazi.png"},
+        {type: "image", name: "monkeyzi", file: "monkeyzi.png"},
+        {type: "image", name: "pigzi", file: "pigzi.png"},
+        {type: "image", name: "rabbitzi", file: "rabbitzi.png"},
+        {type: "image", name: "snakezi", file: "snakezi.png"},
+        {type: "image", name: "tigerzi", file: "tigerzi.png"},
+      ],
+      targets: [
+        {
+          texture: 'place1',
+          hoverTexture: 'place_h',
+          location: [200, 180]
+        },
+        {
+          texture: 'place2',
+          hoverTexture: 'place_h',
+          location: [333.33, 180]
+        },
+        {
+          texture: 'place3',
+          hoverTexture: 'place_h',
+          location: [466.67, 180]
+        },
+        {
+          texture: 'place4',
+          hoverTexture: 'place_h',
+          location: [600, 180]
+        },
+        {
+          texture: 'place5',
+          hoverTexture: 'place_h',
+          location: [200, 300]
+        },
+        {
+          texture: 'place6',
+          hoverTexture: 'place_h',
+          location: [333.33, 300]
+        },
+        {
+          texture: 'place7',
+          hoverTexture: 'place_h',
+          location: [466.67, 300]
+        },
+        {
+          texture: 'place8',
+          hoverTexture: 'place_h',
+          location: [600, 300]
+        },
+        {
+          texture: 'place9',
+          hoverTexture: 'place_h',
+          location: [200, 420]
+        },
+        {
+          texture: 'place10',
+          hoverTexture: 'place_h',
+          location: [333.33, 420]
+        },
+        {
+          texture: 'place11',
+          hoverTexture: 'place_h',
+          location: [466.67, 420]
+        },
+        {
+          texture: 'place12',
+          hoverTexture: 'place_h',
+          location: [600, 420]
+        },
+      ],
+      labels: [
+        {
+          texture: 'rat',
+          origin: [200, 540],
+          destination: [200, 180]
+        },
+        {
+          texture: 'ox',
+          origin: [65, 300],
+          destination: [333.33, 180]
+        },
+        {
+          texture: 'tiger',
+          origin: [735, 420],
+          destination: [466.67, 180]
+        },
+        {
+          texture: 'rabbit',
+          origin: [200, 60],
+          destination: [600, 180]
+        },
+        {
+          texture: 'dragon',
+          origin: [735, 300],
+          destination: [200, 300]
+        },
+        {
+          texture: 'snake',
+          origin: [333.33, 540],
+          destination: [333.33, 300]
+        },
+        {
+          texture: 'horse',
+          origin: [333.33, 60],
+          destination: [466.67, 300]
+        },
+        {
+          texture: 'goat',
+          origin: [466.67, 60],
+          destination: [600, 300]
+        },
+        {
+          texture: 'monkey',
+          origin: [65, 180],
+          destination: [200, 420]
+        },
+        {
+          texture: 'cock',
+          origin: [600, 540],
+          destination: [333.33, 420]
+        },
+        {
+          texture: 'dog',
+          origin: [600, 60],
+          destination: [466.67, 420]
+        },
+        {
+          texture: 'pig',
+          origin: [466.67, 540],
+          destination: [600, 420]
+        },
+      ],
+      scrolls: [
+        {
+          title: "Rat",
+          pic: "ratzi",
+          blurb: "Rat years are 1996 and 2008. People born in the year of the Rat are considered clever and persuasive."
+        },
+        {
+          title: "Ox",
+          pic: "oxzi",
+          blurb: "Ox years are 1997 and 2009. People born in the year of the Ox are considered patient and stubborn."
+        },
+        {
+          title: "Tiger",
+          pic: "tigerzi",
+          blurb: "Tiger years are 1998 and 2010. People born in the year of the Tiger are considered courageous and intense."
+        },
+        {
+          title: "Rabbit",
+          pic: "rabbitzi",
+          blurb: "Rabbit years are 1999 and 2011. People born in the year of the Rabbit are considered compassionate and popular."
+        },
+        {
+          title: "Dragon",
+          pic: "dragonzi",
+          blurb: "Dragon years are 2000 and 2012. People born in the year of the Dragon are considered fearless and charismatic."
+        },
+        {
+          title: "Snake",
+          pic: "snakezi",
+          blurb: "Snake years are 2001 and 2013. People born in the year of the Snake are considered generous and chatty."
+        },
+        {
+          title: "Horse",
+          pic: "horsezi",
+          blurb: "Horse years are 2002 and 2014. People born in the year of the Horse are considered independent and energetic."
+        },
+        {
+          title: "Goat",
+          pic: "goatzi",
+          blurb: "Goat years are 2003 and 2015. People born in the year of the Goat are considered kind and mild-mannered."
+        },
+        {
+          title: "Monkey",
+          pic: "monkeyzi",
+          blurb: "Monkey years are 2004 and 2016. People born in the year of the Monkey are considered fun and active."
+        },
+        {
+          title: "Chicken",
+          pic: "cockzi",
+          blurb: "Chicken years are 2005 and 2017. People born in the year of the Chicken are considered practical and hard-working."
+        },
+        {
+          title: "Dog",
+          pic: "dogzi",
+          blurb: "Dog years are 2006 and 2018. People born in the year of the Dog are considered diligent and faithful."
+        },
+        {
+          title: "Pig",
+          pic: "pigzi",
+          blurb: "Pig years are 2007 and 2019. People born in the year of the Pig are considered loving and honest."
+        },
+      ]
+    },
+    {
+      config: {
+        instructions: "Label the souvenirs.",
+        inst_location: [110, 100],
+        inst_wordWrap: 200,
+        type: "dots",
+        button_location: [110, 100]
+      },
+      assets: [
+        {type: "image", name: "background", file: "souvenir_stand.jpg"},
+        {type: "image", name: "ppcut", file: "ppcut.png"},
+        {type: "image", name: "ppcut-h", file: "ppcut-h.png"},
+        {type: "image", name: "ppcut-p", file: "ppcut-p.png"},
+        {type: "image", name: "ppcut-label", file: "ppcut-label.png"},
+        {type: "image", name: "jade", file: "jade.png"},
+        {type: "image", name: "jade-h", file: "jade-h.png"},
+        {type: "image", name: "jade-p", file: "jade-p.png"},
+        {type: "image", name: "jade-label", file: "jade-label.png"},
+        {type: "image", name: "knot", file: "knot.png"},
+        {type: "image", name: "knot-h", file: "knot-h.png"},
+        {type: "image", name: "knot-p", file: "knot-p.png"},
+        {type: "image", name: "knot-label", file: "knot-label.png"},
+        {type: "image", name: "silk", file: "silk.png"},
+        {type: "image", name: "silk-h", file: "silk-h.png"},
+        {type: "image", name: "silk-p", file: "silk-p.png"},
+        {type: "image", name: "silk-label", file: "silk-label.png"},
+        {type: "image", name: "teapot", file: "teapot.png"},
+        {type: "image", name: "teapot-h", file: "teapot-h.png"},
+        {type: "image", name: "teapot-p", file: "teapot-p.png"},
+        {type: "image", name: "teapot-label", file: "teapot-label.png"},
+        {type: "image", name: "lianpu", file: "lianpu.png"},
+        {type: "image", name: "lianpu-h", file: "lianpu-h.png"},
+        {type: "image", name: "lianpu-p", file: "lianpu-p.png"},
+        {type: "image", name: "lianpu-label", file: "lianpu-label.png"},
+      ],
+      targets: [
+        {
+          texture: 'knot',
+          hoverTexture: 'knot-h',
+          location: [335, 255]
+        },
+        {
+          texture: 'ppcut',
+          hoverTexture: 'ppcut-h',
+          location: [489, 240]
+        },
+        {
+          texture: 'silk',
+          hoverTexture: 'silk-h',
+          location: [676, 246]
+        },
+        {
+          texture: 'jade',
+          hoverTexture: 'jade-h',
+          location: [490, 374]
+        },
+        {
+          texture: 'teapot',
+          hoverTexture: 'teapot-h',
+          location: [414, 482]
+        },
+        {
+          texture: 'lianpu',
+          hoverTexture: 'lianpu-h',
+          location: [584, 476]
+        }
+      ],
+      labels: [
+        {
+          texture: 'knot-label',
+          origin: [100, 400],
+          destination: [298, 219]
+        },
+        {
+          texture: 'ppcut-label',
+          origin: [100, 450],
+          destination: [494, 255]
+        },
+        {
+          texture: 'silk-label',
+          origin: [100, 300],
+          destination: [678, 251]
+        },
+        {
+          texture: 'jade-label',
+          origin: [100, 350],
+          destination: [500, 373]
+        },
+        {
+          texture: 'teapot-label',
+          origin: [100, 250],
+          destination: [408, 495]
+        },
+        {
+          texture: 'lianpu-label',
+          origin: [100, 200],
+          destination: [660, 461]
+        }
+      ],
+      scrolls: [
+        {
+          title: "Chinese Knot",
+          pic: "knot-p",
+          blurb: "Knots have been given as a good luck gift for thousands of years; they symbolize harmony and unity."
+        },
+        {
+          title: "Papercut",
+          pic: "ppcut-p",
+          blurb: "Traditionally, these paper pictures were made by women to decorate the home. They are cut with scissors from a single sheet of paper."
+        },
+        {
+          title: "Silk",
+          pic: "silk-p",
+          blurb: "Silk clothing is made from the fine cocoons of silkworms, actually a type of insect. A long time ago, only the Chinese knew how to make silk."
+        },
+        {
+          title: "Jade",
+          pic: "jade-p",
+          blurb: "Jade is a precious stone that is extremely tough and durable. It is often carved into ornaments and good luck charms."
+        },
+        {
+          title: "Teapot",
+          pic: "teapot-p",
+          blurb: "Small brown teapots like this one are used to brew wulong tea. There is a special tea ceremony to pour the perfect cup."
+        },
+        {
+          title: "Opera Mask",
+          pic: "lianpu-p",
+          blurb: "Peking opera is a famous art that involves masks, dancing, singing, and acrobatics. The mask colours indicate the role of each character."
+        },
+      ]
+    },
+    {
+      config: {
+        instructions: "",
+        inst_location: [500, 180],
+        inst_wordWrap: 200,
+        type: "blocks",
+        button_location: [400, 100]
+      },
+      assets: [
+        {type: "image", name: "background", file: "hands_background.jpg"},
+        {type: "image", name: "hand1", file: "hand1.png"},
+        {type: "image", name: "hand2", file: "hand2.png"},
+        {type: "image", name: "hand3", file: "hand3.png"},
+        {type: "image", name: "hand4", file: "hand4.png"},
+        {type: "image", name: "hand5", file: "hand5.png"},
+        {type: "image", name: "hand6", file: "hand6.png"},
+        {type: "image", name: "hand7", file: "hand7.png"},
+        {type: "image", name: "hand8", file: "hand8.png"},
+        {type: "image", name: "hand9", file: "hand9.png"},
+        {type: "image", name: "hand10", file: "hand10.png"},
+        {type: "image", name: "hand1-t", file: "hand1-t.png"},
+        {type: "image", name: "hand2-t", file: "hand2-t.png"},
+        {type: "image", name: "hand3-t", file: "hand3-t.png"},
+        {type: "image", name: "hand4-t", file: "hand4-t.png"},
+        {type: "image", name: "hand5-t", file: "hand5-t.png"},
+        {type: "image", name: "hand6-t", file: "hand6-t.png"},
+        {type: "image", name: "hand7-t", file: "hand7-t.png"},
+        {type: "image", name: "hand8-t", file: "hand8-t.png"},
+        {type: "image", name: "hand9-t", file: "hand9-t.png"},
+        {type: "image", name: "hand10-t", file: "hand10-t.png"},
+        {type: "image", name: "hand1-h", file: "hand1-h.png"},
+        {type: "image", name: "hand2-h", file: "hand2-h.png"},
+        {type: "image", name: "hand3-h", file: "hand3-h.png"},
+        {type: "image", name: "hand4-h", file: "hand4-h.png"},
+        {type: "image", name: "hand5-h", file: "hand5-h.png"},
+        {type: "image", name: "hand6-h", file: "hand6-h.png"},
+        {type: "image", name: "hand7-h", file: "hand7-h.png"},
+        {type: "image", name: "hand8-h", file: "hand8-h.png"},
+        {type: "image", name: "hand9-h", file: "hand9-h.png"},
+        {type: "image", name: "hand10-h", file: "hand10-h.png"},
+        {type: "image", name: "tiles", file: "tiles.png"}
+      ],
+      targets: [
+        {
+          texture: 'hand1-t',
+          hoverTexture: 'hand1-h',
+          location: [172, 214]
+        },
+        {
+          texture: 'hand2-t',
+          hoverTexture: 'hand2-h',
+          location: [285, 250]
+        },
+        {
+          texture: 'hand3-t',
+          hoverTexture: 'hand3-h',
+          location: [398, 214]
+        },
+        {
+          texture: 'hand4-t',
+          hoverTexture: 'hand4-h',
+          location: [511, 250]
+        },
+        {
+          texture: 'hand5-t',
+          hoverTexture: 'hand5-h',
+          location: [624, 214]
+        },
+        {
+          texture: 'hand6-t',
+          hoverTexture: 'hand6-h',
+          location: [172, 336]
+        },
+        {
+          texture: 'hand7-t',
+          hoverTexture: 'hand7-h',
+          location: [285, 371]
+        },
+        {
+          texture: 'hand8-t',
+          hoverTexture: 'hand8-h',
+          location: [398, 336]
+        },
+        {
+          texture: 'hand9-t',
+          hoverTexture: 'hand9-h',
+          location: [511, 371]
+        },
+        {
+          texture: 'hand10-t',
+          hoverTexture: 'hand10-h',
+          location: [624, 336]
+        }
+      ],
+      labels: [
+        {
+          texture: 'hand1',
+          origin: [624, 457],
+          destination: [172, 214]
+        },
+        {
+          texture: 'hand2',
+          origin: [511, 493],
+          destination: [285, 250]
+        },
+        {
+          texture: 'hand3',
+          origin: [172, 457],
+          destination: [398, 214]
+        },
+        {
+          texture: 'hand4',
+          origin: [285, 129],
+          destination: [511, 250]
+        },
+        {
+          texture: 'hand5',
+          origin: [398, 93],
+          destination: [624, 214]
+        },
+        {
+          texture: 'hand6',
+          origin: [172, 93],
+          destination: [172, 336]
+        },
+        {
+          texture: 'hand7',
+          origin: [511, 129],
+          destination: [285, 371]
+        },
+        {
+          texture: 'hand8',
+          origin: [624, 93],
+          destination: [398, 336]
+        },
+        {
+          texture: 'hand9',
+          origin: [285, 493],
+          destination: [511, 371]
+        },
+        {
+          texture: 'hand10',
+          origin: [398, 457],
+          destination: [624, 336]
+        },
+      ],
+      scrolls: [
+        {
+          title: "1",
+          pic: "tiles",
+          blurb: "Remember that one is pronounced yī in Chinese."
+        },
+        {
+          title: "2",
+          pic: "tiles",
+          blurb: "The lower stroke in the character for two is longer than the upper stroke."
+        },
+        {
+          title: "3",
+          pic: "tiles",
+          blurb: "A famous Chinese saying is 'If three people walk together, my teacher must be among them.'"
+        },
+        {
+          title: "4",
+          pic: "tiles",
+          blurb: "Four (sì) is an unlucky number, because the it is pronounced similarly to the word for death (sǐ)."
+        },
+        {
+          title: "5",
+          pic: "tiles",
+          blurb: "In ancient China there were thought to be five elements: metal, water, wood, fire, and earth."
+        },
+        {
+          title: "6",
+          pic: "tiles",
+          blurb: "Six is a lucky number, but eight is even luckier!"
+        },
+        {
+          title: "7",
+          pic: "tiles",
+          blurb: "Chinese Valentine's Day is on the 7th day of the 7th month of the Chinese traditional calenar."
+        },
+        {
+          title: "8",
+          pic: "tiles",
+          blurb: "Eight is the luckiest number. Even having an 8 in your phone number is thought to be lucky!"
+        },
+        {
+          title: "9",
+          pic: "tiles",
+          blurb: "Nine is a lucky number; its pronunciation is the same as a character that means 'long time,' so it is associated with longevity."
+        },
+        {
+          title: "10",
+          pic: "tiles",
+          blurb: "To say numbers above ten in Chinese, just say 'ten one, ten two, ten three...'"
+        },
+      ]
+    },
+    {
+      config: {
+        instructions: "",
+        inst_location: [500, 180],
+        inst_wordWrap: 200,
+        type: "blocks",
+        button_location: [400, 100]
+      },
+      assets: [
+        {type: "image", name: "background", file: "inst-background.jpg"},
+        {type: "image", name: "sheng", file: "sheng.png"},
+        {type: "image", name: "sheng-l", file: "sheng-l.png"},
+        {type: "image", name: "sheng-h", file: "sheng-h.png"},
+        {type: "image", name: "sheng-p", file: "sheng-p.png"},
+        {type: "image", name: "suona", file: "suona.png"},
+        {type: "image", name: "suona-l", file: "suona-l.png"},
+        {type: "image", name: "suona-h", file: "suona-h.png"},
+        {type: "image", name: "suona-p", file: "suona-p.png"},
+        {type: "image", name: "erhu", file: "erhu.png"},
+        {type: "image", name: "erhu-l", file: "erhu-l.png"},
+        {type: "image", name: "erhu-h", file: "erhu-h.png"},
+        {type: "image", name: "erhu-p", file: "erhu-p.png"},
+        {type: "image", name: "pipa", file: "pipa.png"},
+        {type: "image", name: "pipa-l", file: "pipa-l.png"},
+        {type: "image", name: "pipa-h", file: "pipa-h.png"},
+        {type: "image", name: "pipa-p", file: "pipa-p.png"},
+        {type: "image", name: "guzheng", file: "guzheng.png"},
+        {type: "image", name: "guzheng-l", file: "guzheng-l.png"},
+        {type: "image", name: "guzheng-h", file: "guzheng-h.png"},
+        {type: "image", name: "guzheng-p", file: "guzheng-p.png"},
+        {type: "sound", name: "guzheng", file: "guzheng.ogg"},
+        {type: "sound", name: "erhu", file: "erhu.ogg"},
+        {type: "sound", name: "pipa", file: "pipa.ogg"},
+        {type: "sound", name: "sheng", file: "sheng.ogg"},
+        {type: "sound", name: "suona", file: "suona.ogg"}
+      ],
+      targets: [
+        {
+          texture: 'sheng',
+          hoverTexture: 'sheng-h',
+          location: [263, 216]
+        },
+        {
+          texture: 'suona',
+          hoverTexture: 'suona-h',
+          location: [598, 223]
+        },
+        {
+          texture: 'erhu',
+          hoverTexture: 'erhu-h',
+          location: [732, 300]
+        },
+        {
+          texture: 'pipa',
+          hoverTexture: 'pipa-h',
+          location: [450, 225]
+        },
+        {
+          texture: 'guzheng',
+          hoverTexture: 'guzheng-h',
+          location: [405, 512]
+        }
+      ],
+      labels: [
+        {
+          texture: 'sheng-l',
+          origin: [95, 150],
+          destination: [272, 300]
+        },
+        {
+          texture: 'suona-l',
+          origin: [95, 270],
+          destination: [600, 318]
+        },
+        {
+          texture: 'erhu-l',
+          origin: [95, 190],
+          destination: [707, 465]
+        },
+        {
+          texture: 'pipa-l',
+          origin: [95, 230],
+          destination: [473, 269]
+        },
+        {
+          texture: 'guzheng-l',
+          origin: [95, 110],
+          destination: [419, 514]
+        },
+
+      ],
+      scrolls: [
+        {
+          title: "Sheng",
+          pic: "sheng-p",
+          blurb: "The sheng is a hand-held reed organ made of bamboo, with about 16 pipes."
+        },
+        {
+          title: "Suona",
+          pic: "suona-p",
+          blurb: "The suona is a bit like an oboe. It produces a very emotional sound."
+        },
+        {
+          title: "Erhu",
+          pic: "erhu-p",
+          blurb: "The erhu is a two-stringed bowed string instrument, which has a similar range to a violin."
+        },
+        {
+          title: "Pipa",
+          pic: "pipa-p",
+          blurb: "The pipa is an ancient plucked string instrument, a little like a guitar."
+        },
+        {
+          title: "Guzheng",
+          pic: "guzheng-p",
+          blurb: "The guzheng dates back to 500 BCE. It has 21 strings and is tuned to the pentatonic scale."
+        },
+
+      ]
+    }
+  ];
   return data;
 }
