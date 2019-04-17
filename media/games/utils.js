@@ -56,6 +56,12 @@ var ubuntuFont = {
     fill: '#FFF'
 }
 
+var ubuntuSmaller = {
+    fontFamily: 'Ubuntu',
+    fontSize: '25px',
+    fill: '#FFF'
+}
+
 var ubuntuDark = {
     fontFamily: 'Ubuntu',
     fontSize: '30px',
@@ -235,7 +241,7 @@ var instructionsData = {
                 text: 'This is your boat.',
                 dialogPosition: [200,50],
                 showArrow: true,
-                arrowPosition: [100,300],
+                arrowPosition: [100,400],
                 arrowDirection: 'up'
             },
             {
@@ -254,14 +260,14 @@ var instructionsData = {
             },
             {
                 text: 'The energy bar shows how fast your boat is going.',
-                dialogPosition: [300,300],
+                dialogPosition: [10,300],
                 showArrow: false,
                 arrowPosition: [0,0],
                 arrowDirection: 'left'
             },
             {
                 text: 'This is your race time. How fast can you complete the course? \n\nGood luck!',
-                dialogPosition: [0,200],
+                dialogPosition: [270,30],
                 showArrow: false,
                 arrowPosition: [0,0],
                 arrowDirection: 'left'
@@ -334,7 +340,7 @@ var instructionsData = {
             },
             {
                 text: 'If you click on the correct rocket, it will fire. If you click on the wrong rocket, it will fall over.',
-                dialogPosition: [200,30],
+                dialogPosition: [80,160],
                 showArrow: false,
                 arrowPosition: [0,0],
                 arrowDirection: 'left'
@@ -350,7 +356,7 @@ var instructionsData = {
                 text: 'If you want to hear a word again, you can click on this button. You can hear a word as many times as you need. Good luck!',
                 dialogPosition: [250,30],
                 showArrow: true,
-                arrowPosition: [130,250],
+                arrowPosition: [90,250],
                 arrowDirection: 'up'
             }
         ]
@@ -534,6 +540,17 @@ function runInstructions(sceneName, game) {
             dialog.back.setVisible(false);
             dialog.text.setVisible(false);
             arrow.setVisible(false);
+            if (sceneName == 'race') {
+                var startGame = (level, prompt, format) => {
+                    quiz.level = level;
+                    quiz.prompt = prompt;
+                    quiz.answerFormat = format;
+                    game.scene.start('GameScene');
+                }
+                startGame(1, 'pinyin', 'english')
+            } else {
+                game.scene.start('GameScene');
+            }
         }
     })
 

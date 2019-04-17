@@ -33,7 +33,11 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "listenagain", file: "listenagain.png"},
                 {type: "image", name: "listenagain_hover", file: "listenagain_hover.png"},
-                {type: "image", name: "listenagain_down", file: "listenagain_down.png"}
+                {type: "image", name: "listenagain_down", file: "listenagain_down.png"},
+                {type: "image", name: "music_on", file: "music_on.png"},
+                {type: "image", name: "music_off", file: "music_off.png"},
+                {type: "image", name: "fx_on", file: "fx_on.png"},
+                {type: "image", name: "fx_off", file: "fx_off.png"}
             ]
         }
         myLoad(loadConfig, this);
@@ -45,7 +49,7 @@ class GameScene extends Phaser.Scene {
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
                 {type: "sound", name: "click", file: "click.ogg"},
                 {type: "sound", name: "next_question", file: "next_question.ogg"},
-
+                {type: "sound", name: "music", file: "chinese_loop.mp3"}
             ]
         }
         myLoad(soundLoadConfig, this);
@@ -82,6 +86,11 @@ class GameScene extends Phaser.Scene {
             sparkle: this.sound.add('sparkle'),
         }
 
+        ui.music = this.sound.add('music');
+
+        ui.music.setLoop(true);
+        ui.music.play();
+
         user.score = 90; // start at 90 and 10 points off for every incorrect answer
         user.step = 0; // this variable tracks how many answers have been answered correctly
 
@@ -113,7 +122,9 @@ class GameScene extends Phaser.Scene {
             }
 
             setTimeout(() => {
-                ui.sound.next_question.play();
+                if (ui.soundControl.fxEnabled) {
+                    ui.sound.next_question.play();
+                }
                 for (let i=0;i<4;i++) {
                     ui.answer.buttons[i].displayText.text = "";
                 }
@@ -294,7 +305,9 @@ class GameScene extends Phaser.Scene {
             ui.answer.buttons[i].button.on('pointerdown', function () {
                 if (ui.answer.buttons[i].correct) {
                     ui.answer.buttons[i].button.setTexture('l_correct');
-                    ui.sound.correct.play();
+                    if (ui.soundControl.fxEnabled) {
+                        ui.sound.correct.play();
+                    }
                     user.step++;
                     ui.background.setTexture('shanghai'+user.step);    
                     if (user.step == 9) {
@@ -315,7 +328,9 @@ class GameScene extends Phaser.Scene {
                         if (user.score < 0) {
                             user.score = 0;
                         }
-                        ui.sound.wrong.play();
+                        if (ui.soundControl.fxEnabled) {
+                            ui.sound.wrong.play();
+                        }
                         user.step--;
                         if (user.step < 0) {
                             user.step = 0;
@@ -344,6 +359,34 @@ class GameScene extends Phaser.Scene {
         ui.debugText = this.add.text(680, 310, "", defaultFont)
         ui.removeAnimations = () => {};
 
+        ui.soundControl = {
+            backing: this.add.rectangle(695, 540, 120, 75, 0xffffff).setAlpha(0.9),
+            musicToggle: this.add.sprite(670, 540, 'music_on').setInteractive().setScale(0.6),
+            musicEnabled: true,
+            fxToggle: this.add.sprite(720, 540, 'fx_on').setInteractive().setScale(0.6),
+            fxEnabled: true
+        }
+
+        ui.soundControl.musicToggle.on('pointerdown', () => {
+            if (ui.soundControl.musicEnabled) {
+                ui.soundControl.musicEnabled = false;
+                ui.soundControl.musicToggle.setTexture('music_off');
+                ui.music.pause();
+            } else {
+                ui.soundControl.musicEnabled = true;
+                ui.soundControl.musicToggle.setTexture('music_on');
+                ui.music.resume();
+            }
+        });
+        ui.soundControl.fxToggle.on('pointerdown', () => {
+            if (ui.soundControl.fxEnabled) {
+                ui.soundControl.fxEnabled = false;
+                ui.soundControl.fxToggle.setTexture('fx_off');
+            } else {
+                ui.soundControl.fxEnabled = true;
+                ui.soundControl.fxToggle.setTexture('fx_on');
+            }
+        });
 
         state.gameOver = () => {
             state.phase = "gameover";
@@ -390,8 +433,10 @@ class GameScene extends Phaser.Scene {
         if (ui.colorNum < 0) ui.colorNum += 6;
         let recentTexture = ui.question.rect.texture;
         ui.question.rect.setTexture('q' + ui.colorNum);
-        if (ui.question.rect.texture !== recentTexture) {
-            ui.sound.click.play();
+        if (ui.soundControl.fxEnabled) {
+            if (ui.question.rect.texture !== recentTexture) {
+                ui.sound.click.play();
+            }
         }
     }
 }

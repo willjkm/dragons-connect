@@ -59,7 +59,6 @@ class GameScene extends Phaser.Scene {
         allRounds.forEach((round) => {
             round.pinyin = round.sounds
             if (round.lesson == importData.lesson) {
-                console.log(round);
                 state.round.push(round);
             }
         })
@@ -67,7 +66,6 @@ class GameScene extends Phaser.Scene {
         while (state.round.length < 4) {
             let num = Math.floor(Math.random()*(((importData.lesson-1)*2)+2))
             if (state.round.indexOf(allRounds[num]) == -1) {
-                console.log(allRounds[num]);
                 state.round.push(allRounds[num]);
             }
         }
@@ -559,14 +557,25 @@ class StartScene extends Phaser.Scene {
             myCoins[i].setTexture('coin');
         }
 
+        var haveReadInstructions = false;
         var startButton = addButton('small', 290, 520, "Start Game", this);
         var instructions = addButton('small', 510, 520, "Instructions", this);
         instructions.button.on('pointerdown', () => {
+            haveReadInstructions = true;
             runInstructions('rockets', this);
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('GameScene');
+            if (importData.lesson == 1) {
+                if (!haveReadInstructions) {
+                    runInstructions('rockets', this);
+                    haveReadInstructions = true;
+                } else {
+                    this.scene.start('GameScene');
+                }
+            } else {
+                this.scene.start('GameScene');
+            }
         });
     }
 }

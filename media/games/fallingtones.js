@@ -17,6 +17,10 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "spark", file: "spark.png"},
+                {type: "image", name: "music_on", file: "music_on.png"},
+                {type: "image", name: "music_off", file: "music_off.png"},
+                {type: "image", name: "fx_on", file: "fx_on.png"},
+                {type: "image", name: "fx_off", file: "fx_off.png"}
             ]
         }
         myLoad(loadConfig, this);
@@ -26,11 +30,11 @@ class GameScene extends Phaser.Scene {
                 {type: "sound", name: "sparkle", file: "sparkle.ogg"},
                 {type: "sound", name: "correct", file: "correct.ogg"},
                 {type: "sound", name: "pop", file: "pop.ogg"},
-                {type: "sound", name: "raiseWall", file: "wall_raise.ogg"}
+                {type: "sound", name: "raiseWall", file: "wall_raise.ogg"},
+                {type: "sound", name: "music", file: "test_music.mp3"}
             ]
         }
         myLoad(soundLoadConfig, this);
-
     }
 
     create() {
@@ -43,7 +47,7 @@ class GameScene extends Phaser.Scene {
             raiseWall: this.sound.add('raiseWall'),
             correct: this.sound.add('correct'),
             sparkle: this.sound.add('sparkle')
-        }
+        };
 
         ui.streak = 0; // tracks streak of correct answers for special award
         ui.award1 = false;
@@ -84,6 +88,14 @@ class GameScene extends Phaser.Scene {
                 this.add.text(680, 360, "", newFont).setOrigin(0.5, 0.5).setAlpha(0),
                 this.add.text(680, 360, "", newFont).setOrigin(0.5, 0.5).setAlpha(0),
             ]
+        }
+
+        ui.hasEverMoved = false;
+        ui.hintText = this.add.text(50, 50, "Use the arrow keys to move the bubbles.", ubuntuSmaller);
+
+        ui.removeHint = () => {
+            ui.hasEverMoved = true;
+            ui.fadeOut(ui.hintText);
         }
 
         ui.shiftDown = (text) => {
@@ -189,7 +201,9 @@ class GameScene extends Phaser.Scene {
 
         ui.wall = this.add.image(0,430, 'wall').setOrigin(0,0);
         ui.raiseWall = () => {
-            ui.sound.raiseWall.play();
+            if (ui.soundControl.fxEnabled) {
+                ui.sound.raiseWall.play();
+            }
             ui.wallHeight -= 40;
             this.tweens.add({
                 targets: [ui.wall, ui.bowls],
@@ -272,6 +286,40 @@ class GameScene extends Phaser.Scene {
 
             endActivity(5, this, coins, user.score, "Falling Tones", award);
         }
+
+        ui.music = this.sound.add('music');
+
+        ui.music.setLoop(true);
+        ui.music.play();
+
+        ui.soundControl = {
+            musicToggle: this.add.sprite(650, 540, 'music_on').setInteractive(),
+            musicEnabled: true,
+            fxToggle: this.add.sprite(740, 540, 'fx_on').setInteractive(),
+            fxEnabled: true
+        }
+
+        ui.soundControl.musicToggle.on('pointerdown', () => {
+            if (ui.soundControl.musicEnabled) {
+                ui.soundControl.musicEnabled = false;
+                ui.soundControl.musicToggle.setTexture('music_off');
+                ui.music.pause();
+            } else {
+                ui.soundControl.musicEnabled = true;
+                ui.soundControl.musicToggle.setTexture('music_on');
+                ui.music.resume();
+            }
+        });
+        ui.soundControl.fxToggle.on('pointerdown', () => {
+            if (ui.soundControl.fxEnabled) {
+                ui.soundControl.fxEnabled = false;
+                ui.soundControl.fxToggle.setTexture('fx_off');
+            } else {
+                ui.soundControl.fxEnabled = true;
+                ui.soundControl.fxToggle.setTexture('fx_on');
+            }
+        });
+
     }
 
     update() {
@@ -316,7 +364,9 @@ class GameScene extends Phaser.Scene {
                     if (ui.streak == 10) {
                         ui.award2 = true
                     }
-                    ui.sound.correct.play();
+                    if (ui.soundControl.fxEnabled) {
+                        ui.sound.correct.play();
+                    }
                     user.score += 10;
                     if (user.score % 30 == 0) {
                         state.level += 1
@@ -347,7 +397,9 @@ class GameScene extends Phaser.Scene {
                     ui.bubble.pinyin.setVisible(false);
                     ui.bubble.character.setVisible(false);
                     ui.bubble.sprite.play('pop');
-                    ui.sound.pop.play();
+                    if (ui.soundControl.fxEnabled) {
+                        ui.sound.pop.play();
+                    }
                 }
             }
         }
@@ -356,12 +408,21 @@ class GameScene extends Phaser.Scene {
 
         if (ui.bubble.sprite.y < ui.wallHeight - 75) {
             if (ui.cursors.left.isDown) {
+                if (!ui.hasEverMoved) {
+                    ui.removeHint();
+                }
                 ui.bubble.setVelocityX(-200 * speed);
             } else if (ui.cursors.right.isDown) {
+                if (!ui.hasEverMoved) {
+                    ui.removeHint();
+                }
                 if (ui.bubble.sprite.x < 480) {
                     ui.bubble.setVelocityX(200 * speed);
                 }
             } else if (ui.cursors.down.isDown) {
+                if (!ui.hasEverMoved) {
+                    ui.removeHint();
+                }
                 ui.bubble.setVelocityY(200);
             }
         }
@@ -413,15 +474,26 @@ class StartScene extends Phaser.Scene {
         for (let i=0;i<importData.coins;i++) {
             myCoins[i].setTexture('coin');
         }
+        var haveReadInstructions = false;
 
         var startButton = addButton('small', 350, 450, "Start Game", this);
         var instructions = addButton('small', 580, 450, "Instructions", this);
         instructions.button.on('pointerdown', () => {
             runInstructions('fallingTones', this);
+            haveReadInstructions = true;
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('GameScene');
+            if (importData.lesson == 1) {
+                if (!haveReadInstructions) {
+                    runInstructions('fallingTones', this);
+                    haveReadInstructions = true;
+                } else {
+                    this.scene.start('GameScene');
+                }
+            } else {
+                this.scene.start('GameScene');
+            }
         });
 
     }

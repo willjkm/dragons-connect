@@ -32,7 +32,11 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "spark", file: "spark.png"},
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "nowfind", file: "nowfind.png"},
-                {type: "image", name: "coin_disabled", file: "coin_disabled.png"}
+                {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
+                {type: "image", name: "music_on", file: "music_on.png"},
+                {type: "image", name: "music_off", file: "music_off.png"},
+                {type: "image", name: "fx_on", file: "fx_on.png"},
+                {type: "image", name: "fx_off", file: "fx_off.png"}
             ]
         }
         myLoad(loadConfig, this);
@@ -45,6 +49,7 @@ class GameScene extends Phaser.Scene {
                 {type: "sound", name: "clear", file: "powerup.ogg"},
                 {type: "sound", name: "deploy", file: "success.ogg"},
                 {type: "sound", name: "impact", file: "impact.ogg"},
+                {type: "sound", name: "music", file: "trailer.ogg"}
             ]
         }
         myLoad(soundLoadConfig, this);
@@ -63,6 +68,11 @@ class GameScene extends Phaser.Scene {
             clear: this.sound.add('clear'),
             sparkle: this.sound.add('sparkle')
         }
+
+        ui.music = this.sound.add('music');
+
+        ui.music.setLoop(true);
+        ui.music.play();
 
         ui.allCharacters = getCharacterData()
 
@@ -105,7 +115,6 @@ class GameScene extends Phaser.Scene {
             var counter = 0
             while (!nextQuestion) {
                 counter++
-                console.log('no question yet!');
                 ui.blocks.forEach((column) => {
                     column.forEach((block) => {
                         if (!block.locked) {
@@ -205,7 +214,9 @@ class GameScene extends Phaser.Scene {
         }
 
         ui.addPowerUp = (column) => {
-            ui.sound.powerup.play()
+            if (ui.soundControl.fxEnabled) {
+                ui.sound.powerup.play()
+            }
             user.power = 0
             setTimeout(() => {
                 ui.powerUp.update(user.power);
@@ -230,7 +241,9 @@ class GameScene extends Phaser.Scene {
         ui.exploding = false;
 
         ui.deployPowerUp = (powerUp) => {
-            ui.sound.deploy.play();
+            if (ui.soundControl.fxEnabled) {
+                ui.sound.deploy.play();
+            }
             ui.exploding = true;
             var velocities = [
                 [0,400],
@@ -301,7 +314,9 @@ class GameScene extends Phaser.Scene {
                         });
                     });
                     if (!moreOutThere) {
-                        ui.sound.clear.play()
+                        if (ui.soundControl.fxEnabled) {
+                            ui.sound.clear.play();
+                        }
                         //user.score += 5;
                         //ui.scoreText.text = user.score;
                         ui.nextround.dialog.setVisible(true);
@@ -321,7 +336,9 @@ class GameScene extends Phaser.Scene {
                     }
                 } else {
                     ui.perfect = false;
-                    ui.sound.wrong.play();
+                    if (ui.soundControl.fxEnabled) {
+                        ui.sound.wrong.play();
+                    }
                     block.locked = true;
                     block.blockText.text = "";
                     block.setTexture('stone');
@@ -339,7 +356,9 @@ class GameScene extends Phaser.Scene {
         }
 
         ui.removeBlock = (block) => {
-            ui.sound.impact.play()
+            if (ui.soundControl.fxEnabled) {
+                ui.sound.impact.play();
+            }
             ui.blocksOnScreen--;
             block.disableBody(true, true);
             block.setVisible(false);
@@ -352,8 +371,35 @@ class GameScene extends Phaser.Scene {
             ui.blocks[block.column] = array1.concat(array2);        
         }
 
+        ui.soundControl = {
+            musicToggle: this.add.sprite(700, 570, 'music_on').setInteractive().setScale(0.5),
+            musicEnabled: true,
+            fxToggle: this.add.sprite(750, 570, 'fx_on').setInteractive().setScale(0.5),
+            fxEnabled: true
+        }
+
+        ui.soundControl.musicToggle.on('pointerdown', () => {
+            if (ui.soundControl.musicEnabled) {
+                ui.soundControl.musicEnabled = false;
+                ui.soundControl.musicToggle.setTexture('music_off');
+                ui.music.pause();
+            } else {
+                ui.soundControl.musicEnabled = true;
+                ui.soundControl.musicToggle.setTexture('music_on');
+                ui.music.resume();
+            }
+        });
+        ui.soundControl.fxToggle.on('pointerdown', () => {
+            if (ui.soundControl.fxEnabled) {
+                ui.soundControl.fxEnabled = false;
+                ui.soundControl.fxToggle.setTexture('fx_off');
+            } else {
+                ui.soundControl.fxEnabled = true;
+                ui.soundControl.fxToggle.setTexture('fx_on');
+            }
+        });
+
         state.gameOver = () => {
-            console.log('ending game!!!')
             state.phase = "gameover";
             user.score = ui.newScore
             clearInterval(ui.playInterval);
@@ -629,12 +675,23 @@ class StartScene extends Phaser.Scene {
 
         var startButton = addButton('small', 290, 420, "Start Game", this);
         var instructions = addButton('small', 510, 420, "Instructions", this);
+        var haveReadInstructions = false;
         instructions.button.on('pointerdown', () => {
             runInstructions('blockzi', this);
+            haveReadInstructions = true;
         });
 
         startButton.button.on('pointerdown', () => {
-            this.scene.start('GameScene');
+            if (importData.lesson == 1) {
+                if (!haveReadInstructions) {
+                    runInstructions('blockzi', this);
+                    haveReadInstructions = true;
+                } else {
+                    this.scene.start('GameScene');
+                }
+            } else {
+                this.scene.start('GameScene');
+            }
         });
     }
 }

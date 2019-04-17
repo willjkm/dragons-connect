@@ -22,6 +22,10 @@ class GameScene extends Phaser.Scene {
                 {type: "image", name: "coin", file: "coin.png"},
                 {type: "image", name: "coin_disabled", file: "coin_disabled.png"},
                 {type: "image", name: "spark", file: "spark.png"},
+                {type: "image", name: "music_on", file: "music_on.png"},
+                {type: "image", name: "music_off", file: "music_off.png"},
+                {type: "image", name: "fx_on", file: "fx_on.png"},
+                {type: "image", name: "fx_off", file: "fx_off.png"}
             ]
         }
         
@@ -34,7 +38,8 @@ class GameScene extends Phaser.Scene {
                 {type: "sound", name: "countdown_high", file: "countdown2_high.ogg"},
                 {type: "sound", name: "correct", file: "correct.ogg"},
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
-                {type: "sound", name: "sparkle", file: "sparkle.ogg"}
+                {type: "sound", name: "sparkle", file: "sparkle.ogg"},
+                {type: "sound", name: "music", file: "drums_loop.ogg"}
             ]
         }
         myLoad(soundLoadConfig, this);
@@ -43,6 +48,10 @@ class GameScene extends Phaser.Scene {
     create() {
 
         initialize();
+
+        ui.music = this.sound.add('music');
+
+        ui.music.setLoop(true);
 
         // create animations
 
@@ -119,6 +128,9 @@ class GameScene extends Phaser.Scene {
                         ui.start.displayText.text = ui.start.number.toString();
                         if (ui.start.number == 0) {
                             ui.sound.countdown_high.play();
+                            setTimeout(() => {
+                                ui.music.play();
+                            }, 200);
                             state.phase = "race";
                             state.clock.elapsed = 0;
                             ui.start.displayText.text = "GO!";
@@ -170,7 +182,9 @@ class GameScene extends Phaser.Scene {
                     if (ui.inputAllowed) {
                         state.check = checkUserInput(i);
                         if (state.check) {
-                            ui.sound.correct.play()
+                            if (ui.soundControl.fxEnabled) {
+                                ui.sound.correct.play();
+                            }
                             ui.energy.boost += 15;
                             ui.dboat.anims.play('paddle', true);
                             ui.inputAllowed = false;
@@ -179,7 +193,9 @@ class GameScene extends Phaser.Scene {
                             }, 500)
                         } else {
                             ui.perfect = false;
-                            ui.sound.wrong.play()
+                            if (ui.soundControl.fxEnabled) {
+                                ui.sound.wrong.play()
+                            }
                             ui.energy.boost -= 10;
                             ui.inputAllowed = false;
                             setTimeout(() => {
@@ -193,7 +209,7 @@ class GameScene extends Phaser.Scene {
 
         // draw text that shows time and position in race
 
-        this.add.rectangle(700, 1050, 100, 55, 0xffffff).setAlpha(0.6)
+        this.add.rectangle(700, 1050, 100, 55, 0xffffff).setAlpha(0.9)
 
         ui.timer = {
             displayText: [
@@ -294,6 +310,35 @@ class GameScene extends Phaser.Scene {
             scaleY: 0.8,
             ease: 'Power1',
             duration: 300
+        });
+
+        ui.soundControl = {
+            backing: this.add.rectangle(65, 1050, 100, 55, 0xffffff).setAlpha(0.9),
+            musicToggle: this.add.sprite(85, 1050, 'music_on').setInteractive().setScale(0.5),
+            musicEnabled: true,
+            fxToggle: this.add.sprite(45, 1050, 'fx_on').setInteractive().setScale(0.5),
+            fxEnabled: true
+        }
+
+        ui.soundControl.musicToggle.on('pointerdown', () => {
+            if (ui.soundControl.musicEnabled) {
+                ui.soundControl.musicEnabled = false;
+                ui.soundControl.musicToggle.setTexture('music_off');
+                ui.music.pause();
+            } else {
+                ui.soundControl.musicEnabled = true;
+                ui.soundControl.musicToggle.setTexture('music_on');
+                ui.music.resume();
+            }
+        });
+        ui.soundControl.fxToggle.on('pointerdown', () => {
+            if (ui.soundControl.fxEnabled) {
+                ui.soundControl.fxEnabled = false;
+                ui.soundControl.fxToggle.setTexture('fx_off');
+            } else {
+                ui.soundControl.fxEnabled = true;
+                ui.soundControl.fxToggle.setTexture('fx_on');
+            }
         });
 
         state.gameOver = () => {
@@ -482,8 +527,11 @@ class StartScene extends Phaser.Scene {
             myCoins[i].setTexture('coin');
         }
 
+        var haveReadInstructions = false;
+
         instructions.button.on('pointerdown', () => {
             runInstructions('race', this);
+            haveReadInstructions = true;
         });
 
         // populate previous top scores (first time only)
@@ -514,7 +562,16 @@ class StartScene extends Phaser.Scene {
         // user interface
 
         startButton.button.on('pointerdown', () => {
-            startGame(1, 'pinyin', 'english')
+            if (importData.lesson == 1) {
+                if (!haveReadInstructions) {
+                    runInstructions('race', this);
+                    haveReadInstructions = true;
+                } else {
+                    startGame(1, 'pinyin', 'english')
+                }
+            } else {
+                startGame(1, 'pinyin', 'english')
+            }
         });
     }
 }

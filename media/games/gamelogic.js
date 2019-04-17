@@ -333,7 +333,9 @@ var addButton = (size, x, y, displayText, game) => {
             }
         });
         result.button.on('pointerdown', () => {
-            result.button.setTexture('mousedown');
+            if (result.button.texture.key == 'hover') {
+                result.button.setTexture('mousedown');
+            }
         });
     } else if (size == 'small') {
         var result = {
@@ -351,7 +353,9 @@ var addButton = (size, x, y, displayText, game) => {
             }
         });
         result.button.on('pointerdown', () => {
-            result.button.setTexture('mousedown');
+            if (result.button.texture.key == 'hover') {
+                result.button.setTexture('mousedown');
+            }
         });
     } else if (size == 'big') {
         var result = {
@@ -369,7 +373,9 @@ var addButton = (size, x, y, displayText, game) => {
             }
         });
         result.button.on('pointerdown', () => {
-            result.button.setTexture('l_mousedown');
+            if (result.button.texture.key == 'hover') {
+                result.button.setTexture('mousedown');
+            }
         });
     } else if (size == 'magenta') {
         var result = {
@@ -387,7 +393,9 @@ var addButton = (size, x, y, displayText, game) => {
             }
         });
         result.button.on('pointerdown', () => {
-            result.button.setTexture('m_mousedown');
+            if (result.button.texture.key == 'm_hover') {
+                result.button.setTexture('mousedown');
+            }
         });
     }
     return result;
@@ -512,6 +520,8 @@ var addCameras = (game) => {
 }
 
 var endActivity = (slide, game, coins=null, score=null, element_name=null, award=null) => {
+
+    game.sound.pauseAll();
 
     if (coins > 0) {
         window.parent.enableNextSlide()
