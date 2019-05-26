@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block custom_style %}
+
+<link href="https://unpkg.com/tabulator-tables@4.2.7/dist/css/tabulator.min.css" rel="stylesheet">
+
+<style>
+body {
+    background-color: #5959bb;
+}
+h1 {
+    font-family: 'Ubuntu';
+    font-size: 50px;
+}
+.tabulator .tabulator-header .tabulator-col {
+    background: #fff77e;
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<h1 class="text-center pt-5">Analytics</h1>
+<div class="my-4" id="example-table"></div>
+<a class="btn btn-warning mb-4" href="../" role="button">Back to Dashboard</a>
+<button id="download-xlsx" type="button" class="btn btn-primary mb-4 ml-4">Download Excel File</button>
+
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://unpkg.com/tabulator-tables@4.2.7/dist/js/tabulator.min.js"></script>
+<script type="text/javascript" src="https://oss.sheetjs.com/js-xlsx/xlsx.full.min.js"></script>
+
+<script>
+
+// var tabledata = {{ data|safe }};
+
+//create Tabulator on DOM element with id "example-table"
+var table = new Tabulator("#example-table", {
+ 	height:405, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
+ 	ajaxURL:"/lessons/ajax/getdata/",
+ 	placeholder:"No Data Set",
+ 	tooltipsHeader:true,
+ 	layout:"fitColumns", //fit columns to width of table (optional)
+ 	columns:[ //Define Table Columns
+	 	{title:"Name", field:"name", width:150},
+	 	{title:"School", field:"school", headerFilter:true, width:150},
+	 	{title:"Class", field:"myclass", headerFilter:true, width:150},
+	 	{title:"Teacher", field:"teacher", headerFilter:true, width:150},
+	 	{title:"Course Progress", field:"courseProgress"},
+	 	{title:"Coins", field:"coins"},
+	 	{title:"Login Days", field:"loginDays"},
+	 	{title:"Completed Games", field:"completedGames"},
+	 	{title:"Slide Views", field:"slideViews"},
+	 	{title:"Badges", field:"badges"}
+ 	],
+});
+
+//load sample data into the table
+table.setData();
+
+//trigger download of data.xlsx file
+$("#download-xlsx").click(function(){
+    table.download("xlsx", "DragonsConnectData.xlsx", {sheetName:"Student Data"});
+});
+
+</script>
+
+{% endblock %}

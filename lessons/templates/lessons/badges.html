@@ -20,9 +20,9 @@ body {
                 <div class="row my-4">
                     <div class="col-md-auto">
                         {% if badge.disabled %}
-                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}" style="opacity: 0.5;">
+                            <img class="mybadge" title="{{ badge.name }}" src="/static/images/{{ badge.file }}" style="opacity: 0.5;">
                         {% else %}
-                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}">
+                            <img class="mybadge" title="{{ badge.name }}" src="/static/images/{{ badge.file }}">
                         {% endif %}
                     </div>
                     <div class="col">
@@ -46,7 +46,7 @@ body {
             {% endfor %}
         </div>
         <div class="m-4">
-            <a class="btn btn-primary btn-huge" href="../" role="button">Back to Dashboard</a>
+            <a class="btn btn-primary btn-huge" href="../../dashboard" role="button">Back to Dashboard</a>
         </div>
     </div>
 

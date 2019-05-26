@@ -153,6 +153,7 @@ class Profile(models.Model):
         null=True
     )
     avatar = models.PositiveIntegerField(null=True, default=1)
+    classCode = models.CharField(max_length=10, null=True, blank=True)
 
 class Login(models.Model):
 

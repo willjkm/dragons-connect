@@ -24,32 +24,12 @@ def getLessons():
         {
             "title": "Do you have...?",
             "description": "Learn how to say you have something, and ask if someone has something.",
-        },
-        {
-            "title": "Let's go!",
-            "description": "Learn how to make suggestions, and use plural pronouns.",
-        },
-        {
-            "title": "This is my family.",
-            "description": "Learn how to introduce people and talk about members of the family. Also, learn about Chinese names.",
-        },
-        {
-            "title": "What are you eating?",
-            "description": "Learn some common words for food and drink that you will find in China.",
-        },
-        {
-            "title": "I live in Beijing.",
-            "description": "Learn to talk about your age, and where you live. Also, learn the order of place names in Chinese.",
-        },
-        {
-            "title": "What are you doing?",
-            "description": "Talk about common activities, and use the negative to say what you won't do.",
-        },
+        }
     ]
 
     for i, lesson in enumerate(result, start=1):
         lesson["number"] = i
-        lesson["image"] = "../../../media/images/lessonimage" + str(i) + ".png"
+        lesson["image"] = "../../static/images/lessonimage" + str(i) + ".png"
 
     return result
 

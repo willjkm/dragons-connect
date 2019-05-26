@@ -1,6 +1,6 @@
-<!doctype html> 
-<html lang="en"> 
-<head> 
+<!doctype html>
+<html lang="en">
+<head>
     <meta charset="UTF-8" />
     <title>{{ scene_name }}</title>
     <style type="text/css">
@@ -9,11 +9,11 @@
         }
     </style>
     <link href="https://fonts.googleapis.com/css?family=Carter+One" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cabin+Sketch" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC" rel="stylesheet">
 </head>
 <body>
 
@@ -26,7 +26,9 @@
             lesson: {{ lesson }},
             top_score: {{ top_score }},
             coins: {{ coins }},
-            scene_name: '{{ scene_name }}'
+            scene_name: '{{ scene_name }}',
+            next_lesson_available: {{ next_lesson_available }},
+            coin_list: {{ coin_list }}
         }
 
         var badges = {{ badges|safe }}
@@ -42,11 +44,11 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-    <script src="../../../media/games/data.js"></script>
-    <script src="../../../media/games/utils.js"></script>
-    <script src="../../../media/games/{{ file_name }}"></script>
-    <script src="../../../media/games/gamelogic.js"></script>
-    <script src="../../../media/games/main.js"></script>
+    <script src="../../../static/games/data.js"></script>
+    <script src="../../../static/games/utils.js"></script>
+    <script src="../../../static/games/{{ file_name }}"></script>
+    <script src="../../../static/games/gamelogic.js"></script>
+    <script src="../../../static/games/main.js"></script>
 
 </body>
 </html>

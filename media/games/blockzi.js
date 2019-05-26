@@ -8,7 +8,7 @@ class GameScene extends Phaser.Scene {
         this.add.text(400, 300, "Loading", themeFont).setOrigin(0.5, 0.5);
 
         var loadConfig = {
-            mediaURL: "../../../media/images/",
+            mediaURL: "../../../static/images/",
             loadObjects: [
                 {type: "image", name: "background", file: "blockzi_new.jpg"},
                 {type: "image", name: "message_frame", file: "gameoverbackground2.png"},
@@ -41,7 +41,7 @@ class GameScene extends Phaser.Scene {
         }
         myLoad(loadConfig, this);
         var soundLoadConfig = {
-            mediaURL: "../../../media/sounds/",
+            mediaURL: "../../../static/sounds/",
             loadObjects: [
                 {type: "sound", name: "sparkle", file: "sparkle.ogg"},
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
@@ -120,7 +120,7 @@ class GameScene extends Phaser.Scene {
                         if (!block.locked) {
                             if (availableVocab.indexOf(block.vocab) == -1) {
                                 availableVocab.push(block.vocab);
-                            }    
+                            }
                         }
                     });
                 });
@@ -136,7 +136,7 @@ class GameScene extends Phaser.Scene {
                     var position = ui.questionList.indexOf(nextQuestion);
                     var array1 = ui.questionList.slice(0, position);
                     var array2 = ui.questionList.slice(position + 1);
-                    ui.questionList = array1.concat(array2);        
+                    ui.questionList = array1.concat(array2);
                 } else {
                     ui.questionList = ui.newQuestionList(ui.prompt.vocab);
                 }
@@ -173,7 +173,7 @@ class GameScene extends Phaser.Scene {
         // ui.bar = {
         //     level: 30,
         //     rect: this.add.rectangle(595, 165, 160, 10, 0xbada55).setOrigin(0,0)
-        // } 
+        // }
 
         ui.blocks = [[],[],[],[],[],[]];
         ui.blocksOnScreen = 0
@@ -194,7 +194,7 @@ class GameScene extends Phaser.Scene {
             newBlock.on('pointerover', () => {
                 if (!newBlock.locked) {
                     newBlock.oldTexture = newBlock.texture.key
-                    newBlock.setTexture('b_hover');    
+                    newBlock.setTexture('b_hover');
                 }
             })
             newBlock.on('pointerout', () => {
@@ -209,7 +209,7 @@ class GameScene extends Phaser.Scene {
             })
             if (typeof ui.blocks[column] !== 'undefined') {
                 ui.blocks[column].push(newBlock);
-                ui.blockGroup.add(newBlock);    
+                ui.blockGroup.add(newBlock);
             }
         }
 
@@ -225,7 +225,7 @@ class GameScene extends Phaser.Scene {
             var newPowerUp = this.physics.add.sprite(105 + (75*column), -100, "powerup").setInteractive();
             newPowerUp.column = column;
             newPowerUp.on('pointerover', () => {
-                newPowerUp.setTexture('b_hover');    
+                newPowerUp.setTexture('b_hover');
             })
             newPowerUp.on('pointerout', () => {
                 newPowerUp.setTexture("powerup");
@@ -251,7 +251,7 @@ class GameScene extends Phaser.Scene {
                 [400,0],
                 [-400,0]
             ]
-            
+
             for (let i=0;i<4;i++) {
                 ui.explosion[i].leadSprite.x = powerUp.x;
                 ui.explosion[i].leadSprite.y = powerUp.y;
@@ -270,7 +270,7 @@ class GameScene extends Phaser.Scene {
                     ui.explosion[i].leadSprite.setVisible(false);
                     ui.explosion[i].trail.stop();
                     ui.exploding = false;
-                }    
+                }
             }, 1000)
         }
 
@@ -287,7 +287,7 @@ class GameScene extends Phaser.Scene {
                 state.gameOver();
             } else {
                 var column = availableColumns[Math.floor(Math.random()*availableColumns.length)]
-                return column    
+                return column
             }
         }
 
@@ -320,7 +320,7 @@ class GameScene extends Phaser.Scene {
                         //user.score += 5;
                         //ui.scoreText.text = user.score;
                         ui.nextround.dialog.setVisible(true);
-                        ui.nextround.text.setVisible(true);                        
+                        ui.nextround.text.setVisible(true);
                         ui.exploding = true;
                         var recentQuestion = ui.prompt.vocab;
                         ui.prompt.vocab = ui.getNextQuestion(recentQuestion);
@@ -368,7 +368,7 @@ class GameScene extends Phaser.Scene {
             var position = ui.blocks[block.column].indexOf(block);
             var array1 = ui.blocks[block.column].slice(0, position)
             var array2 = ui.blocks[block.column].slice(position + 1);
-            ui.blocks[block.column] = array1.concat(array2);        
+            ui.blocks[block.column] = array1.concat(array2);
         }
 
         ui.soundControl = {
@@ -412,7 +412,7 @@ class GameScene extends Phaser.Scene {
             // ui.message.displayText[0].text = "You scored: " + user.score.toString() + "!";
             // ui.cams.msgCam.setVisible(true);
             // ui.message.flyIn();
-            // ui.cams.dim([this.cameras.main]);        
+            // ui.cams.dim([this.cameras.main]);
 
             // if (coins > 0) {
             //     ui.message.sparkle(coins);
@@ -439,16 +439,16 @@ class GameScene extends Phaser.Scene {
 
             // special award: finishing with no mistakes
 
-            
+
             var award = [];
             if (ui.coinsToWin > 0) {
-                if (ui.perfect) {                    
+                if (ui.perfect) {
                     award.push("41");
                     // $.post('../../../lessons/ajax/specialaward/', {
                     //     csrfmiddlewaretoken: CSRFtoken,
                     //     element_name: "41",
                     //     lesson: importData.lesson,
-                    // });    
+                    // });
                 }
             }
             endActivity(9, this, ui.coinsToWin, user.score, "Blockzi", award);
@@ -571,7 +571,7 @@ class GameScene extends Phaser.Scene {
             //     ui.prompt.displayText.text = ui.prompt.vocab.english;
 
             //     ui.nextround.dialog.setVisible(true);
-            //     ui.nextround.text.setVisible(true);                        
+            //     ui.nextround.text.setVisible(true);
             //     ui.exploding = true;
             //     ui.nextround.text.setText("Now find:" + ui.prompt.vocab.english);
 
@@ -581,7 +581,7 @@ class GameScene extends Phaser.Scene {
             //         ui.exploding = false;
             //         ui.bar.rect.width = 160;
             //     }, 2000)
-            
+
             //     user.power--;
             //     if (user.power < 0) {
             //         user.power = 0;
@@ -606,11 +606,11 @@ class GameScene extends Phaser.Scene {
                         block.setVelocityY(speed);
                         if (typeof block.blockText !== 'undefined') {
                             block.blockText.x = block.x;
-                            block.blockText.y = block.y;    
+                            block.blockText.y = block.y;
                         }
                     })
                 }
-            })    
+            })
         } else {
             ui.blocks.forEach((column) => {
                 if (column.length > 0) {
@@ -618,11 +618,11 @@ class GameScene extends Phaser.Scene {
                         block.setVelocityY(0);
                         if (typeof block.blockText !== 'undefined') {
                             block.blockText.x = block.x;
-                            block.blockText.y = block.y;    
+                            block.blockText.y = block.y;
                         }
                     })
                 }
-            })    
+            })
         }
     }
 }
@@ -634,7 +634,7 @@ class StartScene extends Phaser.Scene {
 
     preload() {
         var loadConfig = {
-            mediaURL: "../../../media/images/",
+            mediaURL: "../../../static/images/",
             loadObjects: [
                 {type: "image", name: "splash", file: "blockzi_splash.jpg"},
                 {type: "image", name: "loading", file: "blockzi_splash.jpg"},
@@ -649,7 +649,7 @@ class StartScene extends Phaser.Scene {
                 {type: "image", name: "idialog", file: "instruction_dialog.png"}
             ]
         }
-        
+
         myLoad(loadConfig, this);
         myLoad("buttons", this);
     }

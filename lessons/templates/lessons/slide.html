@@ -30,8 +30,14 @@
 
 <div class="main" id="mainContent">
 
-    <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0" scrolling="no"></iframe>
-
+    {% if current_slide.number == 2 %}
+        <video class="my-3" width="800" height="600" controls>
+            <source src="https://s3.eu-west-2.amazonaws.com/dragonsconnect/video/episode{{ lesson_number }}.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    {% else %}
+        <iframe class="my-3" width="800" height="600" src="{{ url }}" frameborder="0" scrolling="no"></iframe>
+    {% endif %}
     {% if role == 'student' %}
 
         {% if current_slide_number > 1 %}
@@ -41,14 +47,16 @@
         {% endif %}
 
         {% if is_final_slide %}
-            {% if next_slide_is_available == False %}
-                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton" disabled>
-                    Next lesson
-                </button>
-            {% else %}
-                <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton">
-                    Next lesson
-                </button>
+            {% if lesson_number < 5 %}
+                {% if next_slide_is_available == False %}
+                    <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton" disabled>
+                        Next lesson
+                    </button>
+                {% else %}
+                    <button type="button" class="btn btn-primary mb-4 nextslide" onclick="startNextLesson()" id="continuebutton">
+                        Next lesson
+                    </button>
+                {% endif %}
             {% endif %}
         {% else %}
             {% if next_slide_is_available == False %}
@@ -69,9 +77,11 @@
         {% endif %}
 
         {% if is_final_slide %}
-            <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton">
-                Next lesson
-            </button>
+            {% if lesson_number < 5 %}
+                <button type="button" class="btn btn-primary float-right mb-4" onclick="startNextLesson()" id="continuebutton">
+                    Next lesson
+                </button>
+            {% endif %}
         {% else %}
             <button type="button" class="btn btn-primary float-right mb-4" onclick="goToNextSlide()" id="continuebutton">
                 Next slide
@@ -83,7 +93,7 @@
     <form action="">
         {% csrf_token %}
     </form>
-    
+
 </div>
 
 
@@ -95,21 +105,29 @@
         {% if next_slide_number < 11 %}
             window.location.href='/lessons/{{ lesson_number }}/slide/{{ next_slide_number }}';
         {% else %}
-            window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
+            {% if lesson_number < 5 %}
+                window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
+            {% endif %}
         {% endif %}
     }
 
+    function goToSlide(lessonid, slideid) {
+        window.location.href = '/lessons/' + lessonid.toString() + '/slide/' + slideid.toString();
+    }
+
     function startNextLesson() {
-        window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
+        {% if lesson_number < 5 %}
+            window.location.href='/lessons/{{ next_lesson_number }}/slide/1';
+        {% endif %}
     }
 
     function enableNextSlide() {
         {% if can_unlock_next_slide %}
             if (document.getElementById("continuebutton").disabled) {
                 document.getElementById("continuebutton").disabled = false;
-            
+
                 var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-        
+
                 $.post('../../ajax/updateprogress/', {
                     csrfmiddlewaretoken: CSRFtoken
                 });

@@ -42,6 +42,28 @@ body {
                     <img id="av6" class="avatarchoice" onclick="selectAv(6)" src="/static/lessons/av6.png" alt="avatar" width="100" height="100">
                 </div>
             </div>
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-3">
+                    <img id="av7" class="avatarchoice" onclick="selectAv(7)" src="/static/lessons/av7.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av8" class="avatarchoice" onclick="selectAv(8)" src="/static/lessons/av8.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av9" class="avatarchoice" onclick="selectAv(9)" src="/static/lessons/av9.png" alt="avatar" width="100" height="100">
+                </div>
+            </div>
+            <div class="row my-4 justify-content-center">
+                <div class="col-sm-3">
+                    <img id="av10" class="avatarchoice" onclick="selectAv(10)" src="/static/lessons/av10.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av11" class="avatarchoice" onclick="selectAv(11)" src="/static/lessons/av11.png" alt="avatar" width="100" height="100">
+                </div>
+                <div class="col-sm-3">
+                    <img id="av12" class="avatarchoice" onclick="selectAv(12)" src="/static/lessons/av12.png" alt="avatar" width="100" height="100">
+                </div>
+            </div>
         </div>
         <div class="m-4">
             <a class="btn btn-primary btn-huge" href="../" role="button">Back to Dashboard</a>
@@ -54,7 +76,7 @@ body {
 <script>
     function selectAv(number) {
         var CSRFtoken = $('input[name=csrfmiddlewaretoken]').val();
-        
+
         $.post('/dashboard/changeavatar/', {
             csrfmiddlewaretoken: CSRFtoken,
             avatar: number

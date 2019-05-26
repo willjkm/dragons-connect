@@ -44,7 +44,7 @@ h1 {
                     <div class="col">
                         {% for square in student.matrix %}
                             <span class="block{{ square }} progressblock">
-                                &#9606; 
+                                &#9606;
                             </span>
                         {% endfor %}
                     </div>
@@ -66,10 +66,10 @@ h1 {
                 </ul>
             </div>
         </div>
-    
-    
+
+
     <!-- THIS SECTION IS THE LESSON UNLOCKING AND SCHEDULING AREA -- ENABLED FOR NOW -->
-    
+
     </div>
     <div class="card m-4 px-4">
         <h2 class="card-title m-4" style="text-align: center;">Lesson unlocking</h2>
@@ -123,7 +123,7 @@ h1 {
             <div class="col sm-3">
                 <a class="btn btn-primary mx-4" href="../schedule/{{ classid }}" role="button">Manage Scheduled Lessons</a>
             </div>
-        </div>    
+        </div>
     </div>
     {% if role != 'teacher' %}
         <div class="card my-4">

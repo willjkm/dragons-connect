@@ -34,7 +34,7 @@ body {
                 <a class="btn btn-primary m-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Review lesson</a>
                 <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
             {% else %}
-                {% if activeSlide > 1 %}                    
+                {% if activeSlide > 1 %}
                     <div class="progress mx-4 mt-4" style="background-color: white;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: {{ percentComplete }}%;" aria-valuenow="{{ percentComplete }}" aria-valuemin="0" aria-valuemax="100">{{ percentComplete }}% completed</div>
                     </div>
@@ -47,7 +47,7 @@ body {
                                 Lesson progress: not started
                             </span>
                         </div>
-                    </div>    
+                    </div>
                     <a class="btn btn-primary m-4" href="/lessons/{{ lesson.number }}/slide/{{ activeSlide }}" role="button">Start lesson</a>
                     <a class="btn btn-secondary mx-4 mb-4" href="/lessons/" role="button">View all lessons</a>
                 {% endif %}
@@ -55,7 +55,7 @@ body {
         </div>
         <div class="card my-4">
             <h2 class="card-title m-4" style="text-align: center;">Live Classroom</h2>
-            <a class="btn btn-primary btn-huge mx-4 mb-4" href="#" role="button">Enter Live Class</a>
+            <a class="btn btn-primary btn-huge mx-4 mb-4" href="https://dragonsteaching.adobeconnect.com/{{ classCode }}" role="button">Enter Live Class</a>
         </div>
     </div>
     <div class="col-lg mt-4">
@@ -64,14 +64,14 @@ body {
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-sm-2">
-                        <img class="mybadge" src="/media/images/coin.png">
+                        <img class="mybadge" src="/static/images/coin.png">
                     </div>
                     <div class="col-sm-7">
                         <h4 class="mt-1 ml-5"><span class="verybig"> x {{ coins }}</span></h4>
                     </div>
                 </div>
             </div>
-            <img class="belt" src="/media/images/belt-{{ beltNumber }}.png">
+            <img class="belt" src="/static/images/belt-{{ beltNumber }}.png">
             <h4 class="cointext" style="text-align: center;">I am a <strong>{{ beltName }} belt</strong></h4>
             <p class="cointext" style="text-align: center;">{{ remainingCoins }} coins until next belt</p>
             <h2 class="mt-4" style="text-align: center;">My Badges</h2>
@@ -82,7 +82,7 @@ body {
                 <div class="row my-4 mx-2">
                     {% for badge in badges %}
                         <div class="col">
-                            <img class="mybadge" title="{{ badge.name }}" src="/media/images/{{ badge.file }}">
+                            <img class="mybadge" title="{{ badge.name }}" src="/static/images/{{ badge.file }}">
                         </div>
                     {% endfor %}
                 </div>

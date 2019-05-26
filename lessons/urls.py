@@ -11,5 +11,6 @@ urlpatterns = [
     path('ajax/updateprogress/', views.updateProgress, name='update progress'),
     path('ajax/gameover/', views.gameOver, name='game over'),
     path('ajax/specialaward/', views.specialAward, name='special award'),
-    path('ajax/getbadges/', views.returnBadgesToGame, name='return badges to game')
+    path('ajax/getbadges/', views.returnBadgesToGame, name='return badges to game'),
+    path('ajax/getdata/', views.analyticData, name='get data')
 ]

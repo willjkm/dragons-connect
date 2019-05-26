@@ -24,13 +24,20 @@ h1 {
                     <p class="ml-4">next lesson: lesson {{ section.next_lesson_number }} on {{ section.display_date }}, {{ section.display_time }}</p>
                 {% else %}
                     <p class="ml-4">no upcoming lessons</p>
-                {% endif %}                    
+                {% endif %}
             </div>
             <div class="col-sm-2 mb-4">
                 <a class="btn btn-primary" href="overview/{{ section.classid }}" role="button">View Class</a>
             </div>
         </div>
     {% endfor %}
+    {% if role == 'admin' %}
+        <div class="row justify-content-center">
+            <div class="col-sm-2 mb-4">
+                <a class="btn btn-warning" href="/dashboard/analytics/" role="button">View Analytics</a>
+            </div>
+        </div>
+    {% endif %}
 </div>
 <div class="card mt-4">
     <h2 class="card-title mt-4" style="text-align: center;">My Courses</h2>

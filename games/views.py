@@ -1,9 +1,10 @@
 """Process the data needed for loading the games"""
 
 from django.shortcuts import render
-from lessons.models import LearningEvent
+from lessons.models import LearningEvent, Ke
 from lessons.coursecontent import getSlides
 from lessons.badges import getBadges
+from lessons.views import firstLockedLesson
 
 
 def games(request, gameid, lessonid):
@@ -54,7 +55,42 @@ def games(request, gameid, lessonid):
             else:
                 coins = 0
 
+    if int(gameid) == 10: # decide where to route the user at the end of the lesson
+
+        # is next lesson available to study?
+
+        if firstLockedLesson(request.user) == int(lessonid) + 1:
+            next_lesson_available = 0
+        else:
+            next_lesson_available = 1
+
+        # what more coins have been won in this lesson?
+
+        game_coins = {
+            "Dragon Boat Race": 0,
+            "Falling Tones": 0,
+            "Fireworks": 0,
+            "Blockzi": 0,
+            "Quiz Time": 0
+        }
+
+        for game in LearningEvent.objects.filter(user=request.user, action="completed", lesson=int(lessonid), coins__gte=1):
+            if game_coins[game.element_name] < game.coins:
+                game_coins[game.element_name] = game.coins
+
+        coin_list = [
+            game_coins["Dragon Boat Race"],
+            game_coins["Falling Tones"],
+            game_coins["Fireworks"],
+            game_coins["Blockzi"]
+        ]
+    else:
+        next_lesson_available = 1
+        coin_list = []
+
     badges = getBadges(request.user)
+
+    tabs = [1, 2, 3, 4] # used for stroke order HTML page
 
     context = {
         'role': request.user.profile.role,
@@ -63,7 +99,10 @@ def games(request, gameid, lessonid):
         'top_score': top_score,
         'coins': coins,
         'file_name': file_name,
-        'badges': badges
+        'badges': badges,
+        'tabs': tabs,
+        'next_lesson_available': next_lesson_available,
+        'coin_list': coin_list
     }
 
     if current_game == "Stroke Order":

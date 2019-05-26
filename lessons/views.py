@@ -84,6 +84,8 @@ def slide(request, lessonid, slideid):
     lessons = getLessons()
     slides = getSlides()
 
+    slides[3]["title"] = "Boat Race" # Changes name to fit on sidebar.
+
     # Find the current lesson and slide
 
     current_lesson = lessons[int(lessonid)-1]
@@ -112,7 +114,9 @@ def slide(request, lessonid, slideid):
     # URL content for slides
 
     if int(slideid) == 2:
-        url = "https://www.youtube.com/embed/v=tgbNymZ7vqY" # change to a list of URLs later
+        youtubeCodes = ["oNr8k6lvBi4", "SPBTKCStX04", "J4hBY7aQw2A", "nyR6_ZKZ6d4", "D0hcrPY0atA"]
+        thisLessonCode = youtubeCodes[int(lessonid)-1]
+        url = "https://www.youtube.com/embed/" + thisLessonCode
     else:
         url = "../../../games/" + slideid + "/" + str(current_lesson["number"]) + "/"
 
@@ -291,7 +295,8 @@ def dashboard(request):
             'beltName': beltName,
             'remainingCoins': remainingCoins,
             'badges': badgesToShow,
-            'badgesWon': badgesWon
+            'badgesWon': badgesWon,
+            'classCode': request.user.profile.classCode
         }
 
         return render(request, 'lessons/dashboard.html', context)
@@ -445,13 +450,17 @@ def createclass(request):
                 first_name=row['first_name'],
                 last_name=row['last_name']
             ))
+        myindex = 0
         for user in newusers:
             user.save()
             user.profile.role = 'student'
             user.profile.active_lesson = 1
             user.profile.active_slide = 1
             user.profile.section = section
+            user.profile.nickname = data[myindex]['first_name']
+            user.profile.classCode = data[myindex]['class_code']
             user.profile.save()
+            myindex += 1
 
     return HttpResponse('')
 
@@ -577,9 +586,69 @@ def details(request, userid):
         'charts': charts,
         'return_page': return_page,
         'badges': myBadges
-        }
+    }
 
     return render(request, 'lessons/details.html', context)
+
+@login_required
+def analytics(request):
+
+    """displays a table of all student analytics on the analytics template page"""
+
+    context = {}
+
+    return render(request, 'lessons/analytics.html', context)
+
+def analyticData(request):
+
+    """this responds to a request for all student data"""
+
+    students = User.objects.filter(profile__role="student")
+
+    def returnLoginDays(user):
+        logins = Login.objects.filter(user=user)
+        myDays = []
+        for login in logins:
+            loginDate = login.datetime.date()
+            if myDays.count(loginDate) == 0:
+                myDays.append(loginDate)
+        return len(myDays)
+
+    def returnSlideViews(user):
+        events = LearningEvent.objects.filter(user=user, action="viewed")
+        return events.count()
+
+    def returnGameSessions(user):
+        events = LearningEvent.objects.filter(user=user, action="completed")
+        return events.count()
+
+    data = []
+    counter = 0
+    line_counter = 0
+
+    for student in students:
+        courseProgress = getCourseProgress(student)
+        if courseProgress == 0:
+            counter += 1
+        else:
+            line_counter += 1
+            counter += 1
+            badges = getBadges(student)
+            data.append({
+                "id": line_counter,
+                "name": student.last_name + ", " + student.first_name,
+                "school": str(student.profile.school),
+                "myclass": str(student.profile.section.section_class),
+                "teacher": student.profile.section.teacher.first_name + " " + student.profile.section.teacher.last_name,
+                "courseProgress": courseProgress,
+                "coins": returnCoins(student),
+                "loginDays": returnLoginDays(student),
+                "completedGames": returnGameSessions(student),
+                "slideViews": returnSlideViews(student),
+                "badges": len(badges)
+            })
+
+    return JsonResponse(data, safe=False)
 
 @login_required
 def schedule(request, classid):
@@ -769,7 +838,7 @@ def getCourseProgress(user):
     active_slide = user.profile.active_slide
     #active_lesson = user.profile.active_lesson # Lesson.objects.get(lesson_order=user.profile.active_lesson)
 
-    slides_in_course = 100 # this is for a 10 lesson course
+    slides_in_course = 50 # this is for a 5 lesson course
     slide_count = 10 * (user.profile.active_lesson - 1) + (active_slide - 1)
 
     # len(Slide.objects.filter(lesson__lt=active_lesson.lesson_order)) + (active_slide - 1)

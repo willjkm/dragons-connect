@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
+from .production_settings import getKey
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'bkmwqyl!2m8@v+-c66l5_%+tjh7sb8fk70zsdk_&)jy_2&h-5l'
+SECRET_KEY = getKey()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'www.dragonsconnect.com'
+]
 
 
 # Application definition
@@ -80,10 +83,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'dcdb',
-        'USER': 'dbsuperuser',
-        'PASSWORD': 's6h8PK',
-        'HOST': 'localhost',
+        'NAME': 'wminter$dcdb',
+        'USER': 'wminter',
+        'PASSWORD': '6SVpG*H7-wedd9pZ',
+        'HOST': 'wminter.mysql.pythonanywhere-services.com',
         'PORT': ''
     }
 }
@@ -124,6 +127,10 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+
+STATICFILES_DIRS = [
+    "/home/wminter/myapp/media",
+]
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')

@@ -15,7 +15,7 @@ class GameScene extends Phaser.Scene {
         });
 
         var loadConfig = {
-            mediaURL: "../../../media/images/",
+            mediaURL: "../../../static/images/",
             loadObjects: [
                 {type: "image", name: "scroll", file: "scroll.png"},
                 {type: "image", name: "roll", file: "roll.png"},
@@ -29,14 +29,14 @@ class GameScene extends Phaser.Scene {
         ui.data = getCultureData();
 
         var levelConfig = {
-            mediaURL: "../../../media/images/",
+            mediaURL: "../../../static/images/",
             loadObjects: ui.data[importData.lesson-1].assets
         }
         myLoad(levelConfig, this);
 
 
         var soundLoadConfig = {
-            mediaURL: "../../../media/sounds/",
+            mediaURL: "../../../static/sounds/",
             loadObjects: [
                 {type: "sound", name: "correct", file: "complete_chime.ogg"},
                 {type: "sound", name: "wrong", file: "wrong.ogg"},
@@ -141,7 +141,7 @@ class GameScene extends Phaser.Scene {
                                 endGame = false;
                             }
                         });
-                        if (endGame) { 
+                        if (endGame) {
                             endActivity(1, this);
                         }
                     }
@@ -266,7 +266,7 @@ class GameScene extends Phaser.Scene {
             }, 300)
         }
 
-        
+
 
         ui.closeScroll = () => {
             this.sound.stopAll();
@@ -277,7 +277,7 @@ class GameScene extends Phaser.Scene {
                     endGame = false;
                 }
             })
-            if (endGame) { 
+            if (endGame) {
                 endActivity(1, this);
             }
             ui.scroll.button.button.setInteractive(false);
@@ -313,7 +313,7 @@ class GameScene extends Phaser.Scene {
                     y: 0,
                     ease: 'Power1',
                     duration: 800
-                });    
+                });
                 setTimeout(() => {
                     ui.scroll.back.setVisible(false);
                     this.tweens.add({
@@ -327,7 +327,7 @@ class GameScene extends Phaser.Scene {
                         y: 88-150,
                         ease: 'Power1',
                         duration: 300
-                    });        
+                    });
                 }, 930);
             }, 300)
         }
@@ -374,7 +374,7 @@ class GameScene extends Phaser.Scene {
                 if (haveSelection) {
                     if (!ui.label[index].complete) {
                         t.selected = false;
-                        t.setTexture(t.originalTexture);    
+                        t.setTexture(t.originalTexture);
                     }
                 } else {
                     if (!ui.label[index].complete) {
@@ -403,14 +403,14 @@ class StartScene extends Phaser.Scene {
 
     preload() {
         var loadConfig = {
-            mediaURL: "../../../media/images/",
+            mediaURL: "/static/images/",
             loadObjects: [
                 {type: "image", name: "splash", file: "culture_splash_" + importData.lesson + ".jpg"},
                 {type: "image", name: "loading", file: "culture_loading_1.jpg"},
                 {type: "image", name: "loadingstar", file: "loadingstar.png"},
             ]
         }
-        
+
         myLoad(loadConfig, this);
         myLoad("buttons", this);
     }
