@@ -9,7 +9,7 @@
 
 <div class="sidenav">
     <h3>Lesson {{ lesson_number }}</h3>
-    <p>{{ lesson.title }}</p>
+    <!-- <p>{{ lesson.title }}</p> -->
     {% for slide in slides %}
         {% if slide == current_slide %}
             <strong><a href="#">{{ slide.number }}. {{ slide.title }}</a></strong>
@@ -26,6 +26,7 @@
         {% endif %}
     {% endfor %}
     <a class="btn btn-outline-warning mt-4" href="/lessons/" style="width: 80%; margin: auto; text-align: left;" role="button">Back to index</a>
+    <a class="btn btn-outline-warning mt-4" href="/dashboard/" style="width: 80%; margin: auto; text-align: left;" role="button">Dashboard</a>
 </div>
 
 <div class="main" id="mainContent">

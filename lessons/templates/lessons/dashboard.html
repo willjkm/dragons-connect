@@ -74,6 +74,9 @@ body {
             <img class="belt" src="/static/images/belt-{{ beltNumber }}.png">
             <h4 class="cointext" style="text-align: center;">I am a <strong>{{ beltName }} belt</strong></h4>
             <p class="cointext" style="text-align: center;">{{ remainingCoins }} coins until next belt</p>
+            {% if showCollectCoinsButton %}
+                <a class="btn btn-warning btn-huge m-4" href="/lessons/{{ lessonRedirect }}/slide/{{ slideRedirect }}" role="button">My Missing Coins</a>
+            {% endif %}
             <h2 class="mt-4" style="text-align: center;">My Badges</h2>
             <div>
                 <h4 style="text-align: center;">I have {{ badgesWon }}/50 badges</h4>
@@ -97,6 +100,11 @@ body {
 {% block javascript %}
 
 <script>
+// temp: debug coins calculator
+
+debug = {{ debug|safe }};
+console.log(debug);
+
 // change the value below from 80 to whichever percentage you want
 perCirc($('#sellPerCirc'), {{ courseProgress }});
 staticCircle($('#secondCircle'), 0);

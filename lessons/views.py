@@ -247,18 +247,26 @@ def dashboard(request):
     if request.user.profile.role == 'student':
 
         lessons = getLessons()
-        slides = getSlides()
 
         active_lesson_number = request.user.profile.active_lesson
         active_slide = request.user.profile.active_slide
         active_lesson = lessons[active_lesson_number-1]
         first_locked_lesson = firstLockedLesson(request.user)
         lesson_locked = False
+        completed_quizzes = LearningEvent.objects.filter(user=request.user, action="completed", element_name="Quiz Time", lesson=int(active_lesson_number), coins__gte=1).count()
 
-        if active_slide == len(slides) and first_locked_lesson == active_lesson_number + 1:
-            lesson_locked = True
-            active_slide = 1
-            active_lesson = lessons[active_lesson_number-2] # needs checking
+        # what to do if the student has completed the active lesson
+
+        if completed_quizzes > 0:
+            if first_locked_lesson == active_lesson_number + 1: # if the next lesson is locked
+                lesson_locked = True
+            else: # if the next lesson is available we need to update the student's progress and show the next lesson
+                active_lesson = lessons[active_lesson_number]
+                active_slide = 1
+                # update the progress
+                request.user.profile.active_lesson += 1
+                request.user.profile.active_slide = 1
+                request.user.profile.save()
 
         coins = returnCoins(request.user)
 
@@ -284,6 +292,62 @@ def dashboard(request):
         else:
             badgesToShow = myBadges
 
+        # Calculate where a student should go to collect missing coins
+
+        showCollectCoinsButton = False
+        lessonRedirect = 1
+        slideRedirect = 1
+        game_coins = None
+
+        if active_lesson_number > 1:
+            showCollectCoinsButton = True
+
+        if active_slide == 10:
+            showCollectCoinsButton = True
+
+        if showCollectCoinsButton:
+            game_coins = {
+                "Dragon Boat Race": [0, 0, 0, 0, 0],
+                "Falling Tones": [0, 0, 0, 0, 0],
+                "Fireworks": [0, 0, 0, 0, 0],
+                "Blockzi": [0, 0, 0, 0, 0],
+                "Quiz Time": [0, 0, 0, 0, 0]
+            }
+
+            # populate a list of top coins for each game
+
+            for game in LearningEvent.objects.filter(user=request.user, action="completed", coins__gte=1):
+                if game_coins[game.element_name][game.lesson-1] < game.coins:
+                    game_coins[game.element_name][game.lesson-1] = game.coins
+
+            foundPlaceToGo = False
+
+            for i in range(5):
+                if not foundPlaceToGo:
+                    if game_coins["Dragon Boat Race"][i] < 3 and game_coins["Dragon Boat Race"][i] > 0:
+                        lessonRedirect = i+1
+                        slideRedirect = 4
+                        foundPlaceToGo = True
+                    elif game_coins["Falling Tones"][i] < 3 and game_coins["Falling Tones"][i] > 0:
+                        lessonRedirect = i+1
+                        slideRedirect = 5
+                        foundPlaceToGo = True
+                    elif game_coins["Fireworks"][i] < 3 and game_coins["Fireworks"][i] > 0:
+                        lessonRedirect = i+1
+                        slideRedirect = 7
+                        foundPlaceToGo = True
+                    elif game_coins["Blockzi"][i] < 3 and game_coins["Blockzi"][i] > 0:
+                        lessonRedirect = i+1
+                        slideRedirect = 9
+                        foundPlaceToGo = True
+                    elif game_coins["Quiz Time"][i] < 3 and game_coins["Quiz Time"][i] > 0:
+                        lessonRedirect = i+1
+                        slideRedirect = 10
+                        foundPlaceToGo = True
+
+            if foundPlaceToGo == False:
+                showCollectCoinsButton = False
+
         context = {
             'lesson': active_lesson,
             'activeSlide': active_slide,
@@ -296,7 +360,11 @@ def dashboard(request):
             'remainingCoins': remainingCoins,
             'badges': badgesToShow,
             'badgesWon': badgesWon,
-            'classCode': request.user.profile.classCode
+            'classCode': request.user.profile.classCode,
+            'showCollectCoinsButton': showCollectCoinsButton,
+            'lessonRedirect': lessonRedirect,
+            'slideRedirect': slideRedirect,
+            'debug': game_coins
         }
 
         return render(request, 'lessons/dashboard.html', context)

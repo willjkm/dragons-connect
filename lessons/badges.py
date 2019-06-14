@@ -11,6 +11,8 @@ def returnCoins(user, lesson=0):
     if lesson == 0:
         coins = (user.profile.active_lesson - 1) * 10
         coins += user.profile.active_slide - 1
+        if user.profile.active_slide == 10:
+            coins += 1
         game_coins = {
             "Dragon Boat Race": [0] * 10,
             "Falling Tones": [0] * 10,
@@ -30,6 +32,8 @@ def returnCoins(user, lesson=0):
             coins = 0
         else:
             coins = user.profile.active_slide - 1
+            if user.profile.active_slide == 10:
+                coins += 1
         game_coins = {
             "Dragon Boat Race": 0,
             "Falling Tones": 0,
